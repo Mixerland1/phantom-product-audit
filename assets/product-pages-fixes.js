@@ -8,9 +8,14 @@
   });
 
   const menu=document.querySelector('.mobile-menu');
-  if(menu)document.addEventListener('click',event=>{
-    if(!menu.contains(event.target))menu.removeAttribute('open');
-  });
+  if(menu){
+    document.addEventListener('click',event=>{
+      if(!menu.contains(event.target))menu.removeAttribute('open');
+    });
+    menu.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',()=>{
+      menu.removeAttribute('open');
+    }));
+  }
 
   const form=document.querySelector('.product-form');
   if(!form)return;
