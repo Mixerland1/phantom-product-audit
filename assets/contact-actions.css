@@ -1,0 +1,12 @@
+.request{padding:38px 42px}
+.contact-actions{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;padding:0 0 25px;border-bottom:1px solid rgba(255,255,255,.22)}
+.contact-action{display:grid;gap:4px;color:inherit;text-decoration:none}
+.contact-action-title{color:#ff7182;font-size:25px;font-weight:900;letter-spacing:-.035em;line-height:1.05}
+.contact-action-copy{color:#d2ddea;font-size:13px;font-weight:700;line-height:1.45}
+.contact-action strong{font-size:16px;line-height:1.4}
+.contact-action:focus-visible{outline:3px solid #ff7182;outline-offset:5px;border-radius:5px}
+html[data-theme="light"] .contact-actions{border-color:var(--line)}
+html[data-theme="light"] .contact-action-title{color:var(--red)}
+html[data-theme="light"] .contact-action-copy{color:var(--muted)}
+html[data-theme="light"] .contact-action strong{color:var(--ink)}
+@media(max-width:560px){.request{padding:28px 22px}.contact-actions{grid-template-columns:1fr;gap:20px;padding-bottom:21px}.contact-action-title{font-size:22px}}

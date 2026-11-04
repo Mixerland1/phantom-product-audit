@@ -1,0 +1,6 @@
+.form-mailto-hint{grid-column:span 2;margin:-2px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+html[data-theme=dark] .form-mailto-hint{color:#c9d4e1}
+html[data-theme=dark] body.attestation-page .hero .eyebrow,
+html[data-theme=dark] body.attestation-page #details .eyebrow,
+html[data-theme=dark] body.attestation-page .solution-link a{color:#ff9aaa}
+@media(max-width:560px){.form-mailto-hint{grid-column:span 2;font-size:11px}}
