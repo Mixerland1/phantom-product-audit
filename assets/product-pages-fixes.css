@@ -1,0 +1,19 @@
+/* Дополнения для продуктовых страниц: единая мобильная навигация и таблицы. */
+.mobile-menu{display:none;position:relative;margin-left:auto}
+.mobile-menu summary{padding:10px 12px;border:1px solid var(--line);border-radius:7px;cursor:pointer;color:var(--ink);font-size:12px;font-weight:800;list-style:none}
+.mobile-menu summary::-webkit-details-marker{display:none}
+.mobile-menu summary:after{content:"▾";margin-left:7px;color:var(--red)}
+.mobile-menu[open] summary:after{content:"▴"}
+.mobile-menu .menu-popover{position:absolute;top:calc(100% + 9px);right:0;display:grid;min-width:230px;padding:8px;border:1px solid var(--line);border-radius:9px;background:var(--paper);box-shadow:0 16px 35px #13233a24}
+.mobile-menu .menu-popover a{padding:10px 11px;border-radius:6px;color:var(--ink);font-size:13px;font-weight:800;text-decoration:none}
+.mobile-menu .menu-popover a:hover{background:var(--soft);color:var(--red)}
+.spec-row [role=rowheader]{font-size:13px;font-weight:800}
+.spec-row [role=cell]{min-width:0;overflow-wrap:anywhere;color:var(--muted)}
+.spec--compare .spec-row{grid-template-columns:1fr .72fr .72fr}
+.spec--compare [role=columnheader]{font-size:13px;font-weight:800}
+.technical-note{margin:18px 0 0;padding:14px 16px;border-radius:8px;background:var(--red-soft);color:var(--muted);font-size:13px}
+.technical-note strong{color:var(--ink)}
+.capacity-card .spec{margin-top:22px;border-color:#49617d;background:transparent}.capacity-card .spec-row{grid-template-columns:1fr .65fr .65fr;gap:12px;padding:12px 14px;border-color:#49617d}.capacity-card .spec-row [role=columnheader]{font-size:12px;font-weight:800}.capacity-card .spec-row [role=rowheader]{color:#fff}.capacity-card .spec-row [role=cell]{color:#d2ddea}.capacity-card .technical-note{background:#ffffff14;color:#d2ddea}.capacity-card .technical-note strong{color:#fff}
+html[data-theme=light] .capacity-card .spec{border-color:var(--line)}html[data-theme=light] .capacity-card .spec-row{border-color:var(--line)}html[data-theme=light] .capacity-card .spec-row [role=rowheader],html[data-theme=light] .capacity-card .technical-note strong{color:var(--ink)}html[data-theme=light] .capacity-card .spec-row [role=cell],html[data-theme=light] .capacity-card .technical-note{color:var(--muted)}html[data-theme=light] .capacity-card .technical-note{background:var(--red-soft)}
+@media(max-width:900px){.mobile-menu{display:block}}
+@media(max-width:560px){.header-in{gap:8px}.mobile-menu summary{padding:9px 10px;font-size:0}.mobile-menu summary:after{margin:0;font-size:12px}.theme{margin-left:0}.spec--compare{overflow-x:auto}.spec--compare .spec-row{min-width:420px}}
