@@ -248,18 +248,18 @@
 <a href="mailto:sales@mdis.ru">sales@mdis.ru</a>
 </p>
 </div>
-<form class="form product-form" data-subject="Запрос по Phantom Pro, уровень 6">
+<form class="form product-form" data-product="Phantom Pro, уровень 6">
 <div class="field half">
 <label for="company">Компания</label>
 <input id="company" name="company" autocomplete="organization" placeholder="Название организации">
 </div>
 <div class="field half">
 <label for="name">Ваше имя</label>
-<input id="name" name="name" autocomplete="name" placeholder="Имя">
+<input id="name" name="name" autocomplete="name" placeholder="Имя" required>
 </div>
 <div class="field half">
 <label for="phone">Телефон</label>
-<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+7">
+<input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+7" required>
 </div>
 <div class="field half">
 <label for="email">Электронная почта</label>
@@ -270,8 +270,9 @@
 <textarea id="task" name="task" placeholder="Например: нужно организовать запись переговоров">
 </textarea>
 </div>
-<button class="button" type="submit">Подготовить письмо</button>
-<p class="policy">Кнопка откроет почтовое приложение с заполненным черновиком письма.</p>
+<button class="button" type="submit">Оставить заявку</button>
+<label class="policy policy--consent"><input type="checkbox" name="privacy" required><span>Отправляя форму, вы соглашаетесь с <a href="https://mdis.ru/privacy-policy/" target="_blank" rel="noopener">политикой конфиденциальности</a>.</span></label>
+<p class="form-status" aria-live="polite"></p>
 </form>
 </div>
 </section>
