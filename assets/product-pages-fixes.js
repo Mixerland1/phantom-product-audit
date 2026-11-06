@@ -21,50 +21,54 @@
   if(carousel){
     const productSection=carousel.closest('section');
     const hero=document.querySelector('.hero');
-    if(productSection&&hero){
+    const products=[...carousel.querySelectorAll('a')];
+    if(products.length<=1){
+      productSection?.remove();
+    }else if(productSection&&hero){
       productSection.className='product-switcher';
       productSection.setAttribute('role','navigation');
       productSection.setAttribute('aria-label','Переход между продуктами Phantom');
       productSection.querySelector('.section-head')?.remove();
       hero.insertAdjacentElement('afterend',productSection);
+      carousel.classList.add('product-carousel');
+      carousel.id='product-switcher-list';
+      carousel.setAttribute('role','list');
+      carousel.setAttribute('aria-label','Другие продукты Phantom');
+
+      const previous=document.createElement('button');
+      previous.className='product-carousel-control';
+      previous.type='button';
+      previous.setAttribute('aria-label','Предыдущие продукты');
+      previous.setAttribute('aria-controls',carousel.id);
+      previous.title='Предыдущие продукты';
+      previous.textContent='←';
+      const next=document.createElement('button');
+      next.className='product-carousel-control';
+      next.type='button';
+      next.setAttribute('aria-label','Следующие продукты');
+      next.setAttribute('aria-controls',carousel.id);
+      next.title='Следующие продукты';
+      next.textContent='→';
+      const carouselWrap=carousel.parentNode;
+      carouselWrap.insertBefore(previous,carousel);
+      carouselWrap.append(next);
+
+      const updateControls=()=>{
+        productSection.classList.remove('has-product-overflow');
+        const hasOverflow=carousel.scrollWidth-carousel.clientWidth>1;
+        productSection.classList.toggle('has-product-overflow',hasOverflow);
+        const max=Math.max(0,carousel.scrollWidth-carousel.clientWidth);
+        previous.disabled=!hasOverflow||carousel.scrollLeft<=1;
+        next.disabled=!hasOverflow||carousel.scrollLeft>=max-1;
+      };
+      const scrollProducts=direction=>carousel.scrollBy({left:direction*Math.max(240,carousel.clientWidth*.7),behavior:'smooth'});
+      previous.addEventListener('click',()=>scrollProducts(-1));
+      next.addEventListener('click',()=>scrollProducts(1));
+      carousel.addEventListener('scroll',updateControls,{passive:true});
+      window.addEventListener('resize',updateControls);
+      new ResizeObserver(updateControls).observe(carousel);
+      requestAnimationFrame(updateControls);
     }
-    carousel.classList.add('product-carousel');
-    carousel.id='product-switcher-list';
-    carousel.setAttribute('role','list');
-    carousel.setAttribute('aria-label','Другие продукты Phantom');
-
-    const current=[...carousel.querySelectorAll('a')].find(link=>link.querySelector('span')?.textContent.trim()==='Текущий');
-    if(current)current.setAttribute('aria-current','page');
-
-    const previous=document.createElement('button');
-    previous.className='product-carousel-control';
-    previous.type='button';
-    previous.setAttribute('aria-label','Предыдущий продукт');
-    previous.setAttribute('aria-controls',carousel.id);
-    previous.title='Предыдущий продукт';
-    previous.textContent='←';
-    const next=document.createElement('button');
-    next.className='product-carousel-control';
-    next.type='button';
-    next.setAttribute('aria-label','Следующий продукт');
-    next.setAttribute('aria-controls',carousel.id);
-    next.title='Следующий продукт';
-    next.textContent='→';
-    const carouselWrap=carousel.parentNode;
-    carouselWrap.insertBefore(previous,carousel);
-    carouselWrap.append(next);
-
-    const updateControls=()=>{
-      const max=Math.max(0,carousel.scrollWidth-carousel.clientWidth);
-      previous.disabled=carousel.scrollLeft<=1;
-      next.disabled=carousel.scrollLeft>=max-1;
-    };
-    const scrollProducts=direction=>carousel.scrollBy({left:direction*Math.max(240,carousel.clientWidth*.7),behavior:'smooth'});
-    previous.addEventListener('click',()=>scrollProducts(-1));
-    next.addEventListener('click',()=>scrollProducts(1));
-    carousel.addEventListener('scroll',updateControls,{passive:true});
-    window.addEventListener('resize',updateControls);
-    requestAnimationFrame(updateControls);
   }
 
   const form=document.querySelector('.product-form');
