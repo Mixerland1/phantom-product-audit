@@ -5,6 +5,24 @@
     brand.innerHTML='<img class="brand-logo-light" src="assets/logos/phantom-black.svg" alt="Фантом"><img class="brand-logo-dark" src="assets/logos/phantom.svg" alt="">';
   }
 
+  const hero=document.querySelector('.hero');
+  const sectionLink=document.querySelector('.hero .crumb a[href*="electroenergetika"]');
+  const drilldownPage=/\/(?:selective-recording|attestation-fsk-ees)\.html$/.test(location.pathname);
+  if(drilldownPage&&hero&&sectionLink&&!document.querySelector('.context-nav')){
+    const contextNav=document.createElement('nav');
+    contextNav.className='context-nav';
+    contextNav.setAttribute('aria-label','Навигация по разделу');
+    const source=decodeURIComponent(location.pathname).includes('/макеты/');
+    contextNav.innerHTML=`<div class="wrap"><a href="${source?'03_Готовый_вариант_Электроэнергетика.html':'/electroenergetika.html'}">К решению для электроэнергетики</a></div>`;
+    hero.insertAdjacentElement('afterend',contextNav);
+  }
+  if(document.querySelector('.context-nav')&&!document.getElementById('context-nav-style')){
+    const style=document.createElement('style');
+    style.id='context-nav-style';
+    style.textContent='.context-nav{position:relative;z-index:2;border-block:1px solid var(--line);background:var(--paper);box-shadow:0 10px 24px #2633470b}.context-nav .wrap{display:flex;align-items:center;min-height:58px}.context-nav a{display:inline-flex;align-items:center;gap:10px;color:var(--ink);font-size:12px;font-weight:900;text-decoration:none}.context-nav a:before{content:"←";display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:50%;font-size:17px;font-weight:400;transition:transform .18s,border-color .18s,background .18s,color .18s}.context-nav a:hover:before,.context-nav a:focus-visible:before{border-color:var(--red);background:var(--red);color:#fff;transform:translateX(-2px)}';
+    document.head.appendChild(style);
+  }
+
   const footer=document.querySelector('.footer');
   if(!footer)return;
   footer.id='site-footer';

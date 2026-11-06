@@ -49,13 +49,20 @@
       next.title=`Следующий продукт: ${productName(productAt(1))}`;
       next.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
       const carouselWrap=carousel.parentNode;
+      const productNavigation=document.createElement('div');
+      productNavigation.className='product-switcher-row';
+      const parentLink=document.createElement('a');
+      parentLink.className='product-parent-link';
+      parentLink.href=decodeURIComponent(location.pathname).includes('/макеты/')?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html';
+      parentLink.textContent='К решению для электроэнергетики';
       const toolbar=document.createElement('div');
       toolbar.className='product-carousel-toolbar';
       const label=document.createElement('span');
       label.className='product-carousel-label';
       label.textContent='Другие продукты';
       toolbar.append(previous,label,next);
-      carouselWrap.replaceChild(toolbar,carousel);
+      productNavigation.append(parentLink,toolbar);
+      carouselWrap.replaceChild(productNavigation,carousel);
       previous.addEventListener('click',()=>{window.location.href=productAt(-1).href});
       next.addEventListener('click',()=>{window.location.href=productAt(1).href});
     }
