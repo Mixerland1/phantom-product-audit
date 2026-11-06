@@ -32,7 +32,7 @@ html[data-theme=light] .capacity-card .spec{border-color:var(--line)}html[data-t
 .hero-points li{display:grid;align-content:center;justify-items:center;min-height:70px;padding:10px 14px!important;border:0!important;background:transparent!important;color:var(--ink)!important;text-align:center}
 .hero-points li+li{border-left:1px solid var(--line)!important}
 .hero-points li strong{display:block;font-size:18px;line-height:1;font-weight:900;letter-spacing:-.035em;white-space:nowrap}
-.hero-points li span{display:block;margin-top:6px;color:var(--muted);font-size:10px;font-weight:800;line-height:1.2}
+.hero-points li span{display:block;margin-top:6px;color:var(--muted);font-size:13px;font-weight:800;line-height:1.2}
 @media(max-width:900px){.hero-points li+li{border-top:1px solid var(--line)!important;border-left:0!important}}
 
 /* Визуал первого экрана: изделие — главный объект, без рамки и вложенной белой карточки. */
