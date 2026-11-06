@@ -17,6 +17,50 @@
     }));
   }
 
+  const carousel=document.querySelector('.related');
+  if(carousel){
+    carousel.classList.add('product-carousel');
+    carousel.setAttribute('role','region');
+    carousel.setAttribute('aria-label','Другие продукты Phantom');
+
+    const current=[...carousel.querySelectorAll('a')].find(link=>link.querySelector('span')?.textContent.trim()==='Текущий');
+    if(current)current.setAttribute('aria-current','page');
+
+    const controls=document.createElement('div');
+    controls.className='product-carousel-controls';
+    controls.setAttribute('aria-label','Прокрутка списка продуктов');
+    const hint=document.createElement('p');
+    hint.className='product-carousel-hint';
+    hint.textContent='Листайте карточки или используйте кнопки';
+    const actions=document.createElement('div');
+    actions.className='product-carousel-actions';
+    const previous=document.createElement('button');
+    previous.className='product-carousel-control';
+    previous.type='button';
+    previous.setAttribute('aria-label','Предыдущие продукты');
+    previous.textContent='← Предыдущий продукт';
+    const next=document.createElement('button');
+    next.className='product-carousel-control';
+    next.type='button';
+    next.setAttribute('aria-label','Следующие продукты');
+    next.textContent='Следующий продукт →';
+    actions.append(previous,next);
+    controls.append(hint,actions);
+    carousel.parentNode.insertBefore(controls,carousel);
+
+    const updateControls=()=>{
+      const max=Math.max(0,carousel.scrollWidth-carousel.clientWidth);
+      previous.disabled=carousel.scrollLeft<=1;
+      next.disabled=carousel.scrollLeft>=max-1;
+    };
+    const scrollProducts=direction=>carousel.scrollBy({left:direction*Math.max(240,carousel.clientWidth*.7),behavior:'smooth'});
+    previous.addEventListener('click',()=>scrollProducts(-1));
+    next.addEventListener('click',()=>scrollProducts(1));
+    carousel.addEventListener('scroll',updateControls,{passive:true});
+    window.addEventListener('resize',updateControls);
+    requestAnimationFrame(updateControls);
+  }
+
   const form=document.querySelector('.product-form');
   if(!form)return;
 

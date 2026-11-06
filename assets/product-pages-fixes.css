@@ -17,3 +17,28 @@ html[data-theme=light] .capacity-card .spec{border-color:var(--line)}html[data-t
 @media(max-width:560px){.header-in{gap:8px}.mobile-menu summary{padding:9px 10px;font-size:0}.mobile-menu summary:after{margin:0;font-size:12px}.theme{margin-left:0}.capacity-card .spec--compare{overflow:visible}.capacity-card .spec--compare .spec-row{min-width:0;grid-template-columns:minmax(0,1.35fr) minmax(34px,.55fr) minmax(34px,.55fr);gap:6px;padding:10px 8px}.capacity-card .spec--compare [role=rowheader],.capacity-card .spec--compare [role=cell]{font-size:12px;line-height:1.35}}
 /* Product request forms use the existing mdis.ru server handler. */
 .product-form .policy--consent{display:flex;gap:8px;align-items:flex-start;line-height:1.45}.product-form .policy--consent input{width:15px;height:15px;margin:1px 0 0;accent-color:var(--red)}.product-form .policy--consent span{display:block}.product-form .policy--consent a{color:inherit}.product-form .form-status{grid-column:span 2;min-height:18px;margin:0;color:#cfe6da!important;font-size:12px;font-weight:700}.product-form .form-status.is-error{color:#ffb3bf!important}.product-form .button:disabled{cursor:wait;opacity:.72}@media(max-width:560px){.product-form .form-status{grid-column:span 1}}
+
+/* Декоративная стойка не должна перекрывать название и описание изделия. */
+.device{isolation:isolate}
+.device-title,.device-model,.device-sub{z-index:1}
+.device:before{z-index:2}
+.rack{z-index:0}
+
+/* Первый экран: карточка устройства выровнена по нижнему ряду характеристик. */
+@media(min-width:901px){.hero-in{align-items:end}}
+.device-sub{max-width:none;margin:12px 0 0;font-size:12px;line-height:1.4;white-space:nowrap}
+.rack{bottom:-64px}
+
+/* Карточки линейки: листаются, но остаются удобными для мыши и сенсорного экрана. */
+.device-model{white-space:nowrap}
+.product-carousel-controls{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 14px}
+.product-carousel-hint{margin:0;color:var(--muted);font-size:13px;font-weight:700}
+.product-carousel-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
+.product-carousel-control{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:7px;background:var(--paper);color:var(--ink);font:800 12px/1 Inter,Arial,sans-serif;cursor:pointer;transition:border-color .18s,background .18s,color .18s}
+.product-carousel-control:hover:not(:disabled){border-color:var(--red);color:var(--red)}
+.product-carousel-control:disabled{opacity:.38;cursor:default}
+.related.product-carousel{display:flex;gap:14px;margin-top:0;padding:2px 2px 16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.related.product-carousel a{flex:0 0 calc((100% - 28px)/3);min-width:0;scroll-snap-align:start}
+.related.product-carousel a[aria-current=page]{border-color:var(--red);box-shadow:inset 0 3px 0 var(--red)}
+@media(max-width:900px){.related.product-carousel a{flex-basis:calc((100% - 14px)/2)}}
+@media(max-width:560px){.device-sub{white-space:normal}.product-carousel-controls{align-items:flex-start;flex-direction:column;margin-bottom:10px}.product-carousel-actions{width:100%;justify-content:stretch}.product-carousel-control{flex:1}.related.product-carousel{margin-right:-16px;padding-right:16px}.related.product-carousel a{flex-basis:calc(100% - 42px)}}
