@@ -36,7 +36,8 @@ html[data-theme=light] .capacity-card .spec{border-color:var(--line)}html[data-t
 .product-carousel-control{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--ink);font:800 20px/1 Inter,Arial,sans-serif;cursor:pointer;transition:border-color .18s,background .18s,color .18s}
 .product-carousel-control:hover:not(:disabled){border-color:var(--red);color:var(--red)}
 .product-carousel-control:disabled{opacity:.32;cursor:default}
-.related.product-carousel{display:flex;flex:1;gap:8px;margin:0;padding:8px 0;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.related.product-carousel{display:flex;flex:1;gap:8px;margin:0;padding:8px 0;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none}
+.related.product-carousel::-webkit-scrollbar{display:none}
 .product-switcher .related.product-carousel a{display:flex;flex:0 0 auto;min-height:46px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);scroll-snap-align:start;text-decoration:none;transition:border-color .18s,background .18s,color .18s}
 .product-switcher .related span{margin:0;color:var(--muted);font-size:9px;line-height:1.15;letter-spacing:.08em}
 .product-switcher .related b{margin:3px 0 0;font-size:13px;line-height:1.1}
