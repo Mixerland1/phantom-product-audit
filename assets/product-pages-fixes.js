@@ -26,29 +26,27 @@
       productSection?.remove();
     }else if(productSection&&hero){
       productSection.className='product-switcher';
-      productSection.dataset.productCount=String(products.length);
       productSection.setAttribute('role','navigation');
       productSection.setAttribute('aria-label','Переход между продуктами Phantom');
       productSection.querySelector('.section-head')?.remove();
       hero.insertAdjacentElement('afterend',productSection);
-      carousel.classList.add('product-carousel');
-      carousel.id='product-switcher-list';
-      carousel.setAttribute('role','list');
-      carousel.setAttribute('aria-label','Другие продукты Phantom');
+      let currentIndex=products.findIndex(product=>product.getAttribute('aria-current')==='page');
+      if(currentIndex<0)currentIndex=products.findIndex(product=>new URL(product.href,window.location.href).pathname===window.location.pathname);
+      if(currentIndex<0)currentIndex=0;
+      const productName=product=>[product.querySelector('b')?.textContent.trim(),product.querySelector('small')?.textContent.trim()].filter(Boolean).join(', ')||product.textContent.replace(/\s+/g,' ').trim();
+      const productAt=offset=>products[(currentIndex+offset+products.length)%products.length];
 
       const previous=document.createElement('button');
       previous.className='product-carousel-control';
       previous.type='button';
-      previous.setAttribute('aria-label','Показать предыдущие продукты');
-      previous.setAttribute('aria-controls',carousel.id);
-      previous.title='Предыдущие продукты';
+      previous.setAttribute('aria-label',`Предыдущий продукт: ${productName(productAt(-1))}`);
+      previous.title=`Предыдущий продукт: ${productName(productAt(-1))}`;
       previous.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>';
       const next=document.createElement('button');
       next.className='product-carousel-control';
       next.type='button';
-      next.setAttribute('aria-label','Показать следующие продукты');
-      next.setAttribute('aria-controls',carousel.id);
-      next.title='Следующие продукты';
+      next.setAttribute('aria-label',`Следующий продукт: ${productName(productAt(1))}`);
+      next.title=`Следующий продукт: ${productName(productAt(1))}`;
       next.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
       const carouselWrap=carousel.parentNode;
       const toolbar=document.createElement('div');
@@ -57,20 +55,9 @@
       label.className='product-carousel-label';
       label.textContent='Другие продукты';
       toolbar.append(previous,label,next);
-      carouselWrap.insertBefore(toolbar,carousel);
-
-      const scrollProducts=direction=>{
-        const max=Math.max(0,carousel.scrollWidth-carousel.clientWidth);
-        if(!max)return;
-        const card=carousel.querySelector('a');
-        const gap=parseFloat(getComputedStyle(carousel).gap)||0;
-        const step=(card?.getBoundingClientRect().width||carousel.clientWidth*.7)+gap;
-        if(direction>0&&carousel.scrollLeft>=max-2){carousel.scrollTo({left:0,behavior:'auto'});return}
-        if(direction<0&&carousel.scrollLeft<=1){carousel.scrollTo({left:max,behavior:'auto'});return}
-        carousel.scrollBy({left:direction*step,behavior:'smooth'});
-      };
-      previous.addEventListener('click',()=>scrollProducts(-1));
-      next.addEventListener('click',()=>scrollProducts(1));
+      carouselWrap.replaceChild(toolbar,carousel);
+      previous.addEventListener('click',()=>{window.location.href=productAt(-1).href});
+      next.addEventListener('click',()=>{window.location.href=productAt(1).href});
     }
   }
 
