@@ -29,16 +29,18 @@ html[data-theme=light] .capacity-card .spec{border-color:var(--line)}html[data-t
 .device-sub{max-width:none;margin:12px 0 0;font-size:12px;line-height:1.4;white-space:nowrap}
 .rack{bottom:-64px}
 
-/* Карточки линейки: листаются, но остаются удобными для мыши и сенсорного экрана. */
+/* Навигация по продуктам: компактная служебная полоса сразу после первого экрана. */
 .device-model{white-space:nowrap}
-.product-carousel-controls{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 0 14px}
-.product-carousel-hint{margin:0;color:var(--muted);font-size:13px;font-weight:700}
-.product-carousel-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}
-.product-carousel-control{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:7px;background:var(--paper);color:var(--ink);font:800 12px/1 Inter,Arial,sans-serif;cursor:pointer;transition:border-color .18s,background .18s,color .18s}
+.product-switcher{position:relative;z-index:2;border-block:1px solid var(--line);background:var(--paper);box-shadow:0 10px 24px #2633470b}
+.product-switcher .wrap{display:flex;align-items:center;gap:8px;min-height:68px}
+.product-carousel-control{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--ink);font:800 20px/1 Inter,Arial,sans-serif;cursor:pointer;transition:border-color .18s,background .18s,color .18s}
 .product-carousel-control:hover:not(:disabled){border-color:var(--red);color:var(--red)}
-.product-carousel-control:disabled{opacity:.38;cursor:default}
-.related.product-carousel{display:flex;gap:14px;margin-top:0;padding:2px 2px 16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
-.related.product-carousel a{flex:0 0 calc((100% - 28px)/3);min-width:0;scroll-snap-align:start}
-.related.product-carousel a[aria-current=page]{border-color:var(--red);box-shadow:inset 0 3px 0 var(--red)}
-@media(max-width:900px){.related.product-carousel a{flex-basis:calc((100% - 14px)/2)}}
-@media(max-width:560px){.device-sub{white-space:normal}.product-carousel-controls{align-items:flex-start;flex-direction:column;margin-bottom:10px}.product-carousel-actions{width:100%;justify-content:stretch}.product-carousel-control{flex:1}.related.product-carousel{margin-right:-16px;padding-right:16px}.related.product-carousel a{flex-basis:calc(100% - 42px)}}
+.product-carousel-control:disabled{opacity:.32;cursor:default}
+.related.product-carousel{display:flex;flex:1;gap:8px;margin:0;padding:8px 0;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.product-switcher .related.product-carousel a{display:flex;flex:0 0 auto;min-height:46px;padding:7px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);scroll-snap-align:start;text-decoration:none;transition:border-color .18s,background .18s,color .18s}
+.product-switcher .related span{margin:0;color:var(--muted);font-size:9px;line-height:1.15;letter-spacing:.08em}
+.product-switcher .related b{margin:3px 0 0;font-size:13px;line-height:1.1}
+.product-switcher .related small{margin:2px 0 0;font-size:10px;line-height:1.1}
+.product-switcher .related a:hover{border-color:var(--red);transform:none;box-shadow:none}
+.product-switcher .related a[aria-current=page]{border-color:var(--red);box-shadow:inset 3px 0 0 var(--red)}
+@media(max-width:560px){.device-sub{white-space:normal}.product-switcher .wrap{gap:6px;min-height:62px}.related.product-carousel{padding:8px 0}.product-switcher .related.product-carousel a{flex-basis:min(210px,calc(100% - 46px))}}

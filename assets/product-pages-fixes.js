@@ -19,34 +19,40 @@
 
   const carousel=document.querySelector('.related');
   if(carousel){
+    const productSection=carousel.closest('section');
+    const hero=document.querySelector('.hero');
+    if(productSection&&hero){
+      productSection.className='product-switcher';
+      productSection.setAttribute('role','navigation');
+      productSection.setAttribute('aria-label','Переход между продуктами Phantom');
+      productSection.querySelector('.section-head')?.remove();
+      hero.insertAdjacentElement('afterend',productSection);
+    }
     carousel.classList.add('product-carousel');
-    carousel.setAttribute('role','region');
+    carousel.id='product-switcher-list';
+    carousel.setAttribute('role','list');
     carousel.setAttribute('aria-label','Другие продукты Phantom');
 
     const current=[...carousel.querySelectorAll('a')].find(link=>link.querySelector('span')?.textContent.trim()==='Текущий');
     if(current)current.setAttribute('aria-current','page');
 
-    const controls=document.createElement('div');
-    controls.className='product-carousel-controls';
-    controls.setAttribute('aria-label','Прокрутка списка продуктов');
-    const hint=document.createElement('p');
-    hint.className='product-carousel-hint';
-    hint.textContent='Листайте карточки или используйте кнопки';
-    const actions=document.createElement('div');
-    actions.className='product-carousel-actions';
     const previous=document.createElement('button');
     previous.className='product-carousel-control';
     previous.type='button';
-    previous.setAttribute('aria-label','Предыдущие продукты');
-    previous.textContent='← Предыдущий продукт';
+    previous.setAttribute('aria-label','Предыдущий продукт');
+    previous.setAttribute('aria-controls',carousel.id);
+    previous.title='Предыдущий продукт';
+    previous.textContent='←';
     const next=document.createElement('button');
     next.className='product-carousel-control';
     next.type='button';
-    next.setAttribute('aria-label','Следующие продукты');
-    next.textContent='Следующий продукт →';
-    actions.append(previous,next);
-    controls.append(hint,actions);
-    carousel.parentNode.insertBefore(controls,carousel);
+    next.setAttribute('aria-label','Следующий продукт');
+    next.setAttribute('aria-controls',carousel.id);
+    next.title='Следующий продукт';
+    next.textContent='→';
+    const carouselWrap=carousel.parentNode;
+    carouselWrap.insertBefore(previous,carousel);
+    carouselWrap.append(next);
 
     const updateControls=()=>{
       const max=Math.max(0,carousel.scrollWidth-carousel.clientWidth);
