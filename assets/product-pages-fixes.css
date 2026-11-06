@@ -28,7 +28,12 @@ html[data-theme=light] .capacity-card .spec{border-color:var(--line)}html[data-t
 @media(min-width:901px){.hero-in{align-items:end}}
 .device-sub{max-width:none;margin:12px 0 0;font-size:12px;line-height:1.4;white-space:nowrap}
 .rack{bottom:-64px}
-.hero-points li{display:grid;place-items:center;padding:12px;text-align:center}
+.hero-points{gap:0;overflow:hidden;border:1px solid var(--line);border-radius:9px;background:var(--paper)}
+.hero-points li{display:grid;align-content:center;justify-items:center;min-height:70px;padding:10px 14px!important;border:0!important;background:transparent!important;color:var(--ink)!important;text-align:center}
+.hero-points li+li{border-left:1px solid var(--line)!important}
+.hero-points li strong{display:block;font-size:18px;line-height:1;font-weight:900;letter-spacing:-.035em;white-space:nowrap}
+.hero-points li span{display:block;margin-top:6px;color:var(--muted);font-size:10px;font-weight:800;line-height:1.2}
+@media(max-width:900px){.hero-points li+li{border-top:1px solid var(--line)!important;border-left:0!important}}
 
 /* Визуал первого экрана: изделие — главный объект, без рамки и вложенной белой карточки. */
 .device.product-visual{display:grid;position:relative;place-items:center;min-height:315px;padding:0;border:0;border-radius:0;background:transparent!important;box-shadow:none!important;overflow:visible;isolation:auto}
