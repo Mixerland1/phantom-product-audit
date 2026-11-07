@@ -37,17 +37,17 @@
   position:relative;
   background:
     linear-gradient(90deg,#f7fafdf7 0%,#f5f8fbe8 38%,#edf4f9be 73%,#e7f0f68c 100%),
-    url("backgrounds/energy-landscape.png") left 10%/110% auto no-repeat;
+    url("backgrounds/energy-landscape.png") 30px 10%/110% auto no-repeat;
 }
 html[data-theme="light"] .hero--energy{
   background:
     linear-gradient(90deg,#f7fafdf7 0%,#f5f8fbe8 38%,#edf4f9be 73%,#e7f0f68c 100%),
-    url("backgrounds/energy-landscape.png") left 10%/110% auto no-repeat;
+    url("backgrounds/energy-landscape.png") 30px 10%/110% auto no-repeat;
 }
 html[data-theme="dark"] .hero--energy{
   background:
     linear-gradient(90deg,#07111feb 0%,#102037df 47%,#172d42ad 100%),
-    url("backgrounds/energy-landscape.png") left 10%/110% auto no-repeat;
+    url("backgrounds/energy-landscape.png") 30px 10%/110% auto no-repeat;
 }
 @media (max-width:900px){
   .hero--energy,html[data-theme="light"] .hero--energy{
