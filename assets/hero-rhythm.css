@@ -1,0 +1,14 @@
+/* Единый ритм первого экрана на десктопе.
+   Лента навигации сразу после него остаётся на одной высоте при переходе между страницами. */
+@media (min-width:901px){
+  :root{--hero-stage-height:632px}
+
+  main > .hero{
+    display:grid;
+    height:var(--hero-stage-height);
+    min-height:0;
+    padding-block:0!important;
+    align-items:center;
+    overflow:hidden;
+  }
+}
