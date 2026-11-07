@@ -12,11 +12,11 @@
     overflow:hidden;
   }
 
-  .console-actions{display:grid;justify-items:end;gap:8px}
-  .console-cta{min-height:36px;padding-inline:14px;font-size:11px}
+  .hero-console-wrap{display:grid;gap:12px}
+  .hero-console-cta{justify-self:end;min-height:36px;padding-inline:14px;font-size:11px}
 }
 
 @media (max-width:900px){
-  .console-actions{display:grid;justify-items:end;gap:8px}
-  .console-cta{min-height:36px;padding-inline:14px;font-size:11px}
+  .hero-console-wrap{display:grid;gap:12px}
+  .hero-console-cta{justify-self:start;min-height:36px;padding-inline:14px;font-size:11px}
 }
