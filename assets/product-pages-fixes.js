@@ -21,6 +21,7 @@
       productSection?.remove();
     }else if(productSection&&hero){
       productSection.className='product-switcher';
+      productSection.id='product-navigation';
       productSection.setAttribute('role','navigation');
       productSection.setAttribute('aria-label','Переход между продуктами Phantom');
       productSection.querySelector('.section-head')?.remove();
@@ -48,18 +49,36 @@
       productNavigation.className='product-switcher-row';
       const parentLink=document.createElement('a');
       parentLink.className='product-parent-link';
-      parentLink.href=decodeURIComponent(location.pathname).includes('/макеты/')?'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html':'/';
-      parentLink.textContent='Все продукты';
+      parentLink.href=decodeURIComponent(location.pathname).includes('/макеты/')?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html';
+      parentLink.setAttribute('aria-label','Вернуться к решению «Электроэнергетика»');
+      parentLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h9a6 6 0 0 1 6 6"/></svg><span>Электроэнергетика</span>';
+      const nextSectionLink=document.createElement('a');
+      nextSectionLink.className='product-next-link';
+      nextSectionLink.href='https://mdis.ru/solution/transprot/';
+      nextSectionLink.setAttribute('aria-label','Перейти к решению «Авиация и транспорт»');
+      nextSectionLink.innerHTML='<span>Авиация и транспорт</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5M20 12h-9a6 6 0 0 0-6 6"/></svg>';
       const toolbar=document.createElement('div');
       toolbar.className='product-carousel-toolbar';
       const label=document.createElement('span');
       label.className='product-carousel-label';
       label.textContent='Другие продукты';
       toolbar.append(previous,label,next);
-      productNavigation.append(parentLink,toolbar);
+      productNavigation.append(parentLink,toolbar,nextSectionLink);
       carouselWrap.replaceChild(productNavigation,carousel);
-      previous.addEventListener('click',()=>{window.location.href=productAt(-1).href});
-      next.addEventListener('click',()=>{window.location.href=productAt(1).href});
+      const goToProduct=product=>{
+        const target=new URL(product.href,window.location.href);
+        target.hash='product-navigation';
+        window.location.href=target.href;
+      };
+      previous.addEventListener('click',()=>{goToProduct(productAt(-1))});
+      next.addEventListener('click',()=>{goToProduct(productAt(1))});
+      if(location.hash==='#product-navigation'){
+        requestAnimationFrame(()=>{
+          const headerHeight=document.querySelector('.header')?.getBoundingClientRect().height||0;
+          const top=productSection.getBoundingClientRect().top+window.scrollY-headerHeight;
+          window.scrollTo({top:Math.max(0,top),behavior:'auto'});
+        });
+      }
     }
   }
 
