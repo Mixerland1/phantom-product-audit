@@ -12,8 +12,9 @@
     overflow:hidden;
   }
 
-  .hero-console-wrap{display:grid;gap:12px}
-  .hero-console-cta{justify-self:end;min-height:36px;padding-inline:14px;font-size:11px}
+  /* Карточка остаётся центром колонки; CTA закреплён над ней и не смещает её вниз. */
+  .hero-console-wrap{position:relative;display:block}
+  .hero-console-cta{position:absolute;right:0;bottom:calc(100% + 12px);min-height:36px;padding-inline:14px;font-size:11px}
 }
 
 @media (max-width:900px){
