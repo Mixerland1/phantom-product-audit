@@ -20,3 +20,13 @@
   .hero-console-wrap{display:grid;gap:12px}
   .hero-console-cta{justify-self:start;min-height:36px;padding-inline:14px;font-size:11px}
 }
+
+/* Ключевые факты отраслевого решения — тот же компактный формат, что и у продуктов. */
+.hero-points--solution{gap:0!important;overflow:hidden;border:1px solid var(--line);border-radius:9px;background:var(--paper)}
+.hero-points--solution li{display:grid;align-content:center;justify-items:center;min-height:70px;padding:10px 14px!important;border:0!important;border-radius:0!important;background:transparent!important;color:var(--ink)!important;text-align:center}
+.hero-points--solution li+li{border-left:1px solid var(--line)!important}
+.hero-points--solution strong{display:block;font-size:17px;line-height:1.05;font-weight:900;letter-spacing:-.035em}
+.hero-points--solution span{display:block;margin-top:6px;color:var(--muted);font-size:12px;font-weight:800;line-height:1.2}
+@media (max-width:900px){
+  .hero-points--solution li+li{border-top:1px solid var(--line)!important;border-left:0!important}
+}
