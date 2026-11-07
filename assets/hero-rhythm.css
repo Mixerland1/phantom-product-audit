@@ -11,4 +11,12 @@
     align-items:center;
     overflow:hidden;
   }
+
+  .console-actions{display:grid;justify-items:end;gap:8px}
+  .console-cta{min-height:36px;padding-inline:14px;font-size:11px}
+}
+
+@media (max-width:900px){
+  .console-actions{display:grid;justify-items:end;gap:8px}
+  .console-cta{min-height:36px;padding-inline:14px;font-size:11px}
 }
