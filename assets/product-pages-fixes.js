@@ -67,18 +67,10 @@
       carouselWrap.replaceChild(productNavigation,carousel);
       const goToProduct=product=>{
         const target=new URL(product.href,window.location.href);
-        target.hash='product-navigation';
         window.location.href=target.href;
       };
       previous.addEventListener('click',()=>{goToProduct(productAt(-1))});
       next.addEventListener('click',()=>{goToProduct(productAt(1))});
-      if(location.hash==='#product-navigation'){
-        requestAnimationFrame(()=>{
-          const headerHeight=document.querySelector('.header')?.getBoundingClientRect().height||0;
-          const top=productSection.getBoundingClientRect().top+window.scrollY-headerHeight;
-          window.scrollTo({top:Math.max(0,top),behavior:'auto'});
-        });
-      }
     }
   }
 
