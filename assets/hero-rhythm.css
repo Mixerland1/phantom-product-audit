@@ -158,6 +158,10 @@ html[data-theme="dark"] main > .hero .hero-points--solution li span {color:var(-
     display:flex;align-items:center;min-height:2.65em;line-height:1.27;
   }
 }
+@media(min-width:901px) and (max-width:1279px) {
+  /* Allow the hero to grow if its title and facts need more than 632px. */
+  main > .hero {height:auto;min-height:632px;overflow:hidden}
+}
 @media(max-width:900px) {
   main > .hero .hero-points--solution li strong,
   main > .hero .hero-points--solution li span {min-height:0}
