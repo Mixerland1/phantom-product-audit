@@ -33,14 +33,16 @@
   const solutionPages=[
     {path:'https://mdis.ru/solution/financical/',name:'Финансовые организации'},
     {path:source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html',name:'Электроэнергетика'},
-    {path:'https://mdis.ru/solution/transprot/',name:'Авиация и транспорт'}
+    {path:source?'10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html',name:'Авиация и транспорт'},
+    {path:'https://mdis.ru/solution/atom_icon/',name:'Атомная энергетика'}
   ];
-  const isElectroSolution=source
-    ?pathname.endsWith('/03_Готовый_вариант_Электроэнергетика.html')
-    :pathname.endsWith('/electroenergetika.html');
-  if(hero&&(isCrmProduct||isElectroSolution)&&!document.querySelector('.solutions-switcher')){
+  const solutionIndex=solutionPages.findIndex(page=>source
+    ?pathname.endsWith(`/${page.path}`)
+    :pathname.endsWith(`/${page.path}`));
+  const isSolution=solutionIndex!==-1;
+  if(hero&&(isCrmProduct||isSolution)&&!document.querySelector('.solutions-switcher')){
     const pages=isCrmProduct?productPages:solutionPages;
-    const currentIndex=1;
+    const currentIndex=isCrmProduct?1:solutionIndex;
     const navigationName=isCrmProduct?'Переход между продуктами':'Переход между решениями';
     const previousName=isCrmProduct?'Предыдущий продукт':'Предыдущее решение';
     const nextName=isCrmProduct?'Следующий продукт':'Следующее решение';
