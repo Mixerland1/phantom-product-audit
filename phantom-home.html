@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Концепция главной страницы Phantom — системы регистрации, хранения и воспроизведения телефонных и диспетчерских переговоров.">
+  <meta name="theme-color" content="#f6faff">
+  <title>Phantom — системы записи телефонных и диспетчерских переговоров | МДИС</title>
+  <link rel="stylesheet" href="assets/footer-next.css?v=20261104-4">
+  <link rel="stylesheet" href="assets/footer-layout-v2.css?v=20261104-16">
+  <style>
+    :root {
+      --ink:#20334d;--muted:#586f87;--soft:#eef5fc;--paper:#fff;
+      --canvas:#f7f9fc;--line:#d9e5f1;--red:#e30f2d;--red-soft:#fff0f3;
+      --blue:#2773b1;--shadow:0 18px 48px rgba(35,77,112,.08);--max:1180px
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}
+    body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+    a{color:inherit}img{max-width:100%}button,input,textarea{font:inherit}
+    button,a,input,textarea{touch-action:manipulation}
+    :focus-visible{outline:3px solid #ee4961;outline-offset:4px}
+    .wrap{width:min(calc(100% - 48px),var(--max));margin-inline:auto}
+    .skip{position:absolute;top:-60px;left:15px;z-index:100;padding:8px 15px;background:var(--paper)}
+    .skip:focus{top:12px}
+    .preview-note{min-height:30px;padding:5px 12px;background:#fff1f3;border-bottom:1px solid #f4cbd2;text-align:center;color:#8e3042;font-size:11px;font-weight:650;letter-spacing:.02em}
+    .header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 95%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
+    .header-in{display:flex;align-items:center;gap:26px;min-height:76px}
+    .brand{display:inline-flex;align-items:center;margin-right:auto;text-decoration:none;flex-shrink:0}
+    .brand img{width:130px;height:auto;display:block}
+    .brand-logo-dark{display:none}
+    .main-nav{display:flex;align-items:center;gap:clamp(14px,1.8vw,27px)}
+    .main-nav a{position:relative;padding:11px 0;color:var(--muted);text-decoration:none;white-space:nowrap;font-size:13px;font-weight:650}
+    .main-nav a:hover{color:var(--red)}
+    .main-nav a::after{position:absolute;left:0;right:0;bottom:5px;height:2px;background:var(--red);content:"";transform:scaleX(0);transform-origin:left;transition:transform .2s}
+    .main-nav a:hover::after{transform:scaleX(1)}
+    .header-cta{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 18px;border-radius:8px;background:var(--red);color:white;text-decoration:none;font-size:12px;font-weight:750;white-space:nowrap}
+    .header-cta:hover,.btn-primary:hover{background:#bd1028}
+    .theme-switch{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--ink);cursor:pointer}
+    .theme-switch svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8}
+    .mobile-nav{display:none;position:relative}
+    .mobile-nav summary{display:grid;place-items:center;width:42px;height:42px;list-style:none;cursor:pointer;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:19px}
+    .mobile-nav summary::-webkit-details-marker{display:none}
+    .mobile-nav[open] summary{color:var(--red)}
+    .mobile-links{position:absolute;right:0;top:53px;display:grid;gap:3px;min-width:230px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow)}
+    .mobile-links a{padding:11px 13px;text-decoration:none;border-radius:7px;font-size:14px}
+    .mobile-links a:hover{background:var(--soft)}
+    .eyebrow{margin:0 0 11px;color:var(--red);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(41px,4.8vw,67px);font-weight:760;line-height:1.075;letter-spacing:-.05em}
+    h2{font-size:clamp(30px,3.35vw,45px);font-weight:750;line-height:1.15;letter-spacing:-.038em}
+    h3{font-size:19px;font-weight:720;line-height:1.3;letter-spacing:-.02em}
+    .accent-rule{display:block;width:56px;height:4px;margin:25px 0 23px;border-radius:99px;background:var(--red)}
+    .button-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 20px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:740;transition:transform .2s,background .2s,border-color .2s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-primary{background:var(--red);color:white}
+    .btn-secondary{background:var(--paper);border:1px solid #c9d8e8;color:var(--ink)}
+    .btn-secondary:hover{border-color:#7fa6c9;background:#f5faff}
+    .hero{position:relative;overflow:hidden;background:
+      radial-gradient(circle at 95% 15%,rgba(130,192,239,.24),transparent 35%),
+      radial-gradient(circle at 9% 7%,rgba(227,15,45,.045),transparent 39%),
+      linear-gradient(112deg,#fffefd 0%,#f6fbff 57%,#eaf5ff 100%)}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);align-items:center;gap:55px;padding:88px 0 60px}
+    .hero-copy{position:relative;z-index:1}
+    .hero h1{max-width:610px;margin-bottom:0;color:#1d3653}
+    .hero-lead{max-width:555px;color:#4e6983;font-size:18px;line-height:1.72;font-weight:400}
+    .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:450px;border:1px solid #d5e5f4;border-radius:24px;background:
+      radial-gradient(ellipse at 54% 40%,rgba(255,255,255,.98) 0,rgba(240,248,255,.93) 48%,rgba(222,239,254,.83) 100%);
+      box-shadow:var(--shadow);isolation:isolate}
+    .hero-visual:before,.hero-visual:after{position:absolute;inset:35px;border:1px solid rgba(110,171,218,.24);border-radius:50%;content:"";z-index:-1}
+    .hero-visual:after{inset:76px}
+    .hero-hardware{width:96%;height:320px;object-fit:contain;position:relative;filter:drop-shadow(0 24px 25px rgba(13,37,58,.23))}
+    .hero-visual-label{position:absolute;top:23px;left:26px;display:flex;align-items:center;gap:8px;color:#57758e;font-size:11px;font-weight:750;letter-spacing:.04em;text-transform:uppercase}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:#e30f2d;box-shadow:0 0 0 4px rgba(227,15,45,.1)}
+    .hardware-caption{position:absolute;bottom:23px;left:25px;right:25px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding-top:15px;border-top:1px solid #cfe0ef;color:#536c83;font-size:12px}
+    .hardware-caption strong{color:#24415e;font-size:13px}
+    .hero-stats{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:28px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.97);box-shadow:0 10px 28px rgba(20,56,90,.045)}
+    .hero-stat{display:grid;grid-template-rows:minmax(2.8em,auto) auto;gap:7px;padding:21px 26px}
+    .hero-stat+.hero-stat{border-left:1px solid var(--line)}
+    .hero-stat b{font-size:15px;font-weight:730;line-height:1.3;color:#274968}
+    .hero-stat span{font-size:13px;color:#617992;font-weight:450;line-height:1.45}
+    .section{padding:94px 0}
+    .section-white{background:var(--paper)}
+    .section-soft{background:#f0f6fc}
+    .section-header{max-width:790px;margin-bottom:34px}
+    .section-header p:last-child{max-width:700px;margin-bottom:0;color:var(--muted);font-size:16px}
+    .workflow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.23fr) minmax(0,1fr);align-items:stretch;gap:30px}
+    .workflow-side{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:16px}
+    .workflow-card{display:flex;flex-direction:column;justify-content:center;gap:9px;min-height:155px;padding:23px 22px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+    .workflow-card h3{margin:0;font-size:17px}
+    .workflow-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.53}
+    .workflow-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#edf5fb;color:#2d668f}
+    .icon{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .workflow-main{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:330px;padding:20px;border:1px solid #d2e2f1;border-radius:17px;background:linear-gradient(154deg,#e9f4fe,#fff 62%,#f2f8ff)}
+    .workflow-main:before,.workflow-main:after{position:absolute;top:50%;width:31px;height:2px;background:var(--red);content:""}
+    .workflow-main:before{left:-31px}
+    .workflow-main:after{right:-31px}
+    .workflow-main img{width:100%;height:180px;object-fit:contain;filter:drop-shadow(0 16px 20px rgba(12,33,52,.18))}
+    .workflow-main h3{margin:14px 0 3px;text-align:center}
+    .workflow-main p{margin:0;color:var(--muted);font-size:13px;text-align:center}
+    .workflow-kicker{position:absolute;top:19px;left:18px;color:#577b97;font-size:10px;letter-spacing:.1em;font-weight:800}
+    .workflow-note{margin:19px 0 0;color:#71889d;font-size:12px}
+    .task-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px}
+    .task{position:relative;display:flex;flex-direction:column;min-height:223px;padding:25px 23px;border:1px solid var(--line);border-radius:13px;background:var(--paper);text-decoration:none;transition:transform .2s,box-shadow .2s,border-color .2s}
+    .task:hover,.product:hover,.solution:hover,.benefit:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#adcadd}
+    .task .workflow-icon{margin-bottom:21px}
+    .task h3{min-height:2.6em;margin-bottom:12px}
+    .task p{color:var(--muted);font-size:13px;line-height:1.55;margin-bottom:20px}
+    .task-arrow{margin-top:auto;color:var(--red);font-size:20px;font-weight:700}
+    .benefits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .benefit{display:grid;grid-template-rows:auto minmax(2.65em,auto) auto;align-content:start;gap:15px;min-height:203px;padding:25px;border:1px solid var(--line);border-radius:13px;background:var(--paper);transition:transform .2s,box-shadow .2s}
+    .benefit svg{color:#6688a6}
+    .benefit h3{display:flex;align-items:center;margin:0;font-size:18px}
+    .benefit p{margin:0;color:var(--muted);font-size:13px;line-height:1.58}
+    .benefit-featured{background:linear-gradient(125deg,#fff8fa,#fff);border-color:#f2c8d1}
+    .benefit-featured svg{color:var(--red)}
+    .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+    .product{display:flex;flex-direction:column;min-height:354px;border:1px solid var(--line);border-radius:13px;background:var(--paper);overflow:hidden;text-decoration:none;transition:transform .2s,box-shadow .2s}
+    .product-image{display:grid;place-items:center;height:184px;padding:14px 12px;background:radial-gradient(circle at 58% 38%,#fff 0,#eaf4fd 85%)}
+    .product-image img{width:100%;height:147px;object-fit:contain;filter:drop-shadow(0 12px 14px rgba(20,47,69,.13))}
+    .product-copy{display:flex;flex:1;flex-direction:column;padding:20px 20px 21px}
+    .product-copy h3{min-height:2.4em;margin:0 0 8px;font-size:18px}
+    .product-copy p{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.5}
+    .product-link{margin-top:auto;font-size:12px;font-weight:780;color:var(--red)}
+    .section-tail{margin:26px 0 0;text-align:right;font-size:13px;font-weight:750}
+    .section-tail a{color:#2a709c;text-underline-offset:4px}
+    .solution-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .solution{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:305px;overflow:hidden;padding:27px;border:1px solid var(--line);border-radius:14px;background:#eaf4fb;text-decoration:none;isolation:isolate;transition:transform .2s,box-shadow .2s}
+    .solution:before{position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;content:""}
+    .solution:after{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(249,253,255,.6) 0%,rgba(242,249,254,.85) 42%,rgba(233,245,254,.99) 100%);content:""}
+    .solution-energy:before{background-image:url("assets/backgrounds/energy-landscape.png")}
+    .solution-aviation:before{background-image:url("assets/backgrounds/aviation-control-tower.png")}
+    .solution-crm:before{background:radial-gradient(circle at 78% 27%,#d2e9fd 0%,transparent 49%),linear-gradient(125deg,#e9f5ff,#f5f9fe)}
+    .solution .eyebrow{margin-bottom:7px}
+    .solution h3{min-height:2.6em;margin:0 0 8px;font-size:21px}
+    .solution p{margin:0 0 16px;min-height:2.8em;font-size:13px;color:#5b748a}
+    .solution span:last-child{color:#bd1230;font-size:13px;font-weight:750}
+    .proof{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+    .proof p{color:var(--muted)}
+    .proof-actions{display:grid;gap:12px}
+    .proof-link{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:19px 23px;border:1px solid var(--line);border-radius:10px;background:var(--paper);text-decoration:none;font-weight:660;font-size:14px}
+    .proof-link span{color:var(--red);font-size:20px}
+    .proof-link:hover{border-color:#9fc6df}
+    .contact-area{padding:85px 0 96px;background:linear-gradient(114deg,#e7f3fd,#f7fbff 65%,#fff5f7)}
+    .contact-panel{display:grid;grid-template-columns:.97fr 1.03fr;gap:55px;padding:44px 48px;border:1px solid #cddfec;border-radius:20px;background:rgba(255,255,255,.85);box-shadow:0 16px 40px rgba(32,77,109,.07)}
+    .contact-panel h2{margin-bottom:18px}
+    .contact-panel .contact-text{color:var(--muted);font-size:15px}
+    .contact-links{display:grid;gap:9px;margin-top:31px}
+    .contact-links a{width:max-content;color:#275c85;font-weight:730;text-decoration:none}
+    .contact-links a:hover{text-decoration:underline}
+    .contact-form{display:grid;grid-template-columns:1fr 1fr;gap:13px;align-content:start}
+    .field{display:grid;gap:6px;font-size:12px;font-weight:670;color:#496580}
+    .field-wide,.form-note,.contact-form button{grid-column:1/-1}
+    .field input,.field textarea{width:100%;padding:12px 13px;border:1px solid #c9d7e6;border-radius:7px;background:#fff;color:#1e3651;font-size:14px}
+    .field textarea{min-height:97px;resize:vertical}
+    .field input:focus,.field textarea:focus{border-color:#5b96be;outline:2px solid #5b96be44}
+    .contact-form button{min-height:44px;border:0;border-radius:7px;background:var(--red);color:#fff;font-size:13px;font-weight:760;cursor:pointer}
+    .contact-form button:hover{background:#bd1028}
+    .form-note{margin:0;color:#77889b;font-size:11px;line-height:1.45}
+    .footer{background:var(--paper)}
+    html[data-theme="dark"]{--ink:#edf4fc;--muted:#b1c1d1;--canvas:#0c1727;--paper:#15253a;--soft:#1c314b;--line:#334860}
+    html[data-theme="dark"] .brand-logo-light{display:none}
+    html[data-theme="dark"] .brand-logo-dark{display:block}
+    html[data-theme="dark"] .preview-note{background:#341d29;color:#e8b8c1;border-color:#63313a}
+    html[data-theme="dark"] .hero{background:radial-gradient(circle at 89% 20%,#294967,transparent 38%),linear-gradient(115deg,#0d1b2c,#1b334b)}
+    html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero-lead{color:var(--ink)}
+    html[data-theme="dark"] .hero-visual,html[data-theme="dark"] .workflow-main{background:linear-gradient(145deg,#24415d,#152940);border-color:var(--line)}
+    html[data-theme="dark"] .hero-visual-label,html[data-theme="dark"] .hardware-caption,html[data-theme="dark"] .hardware-caption strong{color:var(--ink)}
+    html[data-theme="dark"] .hero-stats,html[data-theme="dark"] .product,html[data-theme="dark"] .workflow-card,html[data-theme="dark"] .benefit,html[data-theme="dark"] .task{background:var(--paper)}
+    html[data-theme="dark"] .hero-stat b,html[data-theme="dark"] .hero-stat span,html[data-theme="dark"] .workflow-main p{color:var(--ink)}
+    html[data-theme="dark"] .section-white,html[data-theme="dark"] .section-soft{background:var(--canvas)}
+    html[data-theme="dark"] .section-white{background:#112034}
+    html[data-theme="dark"] .product-image{background:radial-gradient(circle at 50% 43%,#45647f,#1e344b)}
+    html[data-theme="dark"] .benefit-featured{background:linear-gradient(125deg,#4a293c,var(--paper))}
+    html[data-theme="dark"] .solution:after{background:linear-gradient(180deg,#1d364780,#192e43f2)}
+    html[data-theme="dark"] .solution p,html[data-theme="dark"] .solution span:last-child{color:var(--ink)}
+    html[data-theme="dark"] .contact-area{background:linear-gradient(125deg,#14283f,#241d30)}
+    html[data-theme="dark"] .contact-panel{background:var(--paper);border-color:var(--line)}
+    html[data-theme="dark"] .contact-links a{color:#a4d0ec}
+    html[data-theme="dark"] .field{color:var(--ink)}
+    html[data-theme="dark"] .btn-secondary{background:var(--paper);color:var(--ink);border-color:var(--line)}
+    @media(max-width:1130px){.main-nav{gap:13px}.main-nav a{font-size:12px}.header-in{gap:15px}}
+    @media(max-width:970px){
+      .main-nav,.header-cta{display:none}.mobile-nav{display:block}
+      .hero-grid{grid-template-columns:1fr;gap:28px;padding:67px 0 43px}
+      .hero-copy{max-width:740px}
+      .hero-visual{min-height:360px}
+      .hero-hardware{height:260px}
+      .workflow{grid-template-columns:1fr;gap:16px}
+      .workflow-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+      .workflow-main{min-height:280px}
+      .workflow-main::before,.workflow-main::after{display:none}
+      .task-grid,.product-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .solution-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .solution:last-child{grid-column:1/-1}
+      .proof{grid-template-columns:1fr;gap:20px}
+      .contact-panel{gap:30px;padding:36px}
+    }
+    @media(max-width:640px){
+      .wrap{width:calc(100% - 32px)}.header-in{min-height:66px}.brand img{width:116px}
+      .hero-grid{padding-top:52px}.hero h1{font-size:clamp(34px,8.4vw,48px)}
+      .hero-lead{font-size:16px}.hero-visual{min-height:285px;border-radius:17px}
+      .hero-hardware{height:200px}.hero-visual-label{top:15px;left:16px}.hardware-caption{bottom:14px;left:16px;right:16px}
+      .hero-stats{grid-template-columns:1fr}.hero-stat{padding:17px 20px;grid-template-rows:auto;gap:3px}
+      .hero-stat+.hero-stat{border-left:0;border-top:1px solid var(--line)}
+      .section{padding:66px 0}.section-header{margin-bottom:25px}
+      .workflow-side,.task-grid,.product-grid,.solution-grid,.benefits,.contact-panel,.contact-form{grid-template-columns:1fr}
+      .workflow-card{min-height:120px}.workflow-main{min-height:270px}
+      .task,.benefit,.product{min-height:0}.task h3,.benefit h3,.product-copy h3,.solution h3{min-height:0}
+      .solution:last-child{grid-column:auto}.solution{min-height:260px}
+      .contact-area{padding:62px 0}.contact-panel{padding:25px;gap:24px}
+      .field-wide,.form-note,.contact-form button{grid-column:auto}
+      .button-row .btn{width:100%}
+    }
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+  </style>
+  <script>
+    (function(){try{var v=localStorage.getItem("mdis-theme");if(v==="light"||v==="dark")document.documentElement.dataset.theme=v;}catch(e){}})();
+  </script>
+</head>
+<body>
+  <a href="#content" class="skip">Перейти к содержимому</a>
+  <div class="preview-note">Концепция главной страницы Phantom · тестовая версия для согласования</div>
+  <header class="header">
+    <div class="wrap header-in">
+      <a class="brand" href="phantom-home.html" aria-label="Phantom — главная">
+        <img class="brand-logo-light" src="assets/logos/phantom-black.svg" alt="Phantom">
+        <img class="brand-logo-dark" src="assets/logos/phantom.svg" alt="">
+      </a>
+      <nav class="main-nav" aria-label="Основная навигация">
+        <a href="#capabilities">Возможности</a>
+        <a href="#tasks">Задачи</a>
+        <a href="#products">Продукты</a>
+        <a href="#industries">Отрасли</a>
+        <a href="#trust">О&nbsp;решении</a>
+      </nav>
+      <a class="header-cta" href="#contact">Обсудить задачу</a>
+      <button class="theme-switch" type="button" id="theme-switch" aria-label="Переключить цветовую тему" title="Сменить тему">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.4A9 9 0 0 1 9.6 3.5a9 9 0 1 0 10.9 10.9Z"/></svg>
+      </button>
+      <details class="mobile-nav" id="mobile-menu">
+        <summary aria-label="Открыть меню">☰</summary>
+        <nav class="mobile-links" aria-label="Мобильная навигация">
+          <a href="#capabilities">Возможности</a><a href="#tasks">Задачи</a>
+          <a href="#products">Продукты</a><a href="#industries">Отрасли</a>
+          <a href="#trust">О&nbsp;решении</a><a href="#contact">Обсудить задачу</a>
+        </nav>
+      </details>
+    </div>
+  </header>
+  <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+    <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2c0 9 7 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 3a15 15 0 0 1-7-7l3-2-2-5Z"/></symbol>
+    <symbol id="icon-radio" viewBox="0 0 24 24"><path d="M4 20h16M12 4v16M8 9l4-5 4 5M6 10a9 9 0 0 0 0 9M18 10a9 9 0 0 1 0 9"/></symbol>
+    <symbol id="icon-archive" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v11h14V9M10 13h4"/></symbol>
+    <symbol id="icon-monitor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4M6 9h3l2-3 2 7 2-4h3"/></symbol>
+    <symbol id="icon-network" viewBox="0 0 24 24"><rect x="10" y="2" width="4" height="4" rx="1"/><rect x="2" y="18" width="4" height="4" rx="1"/><rect x="10" y="18" width="4" height="4" rx="1"/><rect x="18" y="18" width="4" height="4" rx="1"/><path d="M12 6v5M4 18v-7h16v7M12 11v7"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="m12 2 9 4v6c0 5-3.5 8-9 10-5.5-2-9-5-9-10V6l9-4Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="icon-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7 .3l3-3a5 5 0 0 0-7-7l-2 2M14 11a5 5 0 0 0-7-.3l-3 3a5 5 0 0 0 7 7l2-2"/></symbol>
+    <symbol id="icon-settings" viewBox="0 0 24 24"><path d="M12 4v2m0 12v2m8-8h-2M6 12H4m13.7-5.7-1.4 1.4M7.7 16.3l-1.4 1.4m11.4 0-1.4-1.4M7.7 7.7 6.3 6.3"/><circle cx="12" cy="12" r="4"/></symbol>
+    <symbol id="icon-headset" viewBox="0 0 24 24"><path d="M4 15v-4a8 8 0 0 1 16 0v4M4 13H2v6h5v-6H4Zm16 0h2v6h-5v-6h3Zm0 6c0 2-3 3-7 3"/></symbol>
+  </svg>
+
+  <main id="content">
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Системы регистрации переговоров</p>
+          <h1 id="hero-heading">Запись переговоров, когда важна каждая деталь</h1>
+          <span class="accent-rule" aria-hidden="true"></span>
+          <p class="hero-lead">«Фантом» – системы регистрации, хранения и&nbsp;воспроизведения телефонных и&nbsp;диспетчерских переговоров. От&nbsp;отдельных линий до&nbsp;распределённых конфигураций под&nbsp;задачи предприятия.</p>
+          <div class="button-row"><a class="btn btn-primary" href="#contact">Подобрать решение</a><a class="btn btn-secondary" href="#capabilities">Как работает Phantom</a></div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-visual-label"><span class="status-dot"></span>Реальное оборудование Phantom</div>
+          <img class="hero-hardware" src="assets/products/phantom-pro-level-6-cutout.png" alt="Промышленный сервер регистрации переговоров Phantom Pro" fetchpriority="high">
+          <div class="hardware-caption"><strong>Phantom Pro</strong><span>Аппаратная платформа</span></div>
+        </div>
+      </div>
+      <div class="wrap">
+        <div class="hero-stats" aria-label="Ключевые возможности">
+          <div class="hero-stat"><b>Регистрация переговоров</b><span>Телефонная и&nbsp;диспетчерская связь</span></div>
+          <div class="hero-stat"><b>Поиск и&nbsp;воспроизведение</b><span>Доступ к&nbsp;записям в&nbsp;архиве</span></div>
+          <div class="hero-stat"><b>Конфигурация под&nbsp;объект</b><span>Подбор оборудования и&nbsp;схемы подключения</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-white" id="capabilities" aria-labelledby="flow-heading">
+      <div class="wrap">
+        <div class="section-header">
+          <p class="eyebrow">Принцип работы</p>
+          <h2 id="flow-heading">От&nbsp;источника сигнала до&nbsp;записи в&nbsp;архиве</h2>
+          <p>Как и&nbsp;в&nbsp;корпоративном видео, оборудование находится в&nbsp;центре. Но&nbsp;здесь схема помогает понять путь информации, а&nbsp;не&nbsp;просто перечисляет преимущества.</p>
+        </div>
+        <div class="workflow">
+          <div class="workflow-side" aria-label="Источники информации">
+            <div class="workflow-card">
+              <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-phone"/></svg></span>
+              <h3>Телефонные линии</h3><p>Аналоговая и&nbsp;цифровая телефония, линии офисных АТС</p>
+            </div>
+            <div class="workflow-card">
+              <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-radio"/></svg></span>
+              <h3>Диспетчерские каналы</h3><p>Регистрация переговоров в&nbsp;ответственных системах связи</p>
+            </div>
+          </div>
+          <div class="workflow-main">
+            <span class="workflow-kicker">СИСТЕМА ЗАПИСИ</span>
+            <img src="assets/products/phantom-pro-level-5-cutout.png" loading="lazy" alt="Сервер Phantom Pro — устройство регистрации переговоров">
+            <h3>Станции записи «Фантом»</h3><p>Регистрация и&nbsp;хранение информации</p>
+          </div>
+          <div class="workflow-side" aria-label="Работа с записями">
+            <div class="workflow-card">
+              <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-archive"/></svg></span>
+              <h3>Архив и&nbsp;поиск</h3><p>Хранение записей и&nbsp;поиск нужных разговоров</p>
+            </div>
+            <div class="workflow-card">
+              <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-monitor"/></svg></span>
+              <h3>Прослушивание и&nbsp;контроль</h3><p>Воспроизведение и&nbsp;доступ к&nbsp;информации через рабочие места</p>
+            </div>
+          </div>
+        </div>
+        <p class="workflow-note">Схема упрощена: доступные интерфейсы, резервирование и&nbsp;архитектура зависят от&nbsp;выбранной конфигурации</p>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="tasks" aria-labelledby="tasks-heading">
+      <div class="wrap">
+        <div class="section-header">
+          <p class="eyebrow">Решения по&nbsp;задачам</p>
+          <h2 id="tasks-heading">С&nbsp;какой задачей вы&nbsp;пришли?</h2>
+          <p>Начните с&nbsp;задачи, а&nbsp;не&nbsp;с&nbsp;выбора модели сервера. Для&nbsp;каждого сценария предусмотрено отдельное описание.</p>
+        </div>
+        <div class="task-grid">
+          <a class="task" href="phantom-pro-level-5.html">
+            <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-phone"/></svg></span>
+            <h3>Запись телефонных переговоров</h3><p>Регистрация разговоров на&nbsp;телефонных линиях предприятия</p><span class="task-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="task" href="aviation-transport.html">
+            <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-radio"/></svg></span>
+            <h3>Диспетчерская связь</h3><p>Запись переговоров в&nbsp;отраслевых диспетчерских системах</p><span class="task-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="task" href="selective-recording.html">
+            <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg></span>
+            <h3>Селективная запись</h3><p>Выбор записываемых устройств и&nbsp;управление регистрацией</p><span class="task-arrow" aria-hidden="true">↗</span>
+          </a>
+          <a class="task" href="index.html">
+            <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-link"/></svg></span>
+            <h3>Интеграция с&nbsp;1С:CRM</h3><p>Связь истории звонков и&nbsp;записей с&nbsp;карточкой клиента</p><span class="task-arrow" aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-white" id="benefits" aria-labelledby="benefits-heading">
+      <div class="wrap">
+        <div class="section-header">
+          <p class="eyebrow">Почему Phantom</p>
+          <h2 id="benefits-heading">Возможности, которые важны при&nbsp;внедрении</h2>
+          <p>Компактная версия второй композиции из&nbsp;видео: не&nbsp;десять одинаково громких обещаний, а&nbsp;шесть конкретных аргументов.</p>
+        </div>
+        <div class="benefits">
+          <article class="benefit benefit-featured"><svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg><h3>Подбор под&nbsp;задачу</h3><p>Состав оборудования и&nbsp;схема подключения определяются требованиями объекта</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-phone"/></svg><h3>Различные интерфейсы</h3><p>Решения для&nbsp;аналоговой, цифровой и&nbsp;диспетчерской связи</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-network"/></svg><h3>Масштабирование</h3><p>Возможность расширения системы за&nbsp;счёт конфигурации оборудования</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-shield"/></svg><h3>Резервирование</h3><p>Независимые станции записи в&nbsp;предусмотренных конфигурациях</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-archive"/></svg><h3>Работа с&nbsp;архивом</h3><p>Хранение, поиск и&nbsp;воспроизведение зарегистрированных разговоров</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-headset"/></svg><h3>Инженерная поддержка</h3><p>Помощь специалистов МДИС при&nbsp;подборе и&nbsp;эксплуатации решения</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="products" aria-labelledby="products-heading">
+      <div class="wrap">
+        <div class="section-header">
+          <p class="eyebrow">Оборудование</p>
+          <h2 id="products-heading">Реальные устройства Phantom</h2>
+          <p>Не&nbsp;абстрактные серверы из&nbsp;фотостоков, а&nbsp;фотографии моделей, уже представленных в&nbsp;каталоге МДИС.</p>
+        </div>
+        <div class="product-grid">
+          <a class="product" href="phantom-pro-level-5.html">
+            <span class="product-image"><img src="assets/products/phantom-pro-level-5-cutout.png" alt="Сервер Phantom Pro уровня 5" loading="lazy"></span>
+            <span class="product-copy"><h3>Phantom Pro · уровень 5</h3><p>Профессиональная система записи в&nbsp;серверном исполнении</p><span class="product-link">Характеристики ↗</span></span>
+          </a>
+          <a class="product" href="phantom-pro-level-6.html">
+            <span class="product-image"><img src="assets/products/phantom-pro-level-6-cutout.png" alt="Сервер Phantom Pro уровня 6" loading="lazy"></span>
+            <span class="product-copy"><h3>Phantom Pro · уровень 6</h3><p>Индустриальный сервер для&nbsp;более ёмких конфигураций</p><span class="product-link">Характеристики ↗</span></span>
+          </a>
+          <a class="product" href="phantom-pc-2.html">
+            <span class="product-image"><img src="assets/products/phantom-pc-2-cutout.png" alt="Компьютерная платформа Phantom PC 2" loading="lazy"></span>
+            <span class="product-copy"><h3>Phantom PC 2</h3><p>Регистрация разговоров на&nbsp;базе компьютерной платформы MidiTower</p><span class="product-link">Характеристики ↗</span></span>
+          </a>
+          <a class="product" href="phantom-ultra.html">
+            <span class="product-image"><img src="assets/products/phantom-ultra-neutral-racks.png" alt="Автономный регистратор «Фантом Ультра»" loading="lazy"></span>
+            <span class="product-copy"><h3>«Фантом Ультра»</h3><p>Компактное исполнение с&nbsp;возможностью автономной работы</p><span class="product-link">Характеристики ↗</span></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-white" id="industries" aria-labelledby="industries-heading">
+      <div class="wrap">
+        <div class="section-header">
+          <p class="eyebrow">Отраслевые сценарии</p>
+          <h2 id="industries-heading">Один принцип записи – разные условия эксплуатации</h2>
+          <p>Отраслевые страницы описывают конкретные задачи, архитектуры и&nbsp;документы. Главная даёт краткую точку входа.</p>
+        </div>
+        <div class="solution-grid">
+          <a class="solution solution-energy" href="electroenergetika.html">
+            <span class="eyebrow">Диспетчерские службы</span><h3>Электроэнергетика</h3>
+            <p>Регистрация переговоров, дублирование записи и&nbsp;схемы для&nbsp;электросетевых объектов</p><span>Подробнее об&nbsp;отрасли ↗</span>
+          </a>
+          <a class="solution solution-aviation" href="aviation-transport.html">
+            <span class="eyebrow">Управление движением</span><h3>Авиация и&nbsp;транспорт</h3>
+            <p>Переговоры диспетчеров и&nbsp;архивирование информации в&nbsp;отраслевых системах</p><span>Подробнее об&nbsp;отрасли ↗</span>
+          </a>
+          <a class="solution solution-crm" href="index.html">
+            <span class="eyebrow">Корпоративные коммуникации</span><h3>Телефония и&nbsp;CRM</h3>
+            <p>Запись звонков и&nbsp;доступ к&nbsp;истории переговоров в&nbsp;работе с&nbsp;клиентами</p><span>Изучить интеграцию ↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-soft" id="trust" aria-labelledby="trust-heading">
+      <div class="wrap proof">
+        <div>
+          <p class="eyebrow">Документы и&nbsp;компетенции</p>
+          <h2 id="trust-heading">Доверие начинается с&nbsp;проверяемых деталей</h2>
+          <span class="accent-rule" aria-hidden="true"></span>
+          <p>Для&nbsp;ответственных инфраструктурных задач важны не&nbsp;только характеристики, но&nbsp;и&nbsp;сведения об&nbsp;эксплуатации, составе решений и&nbsp;подтверждениях соответствия.</p>
+          <p>Эти материалы уже есть на&nbsp;отраслевых и&nbsp;продуктовых страницах. Здесь мы&nbsp;собрали прямые переходы без&nbsp;неподтверждённых цифр и&nbsp;маркетинговых обещаний.</p>
+        </div>
+        <div class="proof-actions">
+          <a class="proof-link" href="attestation-fsk-ees.html">Аттестация комплекса «Фантом» <span aria-hidden="true">↗</span></a>
+          <a class="proof-link" href="electroenergetika.html">Применение в&nbsp;электроэнергетике <span aria-hidden="true">↗</span></a>
+          <a class="proof-link" href="aviaton.html">СРДП «Авиатон»: характеристики <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-area" id="contact" aria-labelledby="contact-heading">
+      <div class="wrap">
+        <div class="contact-panel">
+          <div>
+            <p class="eyebrow">Консультация инженера</p>
+            <h2 id="contact-heading">Подберём конфигурацию под&nbsp;вашу задачу</h2>
+            <p class="contact-text">Укажите типы подключаемых линий, приблизительное количество каналов и&nbsp;требования к&nbsp;записи. Специалисты МДИС помогут определить возможный состав системы.</p>
+            <div class="contact-links"><a href="tel:+74957833379">+7 (495) 783-33-79</a><a href="mailto:sales@mdis.ru">sales@mdis.ru</a></div>
+          </div>
+          <form class="contact-form" id="contact-form">
+            <label class="field">Компания<input type="text" name="company" autocomplete="organization" placeholder="Название организации"></label>
+            <label class="field">Ваше имя<input type="text" name="name" autocomplete="name" placeholder="Как к&nbsp;вам обращаться"></label>
+            <label class="field field-wide">Email для&nbsp;связи<input type="email" name="email" autocomplete="email" required placeholder="name@company.ru"></label>
+            <label class="field field-wide">Задача<textarea name="task" required placeholder="Например: 64 канала, резервирование, доступ к архиву"></textarea></label>
+            <button type="submit">Подготовить письмо инженеру</button>
+            <p class="form-note">Форма не&nbsp;передаёт данные на&nbsp;сервер. Кнопка откроет почтовую программу с&nbsp;подготовленным письмом. Для&nbsp;отправки потребуется подтвердить отправку в&nbsp;почтовом приложении.</p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" aria-label="Контакты компании"></footer>
+  <script src="assets/footer-next.js?v=20261107-aviation-1"></script>
+  <script>
+    (function(){
+      const root=document.documentElement;
+      const button=document.getElementById("theme-switch");
+      if(button)button.addEventListener("click",function(){
+        const dark=root.dataset.theme!=="dark";
+        root.dataset.theme=dark?"dark":"light";
+        button.setAttribute("aria-pressed",String(dark));
+        try{localStorage.setItem("mdis-theme",root.dataset.theme)}catch(error){}
+      });
+      const menu=document.getElementById("mobile-menu");
+      if(menu){
+        menu.querySelectorAll("a").forEach(function(link){
+          link.addEventListener("click",function(){menu.open=false});
+        });
+      }
+      const form=document.getElementById("contact-form");
+      if(form)form.addEventListener("submit",function(event){
+        event.preventDefault();
+        if(!form.reportValidity())return;
+        const data=new FormData(form);
+        const lines=["Здравствуйте!","",
+          "Компания: "+String(data.get("company")||"").trim(),
+          "Имя: "+String(data.get("name")||"").trim(),
+          "Email: "+String(data.get("email")||"").trim(),
+          "",
+          "Задача:",
+          String(data.get("task")||"").trim()];
+        const url="mailto:sales@mdis.ru?subject="+encodeURIComponent("Запрос с главной страницы Phantom")+
+          "&body="+encodeURIComponent(lines.join("\n"));
+        window.location.href=url;
+      });
+    })();
+  </script>
+</body>
+</html>
