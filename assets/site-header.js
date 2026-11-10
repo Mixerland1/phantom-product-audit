@@ -53,7 +53,11 @@
   const themeToggle=header.querySelector('.site-theme-toggle');
   const renderTheme=()=>{
     const dark=document.documentElement.dataset.theme==='dark';
-    themeToggle.textContent=dark?'Светлая тема':'Тёмная тема';
+    themeToggle.innerHTML=dark
+      ?'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
+      :'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+    themeToggle.setAttribute('aria-label',dark?'Переключить на светлую тему':'Переключить на тёмную тему');
+    themeToggle.title=dark?'Светлая тема':'Тёмная тема';
     themeToggle.setAttribute('aria-pressed',String(dark));
   };
   themeToggle.addEventListener('click',()=>{
@@ -91,7 +95,8 @@
     .site-header .site-menu-card:hover,.site-header .site-menu-card:focus-visible{border-color:var(--line);background:var(--soft);color:var(--red);outline:none}
     .site-header .site-menu-all{display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding:12px 4px 0;border-top:1px solid var(--line);color:var(--ink);font-size:12px;font-weight:900;text-decoration:none}
     .site-header .site-menu-all b{color:var(--red);font-size:16px}.site-header .site-menu-all:hover,.site-header .site-menu-all:focus-visible{color:var(--red);outline:none}
-    .site-header .site-theme-toggle{flex:0 0 auto;padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);font:800 11px/1 inherit;white-space:nowrap;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+    .site-header .site-theme-toggle{flex:0 0 auto;display:grid;place-items:center;width:42px;height:42px;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+    .site-header .site-theme-toggle svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .site-header .site-theme-toggle:hover,.site-header .site-theme-toggle:focus-visible{border-color:var(--ink);background:var(--soft);outline:none}
     .site-header .site-mobile-menu{display:none!important}
     html[data-theme="dark"] .site-header .site-brand-logo{filter:invert(1) brightness(2)}
@@ -101,7 +106,7 @@
       .site-header .site-mobile-group{border-bottom:1px solid var(--line)}.site-header .site-mobile-group:last-of-type{border-bottom:0}.site-header .site-mobile-group summary{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;color:var(--ink);font-size:13px;font-weight:850;cursor:pointer;list-style:none}.site-header .site-mobile-group summary::-webkit-details-marker{display:none}.site-header .site-mobile-group summary:before,.site-header .site-mobile-group summary:after{content:none!important}.site-header .site-mobile-group summary i{width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg)}.site-header .site-mobile-group[open] summary i{transform:translateY(2px) rotate(225deg)}
       .site-header .site-mobile-group>div{display:grid;gap:4px;padding:0 6px 9px}.site-header .site-mobile-group .site-menu-card{min-height:0;padding:9px 28px 9px 8px;font-size:12px}.site-header .site-mobile-group .site-menu-card b{right:9px}.site-header .site-mobile-all{padding:9px 8px;color:var(--red);font-size:12px;font-weight:900;text-decoration:none}
     }
-    @media(max-width:560px){.site-header .site-header-in{min-height:66px;gap:9px}.site-header .site-brand-logo{width:106px}.site-header .site-theme-toggle{padding:8px 10px;font-size:10px}.site-header .site-mobile-popover{right:-5px}}
+    @media(max-width:560px){.site-header .site-header-in{min-height:66px;gap:9px}.site-header .site-brand-logo{width:106px}.site-header .site-theme-toggle{width:38px;height:38px}.site-header .site-theme-toggle svg{width:17px;height:17px}.site-header .site-mobile-popover{right:-5px}}
   `;
   document.head.appendChild(style);
 })();
