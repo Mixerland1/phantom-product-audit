@@ -67,7 +67,7 @@
       const parentHref=pageHref(carousel.dataset.parentHref)||(source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html');
       const parentLabel=carousel.dataset.parentLabel||'Электроэнергетика';
       const nextHref=pageHref(carousel.dataset.nextHref)||'https://mdis.ru/solution/transprot/';
-      const nextLabel=carousel.dataset.nextLabel||'Авиация и транспорт';
+      const nextLabel=carousel.dataset.nextLabel||'Авиация и\u00a0транспорт';
       parentLink.href=parentHref;
       parentLink.setAttribute('aria-label',`Вернуться к решению «${parentLabel}»`);
       parentLink.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h9a6 6 0 0 1 6 6"/></svg><span>${parentLabel}</span>`;

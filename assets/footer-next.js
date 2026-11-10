@@ -23,17 +23,17 @@
     :pathname==='/'||pathname.endsWith('/index.html');
   const productPages=source?[
     {path:'05_Готовый_вариант_Селективная_запись.html',name:'Селективная запись'},
-    {path:'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html',name:'Интеграция с 1С:CRM'},
+    {path:'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html',name:'Интеграция с\u00a01С:CRM'},
     {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
   ]:[
     {path:'selective-recording.html',name:'Селективная запись'},
-    {path:'/',name:'Интеграция с 1С:CRM'},
+    {path:'/',name:'Интеграция с\u00a01С:CRM'},
     {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
   ];
   const solutionPages=[
     {path:'https://mdis.ru/solution/financical/',name:'Финансовые организации'},
     {path:source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html',name:'Электроэнергетика'},
-    {path:source?'10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html',name:'Авиация и транспорт'},
+    {path:source?'10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html',name:'Авиация и\u00a0транспорт'},
     {path:'https://mdis.ru/solution/atom_icon/',name:'Атомная энергетика'}
   ];
   const solutionIndex=solutionPages.findIndex(page=>source

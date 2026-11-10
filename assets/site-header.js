@@ -20,7 +20,7 @@
     {label:'Госструктуры',href:'https://mdis.ru/solution/gos/'},
     {label:'Финансовые организации',href:'https://mdis.ru/solution/financical/'},
     {label:'Электроэнергетика',href:paths.electro},
-    {label:'Авиация и транспорт',href:paths.aviation},
+    {label:'Авиация и\u00a0транспорт',href:paths.aviation},
     {label:'Персональные решения',href:'https://mdis.ru/service/personalnye-resheniya/'}
   ];
   const products=[
@@ -28,7 +28,7 @@
     {label:'Запись диспетчерских переговоров',href:'https://mdis.ru/catalog/'},
     {label:'Запись ip–телефонии',href:'https://mdis.ru/catalog/'},
     {label:'Селективная запись',href:paths.selective},
-    {label:'Интеграция Фантом и CRM',href:paths.home},
+    {label:'Интеграция Фантом и\u00a0CRM',href:paths.home},
     {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
     {label:'Схемы подключения «МЦКРС» Фантом',href:'https://mdis.ru/catalog/'},
     {label:'Granulex',href:'https://granulex.ru/'}
@@ -43,8 +43,8 @@
     {label:'Компания',href:'https://mdis.ru/about/'}
   ];
   const direct=directLinks.map(item=>`<a href="${item.href}">${item.label}</a>`).join('');
-  const desktopNav=`${desktopMenu('Решения',solutions,'https://mdis.ru/solution/','О решениях Phantom')}${desktopMenu('Продукты',products,'https://mdis.ru/catalog/','О продуктах Phantom')}${direct}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,'https://mdis.ru/solution/','О решениях Phantom')}${mobileMenu('Продукты',products,'https://mdis.ru/catalog/','О продуктах Phantom')}${direct}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,'https://mdis.ru/solution/','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,'https://mdis.ru/catalog/','О\u00a0продуктах Phantom')}${direct}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,'https://mdis.ru/solution/','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,'https://mdis.ru/catalog/','О\u00a0продуктах Phantom')}${direct}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;

@@ -15,16 +15,16 @@
 
   const actions = document.createElement('div');
   actions.className = 'contact-actions';
-  actions.setAttribute('aria-label', 'Связаться с МДИС');
+  actions.setAttribute('aria-label', 'Связаться с\u00a0МДИС');
   actions.innerHTML = `
     <a class="contact-action" href="tel:+74957833379">
       <span class="contact-action-title">Позвоните</span>
-      <span class="contact-action-copy">Чтобы обсудить задачу и получить консультацию</span>
+      <span class="contact-action-copy">Чтобы обсудить задачу и&nbsp;получить консультацию</span>
       <strong>+7 (495) 783-33-79</strong>
     </a>
     <a class="contact-action" href="mailto:sales@mdis.ru">
       <span class="contact-action-title">Напишите</span>
-      <span class="contact-action-copy">Чтобы описать задачу и получить консультацию</span>
+      <span class="contact-action-copy">Чтобы описать задачу и&nbsp;получить консультацию</span>
       <strong>sales@mdis.ru</strong>
     </a>`;
   layout.prepend(actions);
