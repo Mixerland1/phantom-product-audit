@@ -52,6 +52,28 @@
   </style>
   <script>(function(){try{var stored=localStorage.getItem('mdis-theme');var root=document.documentElement;if(stored==='dark'||stored==='light'){root.dataset.theme=stored}else if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches){root.dataset.theme='dark'}if(!stored&&window.matchMedia){var query=matchMedia('(prefers-color-scheme: dark)');var follow=function(event){try{if(!localStorage.getItem('mdis-theme'))root.dataset.theme=event.matches?'dark':'light'}catch(error){}};if(query.addEventListener)query.addEventListener('change',follow);else if(query.addListener)query.addListener(follow)}}catch(error){}})();</script>
   <link rel="stylesheet" href="assets/hero-rhythm.css?v=20261107-aviation-1"><link rel="stylesheet" href="assets/footer-next.css?v=20261104-4"><link rel="stylesheet" href="assets/footer-layout-v2.css?v=20261104-16"><link rel="stylesheet" href="assets/form-mailto-hint.css?v=1">
+  <style>
+    /* MDIS aviation grid tuning v3: content proportions & compact contact form. */
+    @media (min-width: 901px) {
+      #requirements .facts { grid-template-columns: minmax(0,.85fr) minmax(0,1fr) minmax(0,1.15fr); }
+      #architecture .architecture { grid-template-columns: minmax(0,1.048fr) minmax(0,.952fr); }
+      #capabilities .facts { grid-template-columns: minmax(0,.9fr) minmax(0,.9fr) minmax(0,1.2fr); }
+      #compliance .facts { grid-template-columns: minmax(0,.925fr) minmax(0,.925fr) minmax(0,1.15fr); }
+      #request { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:36px 56px; align-items:start; padding:40px 46px; }
+      #request h2 { font-size:clamp(30px,3.2vw,40px); line-height:1.08; }
+    }
+    @media (min-width: 1280px) {
+      .cards.cards--balanced--archive { grid-template-columns:minmax(0,1.2fr) minmax(0,1.2fr) minmax(0,1.6fr); }
+      .cards.cards--balanced--operations { grid-template-columns:minmax(0,4.5fr) minmax(0,4.25fr) minmax(0,3.25fr); }
+      .cards.cards--balanced--operations > .card h3 { min-height:2.4em; }
+    }
+    @media (max-width: 900px) {
+      #request { display:grid; grid-template-columns:1fr; gap:30px; padding:38px 42px; }
+    }
+    @media (max-width: 560px) {
+      #request { padding:28px 22px; gap:24px; }
+    }
+  </style>
 </head>
 <body>
   <div class="demo"><b>Версия для согласования</b> Страница доступна для согласования.</div><header class="header"></header>
