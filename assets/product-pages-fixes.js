@@ -31,6 +31,21 @@
       if(currentIndex<0)currentIndex=0;
       const productName=product=>[product.querySelector('b')?.textContent.trim(),product.querySelector('small')?.textContent.trim()].filter(Boolean).join(', ')||product.textContent.replace(/\s+/g,' ').trim();
       const productAt=offset=>products[(currentIndex+offset+products.length)%products.length];
+      const source=decodeURIComponent(location.pathname).includes('/макеты/');
+      const previewPaths={
+        '06_Phantom_Pro_уровень_5.html':'phantom-pro-level-5.html',
+        '07_Phantom_Pro_уровень_6.html':'phantom-pro-level-6.html',
+        '08_Phantom_PC_2.html':'phantom-pc-2.html',
+        '09_Фантом_Ультра.html':'phantom-ultra.html',
+        '10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html',
+        '11_Готовый_вариант_Авиатон.html':'aviaton.html',
+        '03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html'
+      };
+      const pageHref=value=>{
+        if(source||!value)return value;
+        const filename=value.split('/').pop();
+        return previewPaths[filename]||value;
+      };
 
       const previous=document.createElement('button');
       previous.className='product-carousel-control';
@@ -49,14 +64,18 @@
       productNavigation.className='product-switcher-row';
       const parentLink=document.createElement('a');
       parentLink.className='product-parent-link';
-      parentLink.href=decodeURIComponent(location.pathname).includes('/макеты/')?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html';
-      parentLink.setAttribute('aria-label','Вернуться к решению «Электроэнергетика»');
-      parentLink.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h9a6 6 0 0 1 6 6"/></svg><span>Электроэнергетика</span>';
+      const parentHref=pageHref(carousel.dataset.parentHref)||(source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html');
+      const parentLabel=carousel.dataset.parentLabel||'Электроэнергетика';
+      const nextHref=pageHref(carousel.dataset.nextHref)||'https://mdis.ru/solution/transprot/';
+      const nextLabel=carousel.dataset.nextLabel||'Авиация и транспорт';
+      parentLink.href=parentHref;
+      parentLink.setAttribute('aria-label',`Вернуться к решению «${parentLabel}»`);
+      parentLink.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h9a6 6 0 0 1 6 6"/></svg><span>${parentLabel}</span>`;
       const nextSectionLink=document.createElement('a');
       nextSectionLink.className='product-next-link';
-      nextSectionLink.href='https://mdis.ru/solution/transprot/';
-      nextSectionLink.setAttribute('aria-label','Перейти к решению «Авиация и транспорт»');
-      nextSectionLink.innerHTML='<span>Авиация и транспорт</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5M20 12h-9a6 6 0 0 0-6 6"/></svg>';
+      nextSectionLink.href=nextHref;
+      nextSectionLink.setAttribute('aria-label',`Перейти к решению «${nextLabel}»`);
+      nextSectionLink.innerHTML=`<span>${nextLabel}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5M20 12h-9a6 6 0 0 0-6 6"/></svg>`;
       const toolbar=document.createElement('div');
       toolbar.className='product-carousel-toolbar';
       const label=document.createElement('span');
@@ -66,8 +85,7 @@
       productNavigation.append(parentLink,toolbar,nextSectionLink);
       carouselWrap.replaceChild(productNavigation,carousel);
       const goToProduct=product=>{
-        const target=new URL(product.href,window.location.href);
-        window.location.href=target.href;
+        window.location.href=source?product.getAttribute('href'):(product.dataset.previewHref||pageHref(product.getAttribute('href')));
       };
       previous.addEventListener('click',()=>{goToProduct(productAt(-1))});
       next.addEventListener('click',()=>{goToProduct(productAt(1))});
