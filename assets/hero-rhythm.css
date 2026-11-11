@@ -107,13 +107,13 @@ html[data-theme="light"] main > .hero p.lead {
 }
 html[data-theme="light"] main > .hero.hero--aviation {
   background:
-    radial-gradient(circle at 11% 19%,rgba(229,49,77,.085),transparent 36%),
+    radial-gradient(circle at 11% 19%,rgba(229,49,77,.051),transparent 36%),
     linear-gradient(95deg,rgba(255,254,255,.97) 0%,rgba(247,252,255,.91) 42%,rgba(230,244,255,.61) 74%,rgba(223,240,255,.40) 100%),
     url("backgrounds/aviation-control-tower.png") center/cover no-repeat;
 }
 html[data-theme="light"] main > .hero.hero--energy {
   background:
-    radial-gradient(circle at 11% 19%,rgba(229,49,77,.065),transparent 39%),
+    radial-gradient(circle at 11% 19%,rgba(229,49,77,.039),transparent 39%),
     linear-gradient(95deg,rgba(255,254,255,.97) 0%,rgba(248,252,255,.92) 42%,rgba(233,245,255,.62) 76%,rgba(226,242,255,.43) 100%),
     url("backgrounds/energy-landscape.png") 120px 10%/110% auto no-repeat;
 }
@@ -170,7 +170,7 @@ html[data-theme="dark"] main > .hero .hero-points--solution li span {color:var(-
   main > .hero h1::after {width:44px;margin:16px 0 15px}
   html[data-theme="light"] main > .hero.hero--aviation {
     background:
-      radial-gradient(circle at 10% 12%,rgba(230,56,83,.075),transparent 48%),
+      radial-gradient(circle at 10% 12%,rgba(230,56,83,.045),transparent 48%),
       linear-gradient(180deg,rgba(255,254,255,.95) 0%,rgba(246,251,255,.92) 50%,rgba(233,245,255,.71) 100%),
       url("backgrounds/aviation-control-tower.png") 62% center/auto 100% no-repeat;
   }
