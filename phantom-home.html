@@ -41,16 +41,28 @@
       linear-gradient(95deg,rgba(255,255,255,.98) 0%,rgba(248,252,255,.94) 42%,rgba(234,245,255,.70) 74%,rgba(225,239,252,.52) 100%),
       url("assets/backgrounds/phantom-home-background.webp") right center/cover no-repeat}
     .phantom-intro{display:none}
-    html.phantom-intro-pending body{overflow:hidden;background:#f7f9fc}
-    html.phantom-intro-pending .phantom-intro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;background:#f7f9fc;will-change:transform;animation:phantom-intro-exit .30s cubic-bezier(.4,0,1,1) .80s forwards}
-    .phantom-intro-stage{display:grid;justify-items:center;gap:14px;transform:translateY(-1.5vh)}
-    .phantom-intro-logo{display:block;width:clamp(158px,16vw,210px);height:auto;opacity:0;transform:translateY(5px);will-change:transform,opacity;animation:phantom-intro-mark .24s cubic-bezier(0,0,.2,1) .06s forwards}
-    .phantom-intro-tagline{margin:0;color:#5b7086;font-size:11px;font-weight:650;letter-spacing:.11em;line-height:1.2;text-transform:uppercase;opacity:0;transform:translateY(4px);will-change:transform,opacity;animation:phantom-intro-tagline .22s cubic-bezier(0,0,.2,1) .28s forwards}
-    html[data-theme="dark"].phantom-intro-pending body,html[data-theme="dark"].phantom-intro-pending .phantom-intro{background:#0c1727}
+    html.phantom-intro-pending{--phantom-intro-bg:#f7f9fc}
+    html.phantom-intro-pending body{overflow:hidden;background:var(--phantom-intro-bg)}
+    html.phantom-intro-pending .phantom-intro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;background:var(--phantom-intro-bg);will-change:transform;animation:phantom-intro-exit .32s cubic-bezier(.4,0,1,1) 1.62s forwards}
+    .phantom-intro-stage{display:grid;justify-items:center;gap:15px;transform:translateY(-1.5vh)}
+    .phantom-intro-logo-wrap{position:relative;width:clamp(158px,16vw,210px);aspect-ratio:108/24;opacity:0;transform:translateY(5px);will-change:transform,opacity;animation:phantom-intro-mark .25s cubic-bezier(0,0,.2,1) .07s forwards}
+    .phantom-intro-logo{display:block;width:100%;height:100%}
+    .phantom-intro-bars{position:absolute;inset:0 auto 0 0;width:24.1%;overflow:hidden;background:var(--phantom-intro-bg)}
+    .phantom-intro-bars i{position:absolute;top:50%;width:7.7%;border-radius:1px;background:#e2112e;transform:translateY(-50%);will-change:transform;animation:phantom-intro-bar-pass .72s cubic-bezier(.45,.05,.55,.95) .34s 2 both}
+    .phantom-intro-bars i:nth-child(1){left:0;height:16.67%;animation-delay:.34s}
+    .phantom-intro-bars i:nth-child(2){left:15.38%;height:33.33%;animation-delay:.39s}
+    .phantom-intro-bars i:nth-child(3){left:30.77%;height:75%;animation-delay:.44s}
+    .phantom-intro-bars i:nth-child(4){left:46.15%;height:100%;animation-delay:.49s}
+    .phantom-intro-bars i:nth-child(5){left:61.54%;height:75%;animation-delay:.54s}
+    .phantom-intro-bars i:nth-child(6){left:76.92%;height:33.33%;animation-delay:.59s}
+    .phantom-intro-bars i:nth-child(7){left:92.31%;height:16.67%;animation-delay:.64s}
+    .phantom-intro-tagline{margin:0;color:#5b7086;font-size:11px;font-weight:650;letter-spacing:.11em;line-height:1.2;text-transform:uppercase;opacity:0;transform:translateY(4px);will-change:transform,opacity;animation:phantom-intro-tagline .24s cubic-bezier(0,0,.2,1) .34s forwards}
+    html[data-theme="dark"].phantom-intro-pending{--phantom-intro-bg:#0c1727}
     html[data-theme="dark"] .phantom-intro-logo{filter:invert(1) brightness(2)}
     html[data-theme="dark"] .phantom-intro-tagline{color:#aebfd0}
     @keyframes phantom-intro-mark{to{opacity:1;transform:translateY(0)}}
     @keyframes phantom-intro-tagline{to{opacity:1;transform:translateY(0)}}
+    @keyframes phantom-intro-bar-pass{0%,20%,100%{transform:translate(0,-50%)}48%{transform:translate(2.7px,-50%)}70%{transform:translate(.7px,-50%)}}
     @keyframes phantom-intro-exit{to{transform:translateY(-100%)}}
     .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);align-items:center;gap:55px;padding:88px 0 60px}
     .hero-copy{position:relative;z-index:1}
@@ -221,16 +233,16 @@
       }catch(e){}
       try{
         var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if(!reduced&&!sessionStorage.getItem("phantom-intro-v4-seen")){
+        if(!reduced&&!sessionStorage.getItem("phantom-intro-v5-seen")){
           document.documentElement.classList.add("phantom-intro-pending");
-          sessionStorage.setItem("phantom-intro-v4-seen","1");
+          sessionStorage.setItem("phantom-intro-v5-seen","1");
         }
       }catch(e){}
     })();
   </script>
 </head>
 <body>
-  <div class="phantom-intro" aria-hidden="true"><div class="phantom-intro-stage"><img class="phantom-intro-logo" src="assets/logos/phantom-black.svg" alt=""><p class="phantom-intro-tagline">Системы записи переговоров</p></div></div>
+  <div class="phantom-intro" aria-hidden="true"><div class="phantom-intro-stage"><div class="phantom-intro-logo-wrap"><img class="phantom-intro-logo" src="assets/logos/phantom-black.svg" alt=""><span class="phantom-intro-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div><p class="phantom-intro-tagline">Системы записи переговоров</p></div></div>
   <a href="#content" class="skip">Перейти к содержимому</a>
   <div class="preview-note">Версия для&nbsp;согласования</div>
   <header class="header" aria-label="Основная навигация Phantom"></header>
@@ -486,7 +498,7 @@
         intro.remove();
       };
       intro.addEventListener("animationend",event=>{if(event.animationName==="phantom-intro-exit")cleanup()},{once:true});
-      window.setTimeout(cleanup,1350);
+      window.setTimeout(cleanup,2300);
     })();
   </script>
   <script>
