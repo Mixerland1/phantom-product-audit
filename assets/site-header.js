@@ -82,7 +82,7 @@
   style.id='site-header-style';
   style.textContent=`
     .site-header{position:sticky;top:0;z-index:30;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--paper) 94%,transparent);backdrop-filter:blur(16px)}
-    .site-header .site-header-in{min-height:76px;gap:clamp(14px,1.75vw,25px)}
+    .site-header .site-header-in{display:flex;align-items:center;min-height:76px;gap:clamp(14px,1.75vw,25px)}
     .site-header .site-brand{display:flex;flex:0 0 auto;align-items:center;margin-right:auto;text-decoration:none}
     .site-header .site-brand-logo{display:block;width:120px;height:auto}
     .site-header .site-nav{display:flex;align-items:stretch;gap:clamp(15px,1.6vw,24px);margin-left:0;color:var(--muted);font-size:13px;font-weight:800}
