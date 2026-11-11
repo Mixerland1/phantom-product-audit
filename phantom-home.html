@@ -48,7 +48,7 @@
     .phantom-intro-logo-wrap{position:relative;width:clamp(158px,16vw,210px);aspect-ratio:108/24;opacity:0;transform:translateY(5px);will-change:transform,opacity;animation:phantom-intro-mark .25s cubic-bezier(0,0,.2,1) .07s forwards}
     .phantom-intro-logo{display:block;width:100%;height:100%}
     .phantom-intro-bars{position:absolute;inset:0 auto 0 0;width:24.1%;overflow:hidden;background:var(--phantom-intro-bg)}
-    .phantom-intro-bars i{position:absolute;top:50%;width:7.7%;border-radius:1px;background:#e2112e;transform:translateY(-50%);will-change:transform;animation:phantom-intro-bar-pass .72s cubic-bezier(.45,.05,.55,.95) .34s 2 both}
+    .phantom-intro-bars i{position:absolute;top:50%;width:7.7%;border-radius:1px;background:#e2112e;transform:translateY(-50%);will-change:transform;animation:phantom-intro-bar-pass .72s cubic-bezier(.45,.05,.55,.95) .34s 1 both}
     .phantom-intro-bars i:nth-child(1){left:0;height:16.67%;animation-delay:.34s}
     .phantom-intro-bars i:nth-child(2){left:15.38%;height:33.33%;animation-delay:.39s}
     .phantom-intro-bars i:nth-child(3){left:30.77%;height:75%;animation-delay:.44s}
@@ -233,9 +233,9 @@
       }catch(e){}
       try{
         var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if(!reduced&&!sessionStorage.getItem("phantom-intro-v5-seen")){
+        if(!reduced&&!sessionStorage.getItem("phantom-intro-v6-seen")){
           document.documentElement.classList.add("phantom-intro-pending");
-          sessionStorage.setItem("phantom-intro-v5-seen","1");
+          sessionStorage.setItem("phantom-intro-v6-seen","1");
         }
       }catch(e){}
     })();
