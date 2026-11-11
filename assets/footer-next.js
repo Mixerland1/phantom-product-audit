@@ -35,7 +35,7 @@
     {path:'atom-energy.html',name:'Атомная энергетика'},
     {path:'commercial.html',name:'Коммерческие предприятия'},
     {path:'industrial.html',name:'Промышленные предприятия'},
-    {path:'https://mdis.ru/solution/auto/',name:'Автосалоны'},
+    {path:'auto-dealers.html',name:'Автосалоны'},
     {path:'government.html',name:'Госструктуры'},
     {path:'financial.html',name:'Финансовые организации'},
     {path:source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html',name:'Электроэнергетика'},
