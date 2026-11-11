@@ -11,7 +11,12 @@
     crm:page('02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html','index.html','index.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
-    selective:page('05_Готовый_вариант_Селективная_запись.html','selective-recording.html','selective-recording.html')
+    selective:page('05_Готовый_вариант_Селективная_запись.html','selective-recording.html','selective-recording.html'),
+    pro5:page('06_Phantom_Pro_уровень_5.html','phantom-pro-level-5.html','phantom-pro-level-5.html'),
+    pro6:page('07_Phantom_Pro_уровень_6.html','phantom-pro-level-6.html','phantom-pro-level-6.html'),
+    pc2:page('08_Phantom_PC_2.html','phantom-pc-2.html','phantom-pc-2.html'),
+    ultra:page('09_Фантом_Ультра.html','phantom-ultra.html','phantom-ultra.html'),
+    aviaton:page('11_Готовый_вариант_Авиатон.html','aviaton.html','aviaton.html')
   };
   const solutions=[
     {label:'Атомная энергетика',href:'https://mdis.ru/solution/atom_icon/'},
@@ -25,14 +30,14 @@
     {label:'Персональные решения',href:'https://mdis.ru/service/personalnye-resheniya/'}
   ];
   const products=[
-    {label:'Запись телефонных переговоров',href:'https://mdis.ru/catalog/'},
-    {label:'Запись диспетчерских переговоров',href:'https://mdis.ru/catalog/'},
-    {label:'Запись ip–телефонии',href:'https://mdis.ru/catalog/'},
+    {label:'Phantom Pro – уровень 5',href:paths.pro5},
+    {label:'Phantom Pro – уровень 6',href:paths.pro6},
+    {label:'Phantom PC 2',href:paths.pc2},
+    {label:'Фантом Ультра',href:paths.ultra},
+    {label:'СРДП «Авиатон»',href:paths.aviaton},
     {label:'Селективная запись',href:paths.selective},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
-    {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
-    {label:'Схемы подключения «МЦКРС» Фантом',href:'https://mdis.ru/catalog/'},
-    {label:'Granulex',href:'https://granulex.ru/'}
+    {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'}
   ];
   const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
   const desktopMenu=(label,list,allHref,allLabel)=>`<details class="site-menu"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div><a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a></section></details>`;
@@ -44,8 +49,8 @@
     {label:'Компания',href:'https://mdis.ru/about/'}
   ];
   const direct=directLinks.map(item=>`<a href="${item.href}">${item.label}</a>`).join('');
-  const desktopNav=`${desktopMenu('Решения',solutions,'https://mdis.ru/solution/','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,'https://mdis.ru/catalog/','О\u00a0продуктах Phantom')}${direct}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,'https://mdis.ru/solution/','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,'https://mdis.ru/catalog/','О\u00a0продуктах Phantom')}${direct}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','Все отрасли Phantom')}${desktopMenu('Продукты',products,paths.home+'#products','Все продукты Phantom')}${direct}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','Все отрасли Phantom')}${mobileMenu('Продукты',products,paths.home+'#products','Все продукты Phantom')}${direct}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;

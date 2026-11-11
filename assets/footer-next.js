@@ -48,7 +48,7 @@
     const previousName=isCrmProduct?'Предыдущий продукт':'Предыдущее решение';
     const nextName=isCrmProduct?'Следующий продукт':'Следующее решение';
     const allLabel=isCrmProduct?'Все продукты':'Все решения';
-    const allLink=isCrmProduct?'https://mdis.ru/catalog/':'https://mdis.ru/solution/';
+    const allLink=isCrmProduct?homePath+'#products':homePath+'#industries';
     const pageAt=offset=>pages[(currentIndex+offset+pages.length)%pages.length];
     const switcher=document.createElement('nav');
     switcher.className='solutions-switcher';
