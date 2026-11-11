@@ -16,6 +16,7 @@
     financial:page('financial.html','financial.html','financial.html'),
     autoDealers:page('auto-dealers.html','auto-dealers.html','auto-dealers.html'),
     catalog:page('phantom-catalog.html','phantom-catalog.html','phantom-catalog.html'),
+    schemes:page('connection-schemes.html','connection-schemes.html','connection-schemes.html'),
     personal:page('personal-solutions.html','personal-solutions.html','personal-solutions.html'),
     modernization:page('modernization.html','modernization.html','modernization.html'),
     training:page('training.html','training.html','training.html'),
@@ -47,7 +48,7 @@
     {label:'Селективная запись',href:paths.selective},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
     {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
-    {label:'Схемы подключения МЦКРС «Фантом»',href:'https://mdis.ru/catalog/'},
+    {label:'Схемы подключения МЦКРС «Фантом»',href:paths.schemes},
     {label:'Granulex',href:'https://granulex.ru/'}
   ];
   const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
