@@ -1,0 +1,40 @@
+name: Fetch Phantom official product assets
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fetch-phantom-official-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download official MDIS product images
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/products
+          curl -fsSL --retry 3 'https://mdis.ru/upload/iblock/86c/r2px14va7lfcsngvg997r3fr7oy3uy8g.png' -o assets/products/phantom-micro.png
+          curl -fsSL --retry 3 'https://mdis.ru/upload/iblock/9cb/9cb5a5f887a39b8a2f8897fad86b916b.jpg' -o assets/products/phantom-ph-200.jpg
+          curl -fsSL --retry 3 'https://mdis.ru/upload/iblock/88a/88af107299103876a1e28dd5a7aaf717.png' -o assets/products/phantom-ph-500.png
+          curl -fsSL --retry 3 'https://mdis.ru/upload/iblock/066/066926de5fd5368c4b3b44b6441442b7.jpg' -o assets/products/phantom-ph-600.jpg
+          test -s assets/products/phantom-micro.png
+          test -s assets/products/phantom-ph-200.jpg
+          test -s assets/products/phantom-ph-500.png
+          test -s assets/products/phantom-ph-600.jpg
+      - name: Commit exact downloaded assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/products/phantom-micro.png assets/products/phantom-ph-200.jpg assets/products/phantom-ph-500.png assets/products/phantom-ph-600.jpg
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Add official Phantom MICRO and board images'
+          git push
