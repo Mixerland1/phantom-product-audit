@@ -32,12 +32,12 @@
     {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
   ];
   const solutionPages=[
-    {path:'https://mdis.ru/solution/atom_icon/',name:'Атомная энергетика'},
-    {path:'https://mdis.ru/solution/commercical/',name:'Коммерческие предприятия'},
-    {path:'https://mdis.ru/solution/prom/',name:'Промышленные предприятия'},
+    {path:'atom-energy.html',name:'Атомная энергетика'},
+    {path:'commercial.html',name:'Коммерческие предприятия'},
+    {path:'industrial.html',name:'Промышленные предприятия'},
     {path:'https://mdis.ru/solution/auto/',name:'Автосалоны'},
-    {path:'https://mdis.ru/solution/gos/',name:'Госструктуры'},
-    {path:'https://mdis.ru/solution/financical/',name:'Финансовые организации'},
+    {path:'government.html',name:'Госструктуры'},
+    {path:'financial.html',name:'Финансовые организации'},
     {path:source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html',name:'Электроэнергетика'},
     {path:source?'10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html',name:'Авиация и\u00a0транспорт'}
   ];
