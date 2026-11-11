@@ -163,17 +163,15 @@ exit /b %RESULT%
   [IO.File]::WriteAllText($CmdPath,$cmd,[Text.UTF8Encoding]::new($false))
   $desktop=[Environment]::GetFolderPath('Desktop')
   if(-not $desktop){throw 'Не найдена папка рабочего стола. Файл запуска создан в корне проекта.'}
-  $ShortcutPath=Join-Path $desktop 'Обновить Phantom.lnk'
-  $shell=New-Object -ComObject WScript.Shell
-  $shortcut=$shell.CreateShortcut($ShortcutPath)
-  $shortcut.TargetPath=$CmdPath
-  $shortcut.WorkingDirectory=$ProjectRoot
-  $shortcut.Description='GitHub -> локальный проект -> тестовый AEZA; резервные копии и проверка SHA-256'
-  $shortcut.WindowStyle=1
-  $shortcut.IconLocation=($env:SystemRoot+'\System32\shell32.dll,167')
-  $shortcut.Save()
+  # Desktop button is a .cmd copy, no WScript.Shell COM shortcut: compatible
+  # with Windows installations that reject CreateShortcut/IconLocation.
+  $DesktopButton=Join-Path $desktop 'Обновить Phantom.cmd'
+  Copy-Item -LiteralPath $CmdPath -Destination $DesktopButton -Force -ErrorAction Stop
+  if(-not (Test-Path -LiteralPath $DesktopButton -PathType Leaf)) {
+    throw ('Кнопка не создана: ' + $DesktopButton)
+  }
   Write-Host ('INSTALLED: ' + $ToolPath) -ForegroundColor Green
-  Write-Host ('BUTTON: ' + $ShortcutPath) -ForegroundColor Green
+  Write-Host ('BUTTON: ' + $DesktopButton) -ForegroundColor Green
   Write-Host 'Первый запуск может перезаписать старые локальные копии данными GitHub, сохранив backup. Последующие локальные конфликты блокируются.' -ForegroundColor Yellow
   Write-Host 'Установка не запускала публикацию. Для обновления просто дважды щёлкните ярлык «Обновить Phantom».' -ForegroundColor Cyan
 } catch {
