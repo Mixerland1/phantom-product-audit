@@ -14,6 +14,9 @@
     industrial:page('industrial.html','industrial.html','industrial.html'),
     government:page('government.html','government.html','government.html'),
     financial:page('financial.html','financial.html','financial.html'),
+    autoDealers:page('auto-dealers.html','auto-dealers.html','auto-dealers.html'),
+    catalog:page('phantom-catalog.html','phantom-catalog.html','phantom-catalog.html'),
+    ipTelephony:page('ip-telephony.html','ip-telephony.html','ip-telephony.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
     selective:page('05_Готовый_вариант_Селективная_запись.html','selective-recording.html','selective-recording.html'),
@@ -27,7 +30,7 @@
     {label:'Атомная энергетика',href:paths.atom},
     {label:'Коммерческие предприятия',href:paths.commercial},
     {label:'Промышленные предприятия',href:paths.industrial},
-    {label:'Автосалоны',href:'https://mdis.ru/solution/auto/'},
+    {label:'Автосалоны',href:paths.autoDealers},
     {label:'Госструктуры',href:paths.government},
     {label:'Финансовые организации',href:paths.financial},
     {label:'Электроэнергетика',href:paths.electro},
@@ -35,9 +38,9 @@
     {label:'Персональные решения',href:'https://mdis.ru/service/personalnye-resheniya/'}
   ];
   const products=[
-    {label:'Запись телефонных переговоров',href:'https://mdis.ru/catalog/'},
-    {label:'Запись диспетчерских переговоров',href:'https://mdis.ru/catalog/'},
-    {label:'Запись IP-телефонии',href:'https://mdis.ru/catalog/zapis-ip-telefonii/'},
+    {label:'Запись телефонных переговоров',href:paths.catalog+'#telephone-recording'},
+    {label:'Запись диспетчерских переговоров',href:paths.catalog+'#dispatcher-recording'},
+    {label:'Запись IP-телефонии',href:paths.ipTelephony},
     {label:'Селективная запись',href:paths.selective},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
     {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
@@ -54,8 +57,8 @@
     {label:'Компания',href:'https://mdis.ru/about/'}
   ];
   const direct=directLinks.map(item=>`<a href="${item.href}">${item.label}</a>`).join('');
-  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.home+'#products','О\u00a0продуктах Phantom')}${direct}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.home+'#products','О\u00a0продуктах Phantom')}${direct}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${direct}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${direct}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;
