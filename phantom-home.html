@@ -13,7 +13,7 @@
     :root {
       --ink:#20334d;--muted:#586f87;--soft:#eef5fc;--paper:#fff;
       --canvas:#f7f9fc;--line:#d9e5f1;--red:#e30f2d;--red-soft:#fff0f3;
-      --blue:#2773b1;--shadow:0 18px 48px rgba(35,77,112,.08);--max:1180px
+      --blue:#2773b1;--flow-line:#adc6dc;--shadow:0 18px 48px rgba(35,77,112,.08);--max:1180px
     }
     *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}
     body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
@@ -59,24 +59,29 @@
     .hero-stat+.hero-stat{border-left:1px solid var(--line)}
     .hero-stat b{font-size:15px;font-weight:730;line-height:1.3;color:#274968}
     .hero-stat span{font-size:13px;color:#617992;font-weight:450;line-height:1.45}
-    /* Exact same shared horizontal solution switcher used on other pages. */
+    /* Shared switcher styling, with homepage-only sticky behavior below the common header. */
+    .solutions-switcher.phantom-home-switcher{position:sticky;top:76px;z-index:29}
     .phantom-home-switcher .solutions-switcher-control{text-decoration:none}
     .section{padding:94px 0}
     .section-white{background:var(--paper)}
     .section-soft{background:#f0f6fc}
     .section-header{max-width:790px;margin-bottom:34px}
     .section-header p:last-child{max-width:700px;margin-bottom:0;color:var(--muted);font-size:16px}
-    .workflow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.23fr) minmax(0,1fr);align-items:stretch;gap:30px}
-    .workflow-side{display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:16px}
-    .workflow-card{display:flex;flex-direction:column;justify-content:center;gap:9px;min-height:155px;padding:23px 22px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+    .workflow{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.23fr) minmax(0,1fr);align-items:stretch;gap:30px}
+    .workflow-side{position:relative;display:grid;grid-template-rows:repeat(2,minmax(0,1fr));gap:16px}
+    .workflow-side:first-child::after,.workflow-side:last-child::before{position:absolute;top:24%;bottom:24%;width:1px;background:var(--flow-line);content:"";pointer-events:none}
+    .workflow-side:first-child::after{right:-15px}.workflow-side:last-child::before{left:-15px}
+    .workflow-card{position:relative;display:flex;flex-direction:column;justify-content:center;gap:9px;min-height:155px;padding:23px 22px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+    .workflow-side:first-child .workflow-card::after,.workflow-side:last-child .workflow-card::before{position:absolute;top:50%;width:15px;height:1px;background:var(--flow-line);content:"";pointer-events:none}
+    .workflow-side:first-child .workflow-card::after{right:-15px}.workflow-side:last-child .workflow-card::before{left:-15px}
     .workflow-card h3{margin:0;font-size:17px}
     .workflow-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.53}
     .workflow-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#edf5fb;color:#2d668f}
     .icon{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-    .workflow-main{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:330px;padding:20px;border:1px solid #d2e2f1;border-radius:17px;background:linear-gradient(154deg,#e9f4fe,#fff 62%,#f2f8ff)}
-    .workflow-main:before,.workflow-main:after{position:absolute;top:50%;width:31px;height:2px;background:var(--red);content:""}
-    .workflow-main:before{left:-31px}
-    .workflow-main:after{right:-31px}
+    .workflow-main{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:330px;padding:20px;border:1px solid #d2e2f1;border-radius:17px;background:linear-gradient(154deg,#e9f4fe,#fff 62%,#f2f8ff);box-shadow:0 14px 34px rgba(34,84,123,.06)}
+    .workflow-main:before,.workflow-main:after{position:absolute;top:50%;width:15px;height:1px;background:var(--flow-line);content:"";pointer-events:none}
+    .workflow-main:before{left:-15px}
+    .workflow-main:after{right:-15px}
     .workflow-main img{width:100%;height:180px;object-fit:contain;filter:drop-shadow(0 16px 20px rgba(12,33,52,.18))}
     .workflow-main h3{margin:14px 0 3px;text-align:center}
     .workflow-main p{margin:0;color:var(--muted);font-size:13px;text-align:center}
@@ -143,7 +148,7 @@
     .contact-form button:hover{background:#bd1028}
     .form-note{margin:0;color:#77889b;font-size:11px;line-height:1.45}
     .footer{background:var(--paper)}
-    html[data-theme="dark"]{--ink:#edf4fc;--muted:#b1c1d1;--canvas:#0c1727;--paper:#15253a;--soft:#1c314b;--line:#334860}
+    html[data-theme="dark"]{--ink:#edf4fc;--muted:#b1c1d1;--canvas:#0c1727;--paper:#15253a;--soft:#1c314b;--line:#334860;--flow-line:#526d86}
     html[data-theme="dark"] .preview-note{background:#341d29;color:#e8b8c1;border-color:#63313a}
     html[data-theme="dark"] .hero{background:radial-gradient(circle at 89% 20%,#294967,transparent 38%),linear-gradient(115deg,#0d1b2c,#1b334b)}
     html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero-lead{color:var(--ink)}
@@ -170,7 +175,7 @@
       .workflow{grid-template-columns:1fr;gap:16px}
       .workflow-side{grid-template-columns:1fr 1fr;grid-template-rows:auto}
       .workflow-main{min-height:280px}
-      .workflow-main::before,.workflow-main::after{display:none}
+      .workflow-side::before,.workflow-side::after,.workflow-card::before,.workflow-card::after,.workflow-main::before,.workflow-main::after{display:none}
       .task-grid,.product-grid,.benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
       .solution-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .solution:last-child{grid-column:1/-1}
@@ -178,6 +183,7 @@
       .contact-panel{gap:30px;padding:36px}
     }
     @media(max-width:640px){
+      .solutions-switcher.phantom-home-switcher{top:66px}
       .wrap{width:calc(100% - 32px)}
       .hero-grid{padding-top:52px}.hero h1{font-size:clamp(34px,8.4vw,48px)}
       .hero-lead{font-size:16px}.hero-visual{min-height:285px;border-radius:17px}
