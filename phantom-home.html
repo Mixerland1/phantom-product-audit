@@ -24,27 +24,6 @@
     .skip{position:absolute;top:-60px;left:15px;z-index:100;padding:8px 15px;background:var(--paper)}
     .skip:focus{top:12px}
     .preview-note{min-height:30px;padding:5px 12px;background:#fff1f3;border-bottom:1px solid #f4cbd2;text-align:center;color:#8e3042;font-size:11px;font-weight:650;letter-spacing:.02em}
-    .header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--paper) 95%,transparent);border-bottom:1px solid var(--line);backdrop-filter:blur(18px)}
-    .header-in{display:flex;align-items:center;gap:26px;min-height:76px}
-    .brand{display:inline-flex;align-items:center;margin-right:auto;text-decoration:none;flex-shrink:0}
-    .brand img{width:130px;height:auto;display:block}
-    .brand-logo-dark{display:none}
-    .main-nav{display:flex;align-items:center;gap:clamp(14px,1.8vw,27px)}
-    .main-nav a{position:relative;padding:11px 0;color:var(--muted);text-decoration:none;white-space:nowrap;font-size:13px;font-weight:650}
-    .main-nav a:hover{color:var(--red)}
-    .main-nav a::after{position:absolute;left:0;right:0;bottom:5px;height:2px;background:var(--red);content:"";transform:scaleX(0);transform-origin:left;transition:transform .2s}
-    .main-nav a:hover::after{transform:scaleX(1)}
-    .header-cta{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 18px;border-radius:8px;background:var(--red);color:white;text-decoration:none;font-size:12px;font-weight:750;white-space:nowrap}
-    .header-cta:hover,.btn-primary:hover{background:#bd1028}
-    .theme-switch{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--paper);color:var(--ink);cursor:pointer}
-    .theme-switch svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8}
-    .mobile-nav{display:none;position:relative}
-    .mobile-nav summary{display:grid;place-items:center;width:42px;height:42px;list-style:none;cursor:pointer;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:19px}
-    .mobile-nav summary::-webkit-details-marker{display:none}
-    .mobile-nav[open] summary{color:var(--red)}
-    .mobile-links{position:absolute;right:0;top:53px;display:grid;gap:3px;min-width:230px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:var(--shadow)}
-    .mobile-links a{padding:11px 13px;text-decoration:none;border-radius:7px;font-size:14px}
-    .mobile-links a:hover{background:var(--soft)}
     .eyebrow{margin:0 0 11px;color:var(--red);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
     h1,h2,h3,p{margin-top:0}
     h1{font-size:clamp(41px,4.8vw,67px);font-weight:760;line-height:1.075;letter-spacing:-.05em}
@@ -80,6 +59,8 @@
     .hero-stat+.hero-stat{border-left:1px solid var(--line)}
     .hero-stat b{font-size:15px;font-weight:730;line-height:1.3;color:#274968}
     .hero-stat span{font-size:13px;color:#617992;font-weight:450;line-height:1.45}
+    /* Exact same shared horizontal solution switcher used on other pages. */
+    .phantom-home-switcher .solutions-switcher-control{text-decoration:none}
     .section{padding:94px 0}
     .section-white{background:var(--paper)}
     .section-soft{background:#f0f6fc}
@@ -160,8 +141,6 @@
     .form-note{margin:0;color:#77889b;font-size:11px;line-height:1.45}
     .footer{background:var(--paper)}
     html[data-theme="dark"]{--ink:#edf4fc;--muted:#b1c1d1;--canvas:#0c1727;--paper:#15253a;--soft:#1c314b;--line:#334860}
-    html[data-theme="dark"] .brand-logo-light{display:none}
-    html[data-theme="dark"] .brand-logo-dark{display:block}
     html[data-theme="dark"] .preview-note{background:#341d29;color:#e8b8c1;border-color:#63313a}
     html[data-theme="dark"] .hero{background:radial-gradient(circle at 89% 20%,#294967,transparent 38%),linear-gradient(115deg,#0d1b2c,#1b334b)}
     html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero-lead{color:var(--ink)}
@@ -180,9 +159,7 @@
     html[data-theme="dark"] .contact-links a{color:#a4d0ec}
     html[data-theme="dark"] .field{color:var(--ink)}
     html[data-theme="dark"] .btn-secondary{background:var(--paper);color:var(--ink);border-color:var(--line)}
-    @media(max-width:1130px){.main-nav{gap:13px}.main-nav a{font-size:12px}.header-in{gap:15px}}
     @media(max-width:970px){
-      .main-nav,.header-cta{display:none}.mobile-nav{display:block}
       .hero-grid{grid-template-columns:1fr;gap:28px;padding:67px 0 43px}
       .hero-copy{max-width:740px}
       .hero-visual{min-height:360px}
@@ -198,7 +175,7 @@
       .contact-panel{gap:30px;padding:36px}
     }
     @media(max-width:640px){
-      .wrap{width:calc(100% - 32px)}.header-in{min-height:66px}.brand img{width:116px}
+      .wrap{width:calc(100% - 32px)}
       .hero-grid{padding-top:52px}.hero h1{font-size:clamp(34px,8.4vw,48px)}
       .hero-lead{font-size:16px}.hero-visual{min-height:285px;border-radius:17px}
       .hero-hardware{height:200px}.hero-visual-label{top:15px;left:16px}.hardware-caption{bottom:14px;left:16px;right:16px}
@@ -222,33 +199,7 @@
 <body>
   <a href="#content" class="skip">Перейти к содержимому</a>
   <div class="preview-note">Версия для&nbsp;согласования</div>
-  <header class="header">
-    <div class="wrap header-in">
-      <a class="brand" href="phantom-home.html" aria-label="Phantom — главная">
-        <img class="brand-logo-light" src="assets/logos/phantom-black.svg" alt="Phantom">
-        <img class="brand-logo-dark" src="assets/logos/phantom.svg" alt="">
-      </a>
-      <nav class="main-nav" aria-label="Основная навигация">
-        <a href="#capabilities">Возможности</a>
-        <a href="#tasks">Задачи</a>
-        <a href="#products">Продукты</a>
-        <a href="#industries">Отрасли</a>
-        <a href="#trust">О&nbsp;решении</a>
-      </nav>
-      <a class="header-cta" href="#contact">Обсудить задачу</a>
-      <button class="theme-switch" type="button" id="theme-switch" aria-label="Переключить цветовую тему" title="Сменить тему">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.4A9 9 0 0 1 9.6 3.5a9 9 0 1 0 10.9 10.9Z"/></svg>
-      </button>
-      <details class="mobile-nav" id="mobile-menu">
-        <summary aria-label="Открыть меню">☰</summary>
-        <nav class="mobile-links" aria-label="Мобильная навигация">
-          <a href="#capabilities">Возможности</a><a href="#tasks">Задачи</a>
-          <a href="#products">Продукты</a><a href="#industries">Отрасли</a>
-          <a href="#trust">О&nbsp;решении</a><a href="#contact">Обсудить задачу</a>
-        </nav>
-      </details>
-    </div>
-  </header>
+  <header class="header" aria-label="Основная навигация Phantom"></header>
   <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
     <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2c0 9 7 16 16 16a2 2 0 0 0 2-2v-3l-5-2-2 3a15 15 0 0 1-7-7l3-2-2-5Z"/></symbol>
     <symbol id="icon-radio" viewBox="0 0 24 24"><path d="M4 20h16M12 4v16M8 9l4-5 4 5M6 10a9 9 0 0 0 0 9M18 10a9 9 0 0 1 0 9"/></symbol>
@@ -285,6 +236,24 @@
         </div>
       </div>
     </section>
+
+    <nav class="solutions-switcher phantom-home-switcher" aria-label="Переход между решениями Phantom">
+      <div class="wrap">
+        <div class="solutions-switcher-layout">
+          <a class="solutions-switcher-neighbor solutions-switcher-neighbor--previous" href="index.html">Интеграция с&nbsp;1С:CRM</a>
+          <div class="solutions-switcher-toolbar">
+            <a class="solutions-switcher-control" href="index.html" aria-label="Предыдущее решение: интеграция с 1С:CRM" title="Интеграция с 1С:CRM">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+            </a>
+            <a class="solutions-switcher-label" href="#industries">Все решения</a>
+            <a class="solutions-switcher-control" href="electroenergetika.html" aria-label="Следующее решение: электроэнергетика" title="Электроэнергетика">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <a class="solutions-switcher-neighbor solutions-switcher-neighbor--next" href="electroenergetika.html">Электроэнергетика</a>
+        </div>
+      </div>
+    </nav>
 
     <section class="section section-white" id="capabilities" aria-labelledby="flow-heading">
       <div class="wrap">
@@ -462,23 +431,10 @@
   </main>
 
   <footer class="footer" aria-label="Контакты компании"></footer>
-  <script src="assets/footer-next.js?v=20261111-preview-nav-v7"></script>
+  <script src="assets/footer-next.js?v=20261111-home-unified-nav-1"></script>
+  <script src="assets/site-header.js?v=20261111-home-unified-nav-1"></script>
   <script>
     (function(){
-      const root=document.documentElement;
-      const button=document.getElementById("theme-switch");
-      if(button)button.addEventListener("click",function(){
-        const dark=root.dataset.theme!=="dark";
-        root.dataset.theme=dark?"dark":"light";
-        button.setAttribute("aria-pressed",String(dark));
-        try{localStorage.setItem("mdis-theme",root.dataset.theme)}catch(error){}
-      });
-      const menu=document.getElementById("mobile-menu");
-      if(menu){
-        menu.querySelectorAll("a").forEach(function(link){
-          link.addEventListener("click",function(){menu.open=false});
-        });
-      }
       const form=document.getElementById("contact-form");
       if(form)form.addEventListener("submit",function(event){
         event.preventDefault();
