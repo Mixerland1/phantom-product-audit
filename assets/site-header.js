@@ -7,7 +7,8 @@
   const localPreview=location.protocol==='file:'&&pathname.includes('/предпросмотр_руководство/');
   const page=(sourceName,previewName,liveName)=>source?sourceName:(localPreview?previewName:liveName);
   const paths={
-    home:page('02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html','index.html','/'),
+    home:page('../публикация/предпросмотр_руководство/phantom-home.html','phantom-home.html','phantom-home.html'),
+    crm:page('02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html','index.html','index.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
     selective:page('05_Готовый_вариант_Селективная_запись.html','selective-recording.html','selective-recording.html')
@@ -28,7 +29,7 @@
     {label:'Запись диспетчерских переговоров',href:'https://mdis.ru/catalog/'},
     {label:'Запись ip–телефонии',href:'https://mdis.ru/catalog/'},
     {label:'Селективная запись',href:paths.selective},
-    {label:'Интеграция Фантом и\u00a0CRM',href:paths.home},
+    {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
     {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
     {label:'Схемы подключения «МЦКРС» Фантом',href:'https://mdis.ru/catalog/'},
     {label:'Granulex',href:'https://granulex.ru/'}

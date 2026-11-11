@@ -66,7 +66,7 @@
       parentLink.className='product-parent-link';
       const parentHref=pageHref(carousel.dataset.parentHref)||(source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html');
       const parentLabel=carousel.dataset.parentLabel||'Электроэнергетика';
-      const nextHref=pageHref(carousel.dataset.nextHref)||'https://mdis.ru/solution/transprot/';
+      const nextHref=pageHref(carousel.dataset.nextHref)||(source?'10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html');
       const nextLabel=carousel.dataset.nextLabel||'Авиация и\u00a0транспорт';
       parentLink.href=parentHref;
       parentLink.setAttribute('aria-label',`Вернуться к решению «${parentLabel}»`);

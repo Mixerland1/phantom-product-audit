@@ -13,11 +13,12 @@
     contextNav.className='context-nav';
     contextNav.setAttribute('aria-label','Навигация по разделу');
     const source=decodeURIComponent(location.pathname).includes('/макеты/');
-    contextNav.innerHTML=`<div class="wrap"><a href="${source?'03_Готовый_вариант_Электроэнергетика.html':'/electroenergetika.html'}" aria-label="Вернуться к решению «Электроэнергетика»"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h9a6 6 0 0 1 6 6"/></svg><span>Электроэнергетика</span></a></div>`;
+    contextNav.innerHTML=`<div class="wrap"><a href="${source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html'}" aria-label="Вернуться к решению «Электроэнергетика»"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5M4 12h9a6 6 0 0 1 6 6"/></svg><span>Электроэнергетика</span></a></div>`;
     hero.insertAdjacentElement('afterend',contextNav);
   }
   const source=decodeURIComponent(location.pathname).includes('/макеты/');
   const pathname=decodeURIComponent(location.pathname);
+  const homePath=source?'../публикация/предпросмотр_руководство/phantom-home.html':'phantom-home.html';
   const isCrmProduct=source
     ?pathname.endsWith('/02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html')
     :pathname==='/'||pathname.endsWith('/index.html');
@@ -27,7 +28,7 @@
     {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
   ]:[
     {path:'selective-recording.html',name:'Селективная запись'},
-    {path:'/',name:'Интеграция с\u00a01С:CRM'},
+    {path:'index.html',name:'Интеграция с\u00a01С:CRM'},
     {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
   ];
   const solutionPages=[
@@ -75,8 +76,8 @@
 
   footer.innerHTML=`
     <div class="footer-logo-band"><div class="wrap"><div class="footer-logos" aria-label="Партнёры МДИС">
-      <a href="/" aria-label="МДИС"><img src="assets/logos/mdis.svg" alt="МДИС"></a>
-      <a href="/" aria-label="Фантом"><img class="footer-phantom-light" src="assets/logos/phantom-black.svg" alt="Фантом"><img class="footer-phantom-dark" src="assets/logos/phantom.svg" alt=""></a>
+      <a href="https://mdis.ru/" aria-label="МДИС"><img src="assets/logos/mdis.svg" alt="МДИС"></a>
+      <a href="${homePath}" aria-label="Фантом"><img class="footer-phantom-light" src="assets/logos/phantom-black.svg" alt="Фантом"><img class="footer-phantom-dark" src="assets/logos/phantom.svg" alt=""></a>
       <a href="https://granulex.ru/" target="_blank" rel="noopener" aria-label="Granulex"><img src="assets/logos/granulex.svg" alt="Granulex"></a>
       <a class="footer-pultex" href="https://pultex.pro/" target="_blank" rel="noopener" aria-label="PultEx"><img class="footer-pultex-color" src="assets/logos/pultex.svg" alt="PultEx"><img class="footer-pultex-white" src="assets/logos/pultex-white.svg" alt=""></a>
     </div></div></div>
