@@ -180,3 +180,24 @@ html[data-theme="dark"] main > .hero .hero-points--solution li span {color:var(-
       url("backgrounds/energy-landscape.png") 72% 12%/auto 108% no-repeat;
   }
 }
+
+/* Strict line counts in sibling cards — the heading text is intentionally split
+   only where both parts are valid typographic units. Line-breaks must work in
+   the DOM (a flex container would ignore them as ordinary text wrapping). */
+@media(min-width:901px) {
+  main > .hero .hero-points--solution li strong {
+    display:block;
+    text-align:center;
+    min-height:2.5em;
+    line-height:1.25;
+  }
+  .facts > .fact h3,
+  .cards > .card h3,
+  .feature-grid > .feature h3,
+  .features > .feature h3,
+  .benefits > .benefit h3 {
+    display:block;
+    min-height:2.65em;
+    line-height:1.27;
+  }
+}
