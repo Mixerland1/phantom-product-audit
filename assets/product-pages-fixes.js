@@ -85,7 +85,7 @@
       productNavigation.append(parentLink,toolbar,nextSectionLink);
       carouselWrap.replaceChild(productNavigation,carousel);
       const goToProduct=product=>{
-        window.location.href=source?product.getAttribute('href'):(product.dataset.previewHref||pageHref(product.getAttribute('href')));
+        window.location.href=source?(product.dataset.sourceHref||product.getAttribute('href')):(product.dataset.previewHref||pageHref(product.getAttribute('href')));
       };
       previous.addEventListener('click',()=>{goToProduct(productAt(-1))});
       next.addEventListener('click',()=>{goToProduct(productAt(1))});
