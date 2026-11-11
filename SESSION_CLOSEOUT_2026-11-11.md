@@ -112,3 +112,46 @@ Shared-интеграция выполнена:
 - публикация на AEZA.
 
 Следующая параллельная волна по `prompts/README.md`: 07–10.
+
+
+## Интеграция второй page-agent волны 07–12 — 11.11.2026
+
+В `main` приняты:
+- `auto-dealers.html`;
+- `phantom-micro.html`;
+- `phantom-boards.html`;
+- `phantom-active.html`;
+- `ip-telephony.html`;
+- `phantom-catalog.html`.
+
+Shared-интеграция:
+- «Автосалоны» локализованы в header, Phantom Home и отраслевом цикле;
+- каталог стал центральной локальной точкой для телефонной/диспетчерской записи и нижней ссылки меню «Продукты»;
+- IP-телефония переведена на локальный маршрут;
+- главная связана с каталогом, MICRO, платами, Active и IP-записью;
+- generic product switcher унифицирован для Pro 5 / Pro 6 / PC 2 / MICRO / Ультра / Active / Платы с parent «Каталог Phantom»;
+- специализированные parent-связи Station → Atom и Aviaton → Aviation сохранены;
+- старые fallback URL на локально перенесённые Auto / MICRO / платы / Active / IP удалены из актуальных корневых HTML.
+
+Официальные product assets:
+- `assets/products/phantom-micro.png`;
+- `assets/products/phantom-ph-200.jpg`;
+- `assets/products/phantom-ph-500.png`;
+- `assets/products/phantom-ph-600.jpg`.
+
+Файлы скачаны напрямую по официальным URL, заданным в промптах 08/09; в HTML используются локальные копии без hotlink и без перерисовки. Одноразовый workflow после загрузки удалён.
+
+Статический QA:
+- по одному H1 на всех новых страницах;
+- `noindex, nofollow`;
+- нет повторяющихся id;
+- все локальные href/src существуют;
+- header/footer подключены с cache-bust `20261111-wave2-nav-1`;
+- синтаксис shared JS валиден;
+- отраслевой цикл соответствует Atom → Commercial → Industrial → Auto → Government → Financial → Electro → Aviation;
+- product-switcher на семи generic pages имеет одинаковый порядок и корректный `aria-current`.
+
+Не выполнено до публикации на стенд:
+- браузерный QA 375 / 768 / 1024 / 1440 px в обеих темах.
+
+Следующий запуск: 13 и сервисные 14–16 можно выполнять параллельно; 17 — после интеграции 13.
