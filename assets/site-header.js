@@ -16,6 +16,9 @@
     financial:page('financial.html','financial.html','financial.html'),
     autoDealers:page('auto-dealers.html','auto-dealers.html','auto-dealers.html'),
     catalog:page('phantom-catalog.html','phantom-catalog.html','phantom-catalog.html'),
+    personal:page('personal-solutions.html','personal-solutions.html','personal-solutions.html'),
+    modernization:page('modernization.html','modernization.html','modernization.html'),
+    training:page('training.html','training.html','training.html'),
     ipTelephony:page('ip-telephony.html','ip-telephony.html','ip-telephony.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
@@ -35,7 +38,7 @@
     {label:'Финансовые организации',href:paths.financial},
     {label:'Электроэнергетика',href:paths.electro},
     {label:'Авиация и\u00a0транспорт',href:paths.aviation},
-    {label:'Персональные решения',href:'https://mdis.ru/service/personalnye-resheniya/'}
+    {label:'Персональные решения',href:paths.personal}
   ];
   const products=[
     {label:'Запись телефонных переговоров',href:paths.catalog+'#telephone-recording'},
@@ -50,22 +53,26 @@
   const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
   const desktopMenu=(label,list,allHref,allLabel)=>`<details class="site-menu"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div><a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a></section></details>`;
   const mobileMenu=(label,list,allHref,allLabel)=>`<details class="site-mobile-group"><summary>${label}<i aria-hidden="true"></i></summary><div>${cards(list)}<a class="site-mobile-all" href="${allHref}">${allLabel}</a></div></details>`;
+  const services=[
+    {label:'Персональные решения',href:paths.personal},
+    {label:'Комплексная модернизация',href:paths.modernization},
+    {label:'Обучение',href:paths.training}
+  ];
   const directLinks=[
-    {label:'Услуги',href:'https://mdis.ru/service/'},
     {label:'Новости',href:'https://mdis.ru/news/'},
     {label:'Поддержка',href:'https://mdis.ru/support/'},
     {label:'Компания',href:'https://mdis.ru/about/'}
   ];
   const direct=directLinks.map(item=>`<a href="${item.href}">${item.label}</a>`).join('');
-  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${direct}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${direct}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${direct}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${direct}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;
 
   const currentPath=decodeURIComponent(location.pathname).replace(/\/+$/,'');
   const isCurrent=item=>{try{const url=new URL(item.href,location.href);return url.origin===location.origin&&decodeURIComponent(url.pathname).replace(/\/+$/,'')===currentPath}catch(error){return false}};
-  const currentGroup=solutions.some(isCurrent)?0:(products.some(isCurrent)?1:-1);
+  const currentGroup=solutions.some(isCurrent)?0:(products.some(isCurrent)?1:(services.some(isCurrent)?2:-1));
   if(currentGroup>=0){
     const desktopGroups=header.querySelectorAll('.site-menu');
     const mobileGroups=header.querySelectorAll('.site-mobile-group');
