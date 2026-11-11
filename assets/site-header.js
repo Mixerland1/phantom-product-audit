@@ -9,6 +9,11 @@
   const paths={
     home:page('../публикация/предпросмотр_руководство/phantom-home.html','phantom-home.html','phantom-home.html'),
     crm:page('02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html','index.html','index.html'),
+    atom:page('atom-energy.html','atom-energy.html','atom-energy.html'),
+    commercial:page('commercial.html','commercial.html','commercial.html'),
+    industrial:page('industrial.html','industrial.html','industrial.html'),
+    government:page('government.html','government.html','government.html'),
+    financial:page('financial.html','financial.html','financial.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
     selective:page('05_Готовый_вариант_Селективная_запись.html','selective-recording.html','selective-recording.html'),
@@ -19,12 +24,12 @@
     aviaton:page('11_Готовый_вариант_Авиатон.html','aviaton.html','aviaton.html')
   };
   const solutions=[
-    {label:'Атомная энергетика',href:'https://mdis.ru/solution/atom_icon/'},
-    {label:'Коммерческие предприятия',href:'https://mdis.ru/solution/commercical/'},
-    {label:'Промышленные предприятия',href:'https://mdis.ru/solution/prom/'},
+    {label:'Атомная энергетика',href:paths.atom},
+    {label:'Коммерческие предприятия',href:paths.commercial},
+    {label:'Промышленные предприятия',href:paths.industrial},
     {label:'Автосалоны',href:'https://mdis.ru/solution/auto/'},
-    {label:'Госструктуры',href:'https://mdis.ru/solution/gos/'},
-    {label:'Финансовые организации',href:'https://mdis.ru/solution/financical/'},
+    {label:'Госструктуры',href:paths.government},
+    {label:'Финансовые организации',href:paths.financial},
     {label:'Электроэнергетика',href:paths.electro},
     {label:'Авиация и\u00a0транспорт',href:paths.aviation},
     {label:'Персональные решения',href:'https://mdis.ru/service/personalnye-resheniya/'}
