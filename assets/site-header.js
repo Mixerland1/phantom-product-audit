@@ -32,7 +32,7 @@
   const products=[
     {label:'Запись телефонных переговоров',href:'https://mdis.ru/catalog/'},
     {label:'Запись диспетчерских переговоров',href:'https://mdis.ru/catalog/'},
-    {label:'Запись IP-телефонии',href:'https://mdis.ru/catalog/'},
+    {label:'Запись IP-телефонии',href:'https://mdis.ru/catalog/zapis-ip-telefonii/'},
     {label:'Селективная запись',href:paths.selective},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
     {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
