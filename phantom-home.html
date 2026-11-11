@@ -42,17 +42,15 @@
       url("assets/backgrounds/phantom-home-background.webp") right center/cover no-repeat}
     .phantom-intro{display:none}
     html.phantom-intro-pending body{overflow:hidden;background:#f7f9fc}
-    html.phantom-intro-pending .phantom-intro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;background:#f7f9fc;will-change:transform;animation:phantom-intro-exit .24s cubic-bezier(.4,0,1,1) .76s forwards}
-    .phantom-intro-stage{display:grid;justify-items:center;gap:16px;transform:translateY(-1.5vh)}
-    .phantom-intro-logo{display:block;width:clamp(158px,16vw,210px);height:auto;opacity:0;transform:translateY(6px);will-change:transform,opacity;animation:phantom-intro-mark .22s cubic-bezier(0,0,.2,1) .06s forwards}
-    .phantom-intro-signature{display:block;width:86px;height:8px;overflow:visible}
-    .phantom-intro-signature line{fill:none;stroke:var(--red);stroke-width:3;stroke-linecap:round;stroke-dasharray:80;stroke-dashoffset:80;animation:phantom-intro-stroke .32s cubic-bezier(.22,.61,.36,1) .24s forwards}
-    .phantom-intro-signature circle{fill:var(--red);opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(.35);animation:phantom-intro-dot .14s cubic-bezier(.2,.8,.2,1) .55s forwards}
+    html.phantom-intro-pending .phantom-intro{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;overflow:hidden;background:#f7f9fc;will-change:transform;animation:phantom-intro-exit .30s cubic-bezier(.4,0,1,1) .80s forwards}
+    .phantom-intro-stage{display:grid;justify-items:center;gap:14px;transform:translateY(-1.5vh)}
+    .phantom-intro-logo{display:block;width:clamp(158px,16vw,210px);height:auto;opacity:0;transform:translateY(5px);will-change:transform,opacity;animation:phantom-intro-mark .24s cubic-bezier(0,0,.2,1) .06s forwards}
+    .phantom-intro-tagline{margin:0;color:#5b7086;font-size:11px;font-weight:650;letter-spacing:.11em;line-height:1.2;text-transform:uppercase;opacity:0;transform:translateY(4px);will-change:transform,opacity;animation:phantom-intro-tagline .22s cubic-bezier(0,0,.2,1) .28s forwards}
     html[data-theme="dark"].phantom-intro-pending body,html[data-theme="dark"].phantom-intro-pending .phantom-intro{background:#0c1727}
     html[data-theme="dark"] .phantom-intro-logo{filter:invert(1) brightness(2)}
+    html[data-theme="dark"] .phantom-intro-tagline{color:#aebfd0}
     @keyframes phantom-intro-mark{to{opacity:1;transform:translateY(0)}}
-    @keyframes phantom-intro-stroke{to{stroke-dashoffset:0}}
-    @keyframes phantom-intro-dot{60%{opacity:1;transform:scale(1.22)}100%{opacity:1;transform:scale(1)}}
+    @keyframes phantom-intro-tagline{to{opacity:1;transform:translateY(0)}}
     @keyframes phantom-intro-exit{to{transform:translateY(-100%)}}
     .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);align-items:center;gap:55px;padding:88px 0 60px}
     .hero-copy{position:relative;z-index:1}
@@ -223,16 +221,16 @@
       }catch(e){}
       try{
         var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-        if(!reduced&&!sessionStorage.getItem("phantom-intro-v3-seen")){
+        if(!reduced&&!sessionStorage.getItem("phantom-intro-v4-seen")){
           document.documentElement.classList.add("phantom-intro-pending");
-          sessionStorage.setItem("phantom-intro-v3-seen","1");
+          sessionStorage.setItem("phantom-intro-v4-seen","1");
         }
       }catch(e){}
     })();
   </script>
 </head>
 <body>
-  <div class="phantom-intro" aria-hidden="true"><div class="phantom-intro-stage"><img class="phantom-intro-logo" src="assets/logos/phantom-black.svg" alt=""><svg class="phantom-intro-signature" viewBox="0 0 86 8" aria-hidden="true"><line x1="2" y1="4" x2="82" y2="4"></line><circle cx="82" cy="4" r="3"></circle></svg></div></div>
+  <div class="phantom-intro" aria-hidden="true"><div class="phantom-intro-stage"><img class="phantom-intro-logo" src="assets/logos/phantom-black.svg" alt=""><p class="phantom-intro-tagline">Системы записи переговоров</p></div></div>
   <a href="#content" class="skip">Перейти к содержимому</a>
   <div class="preview-note">Версия для&nbsp;согласования</div>
   <header class="header" aria-label="Основная навигация Phantom"></header>
@@ -488,7 +486,7 @@
         intro.remove();
       };
       intro.addEventListener("animationend",event=>{if(event.animationName==="phantom-intro-exit")cleanup()},{once:true});
-      window.setTimeout(cleanup,1250);
+      window.setTimeout(cleanup,1350);
     })();
   </script>
   <script>
