@@ -79,3 +79,36 @@
 - `AGENTS.md`, `prompts/README.md` и этот closeout согласованы;
 - новый page-agent получает base SHA уже после этих изменений;
 - локальная публикация на AEZA не требуется для старта page-agent: им нужен GitHub-код, а не состояние стенда.
+
+
+## Интеграция первой page-agent волны 01–06 — 11.11.2026
+
+Первая волна принята в `main`:
+- `atom-energy.html`;
+- `stantsiya-zapisi.html`;
+- `industrial.html`;
+- `government.html`;
+- `financial.html`;
+- `commercial.html`.
+
+Shared-интеграция выполнена:
+- header переведён на локальные Atom / Commercial / Industrial / Government / Financial;
+- отраслевой цикл нормализован в порядке Atom → Commercial → Industrial → Auto → Government → Financial → Electro → Aviation;
+- `phantom-home.html` переведён на локальные ссылки этих пяти отраслей; Auto остаётся внешним до промпта 07;
+- `atom-energy.html` и `stantsiya-zapisi.html` связаны локально;
+- shared header/footer получили cache-bust `20261111-wave1-nav-1`;
+- `government.html` переведён на актуальный `hero-rhythm.css?v=20261111-solution-bg-v9`.
+
+Статический QA первой волны:
+- по одному H1 на каждой странице;
+- `noindex, nofollow`;
+- нет повторяющихся `id`;
+- все относительные HTML-ссылки ведут на существующие файлы;
+- общий header/footer подключены;
+- синтаксис `assets/site-header.js` и `assets/footer-next.js` валиден.
+
+Не выполнено в рамках GitHub-интеграции:
+- браузерный визуальный QA 375 / 768 / 1024 / 1440 px в обеих темах;
+- публикация на AEZA.
+
+Следующая параллельная волна по `prompts/README.md`: 07–10.
