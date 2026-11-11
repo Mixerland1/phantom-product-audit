@@ -201,3 +201,42 @@ html[data-theme="dark"] main > .hero .hero-points--solution li span {color:var(-
     line-height:1.27;
   }
 }
+
+
+/* Unified right-side hero panel — 20% transparency, shared geometry and shadow. */
+html[data-theme="light"] main > .hero .console,
+html[data-theme="light"] main > .hero .certificate,
+html[data-theme="light"] main > .hero .pdf-card,
+html[data-theme="light"] main > .hero .device {
+  border-color:rgba(191,218,239,.86)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.80)!important;
+  box-shadow:0 22px 58px rgba(38,51,71,.10)!important;
+}
+html[data-theme="light"] main > .hero .interface {
+  border-radius:16px!important;
+  background:linear-gradient(140deg,rgba(202,212,226,.80),rgba(240,180,191,.80) 65%,rgba(227,15,45,.80))!important;
+  box-shadow:0 22px 58px rgba(38,51,71,.10)!important;
+}
+html[data-theme="light"] main > .hero .interface-in {
+  border-radius:15px!important;
+  background:rgba(255,255,255,.80)!important;
+}
+html[data-theme="dark"] main > .hero .console,
+html[data-theme="dark"] main > .hero .certificate,
+html[data-theme="dark"] main > .hero .pdf-card,
+html[data-theme="dark"] main > .hero .device {
+  border-color:rgba(98,125,151,.56)!important;
+  border-radius:16px!important;
+  background:rgba(11,24,41,.80)!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.28)!important;
+}
+html[data-theme="dark"] main > .hero .interface {
+  border-radius:16px!important;
+  background:linear-gradient(140deg,rgba(111,125,144,.80),rgba(38,51,71,.80) 48%,rgba(227,15,45,.80))!important;
+  box-shadow:0 24px 64px rgba(0,0,0,.28)!important;
+}
+html[data-theme="dark"] main > .hero .interface-in {
+  border-radius:15px!important;
+  background:rgba(16,26,42,.80)!important;
+}
