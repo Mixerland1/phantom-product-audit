@@ -15,7 +15,7 @@
       --canvas:#f7f9fc;--line:#d9e5f1;--red:#e30f2d;--red-soft:#fff0f3;
       --blue:#2773b1;--flow-line:#adc6dc;--shadow:0 18px 48px rgba(35,77,112,.08);--max:1180px
     }
-    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:148px}
     body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
     a{color:inherit}img{max-width:100%}button,input,textarea{font:inherit}
     button,a,input,textarea{touch-action:manipulation}
@@ -37,9 +37,9 @@
     .btn-secondary{background:var(--paper);border:1px solid #c9d8e8;color:var(--ink)}
     .btn-secondary:hover{border-color:#7fa6c9;background:#f5faff}
     .hero{position:relative;overflow:hidden;background:
-      radial-gradient(circle at 95% 15%,rgba(130,192,239,.24),transparent 35%),
-      radial-gradient(circle at 9% 7%,rgba(227,15,45,.045),transparent 39%),
-      linear-gradient(112deg,#fffefd 0%,#f6fbff 57%,#eaf5ff 100%)}
+      radial-gradient(circle at 10% 14%,rgba(227,15,45,.045),transparent 39%),
+      linear-gradient(95deg,rgba(255,255,255,.98) 0%,rgba(248,252,255,.94) 42%,rgba(234,245,255,.70) 74%,rgba(225,239,252,.52) 100%),
+      url("assets/backgrounds/phantom-home-background.webp") right center/cover no-repeat}
     .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);align-items:center;gap:55px;padding:88px 0 60px}
     .hero-copy{position:relative;z-index:1}
     .hero h1{max-width:610px;margin-bottom:0;color:#1d3653}
@@ -150,7 +150,7 @@
     .footer{background:var(--paper)}
     html[data-theme="dark"]{--ink:#edf4fc;--muted:#b1c1d1;--canvas:#0c1727;--paper:#15253a;--soft:#1c314b;--line:#334860;--flow-line:#526d86}
     html[data-theme="dark"] .preview-note{background:#341d29;color:#e8b8c1;border-color:#63313a}
-    html[data-theme="dark"] .hero{background:radial-gradient(circle at 89% 20%,#294967,transparent 38%),linear-gradient(115deg,#0d1b2c,#1b334b)}
+    html[data-theme="dark"] .hero{background:linear-gradient(95deg,rgba(7,17,31,.97) 0%,rgba(16,32,55,.92) 48%,rgba(23,45,66,.78) 100%),url("assets/backgrounds/phantom-home-background.webp") right center/cover no-repeat}
     html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero-lead{color:var(--ink)}
     html[data-theme="dark"] .hero-visual,html[data-theme="dark"] .workflow-main{background:linear-gradient(145deg,#24415d,#152940);border-color:var(--line)}
     html[data-theme="dark"] .hero-visual-label,html[data-theme="dark"] .hardware-caption,html[data-theme="dark"] .hardware-caption strong{color:var(--ink)}
@@ -198,7 +198,7 @@
       .field-wide,.form-note,.contact-form button{grid-column:auto}
       .button-row .btn{width:100%}
     }
-    @media(max-width:560px){.solutions-switcher.phantom-home-switcher{top:66px}}
+    @media(max-width:560px){html{scroll-padding-top:138px}.solutions-switcher.phantom-home-switcher{top:66px}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
   </style>
   <script>
@@ -294,7 +294,7 @@
             </div>
             <div class="workflow-card">
               <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-monitor"/></svg></span>
-              <h3>Прослушивание и&nbsp;контроль</h3><p>Поиск и&nbsp;воспроизведение записей, в&nbsp;том числе через веб-интерфейс</p>
+              <h3>Прослушивание и&nbsp;контроль</h3><p>Прослушивание записей и&nbsp;контроль активности доступных каналов в&nbsp;реальном времени</p>
             </div>
           </div>
         </div>
@@ -320,7 +320,7 @@
           </a>
           <a class="task" href="selective-recording.html">
             <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg></span>
-            <h3>Селективная<br>запись</h3><p>Выбор записываемых устройств и&nbsp;управление регистрацией</p><span class="task-arrow" aria-hidden="true">↗</span>
+            <h3>Селективная<br>запись</h3><p>Изменение списка контролируемых устройств и&nbsp;параметров записи в&nbsp;реальном времени</p><span class="task-arrow" aria-hidden="true">↗</span>
           </a>
           <a class="task" href="index.html">
             <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-link"/></svg></span>
@@ -338,11 +338,11 @@
           <h2 id="benefits-heading">Подключение, масштабирование и&nbsp;работа с&nbsp;архивом</h2>
         </div>
         <div class="benefits">
-          <article class="benefit benefit-featured"><svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg><h3>Подбор под&nbsp;задачу</h3><p>Конфигурация станции записи подбирается по&nbsp;каналам, АТС и&nbsp;требованиям к&nbsp;эксплуатации</p></article>
+          <article class="benefit benefit-featured"><svg class="icon" aria-hidden="true"><use href="#icon-settings"/></svg><h3>Разграничение доступа</h3><p>В&nbsp;Phantom Cross 5.5.2 роли и&nbsp;фильтры задают доступ к&nbsp;записям, каналам и&nbsp;операциям с&nbsp;ними</p></article>
           <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-phone"/></svg><h3>Интерфейсы связи</h3><p>Подключение к&nbsp;аналоговым и&nbsp;цифровым линиям, потокам E1 и&nbsp;IP-телефонии</p></article>
           <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-network"/></svg><h3>Масштабирование</h3><p>Объединение станций для&nbsp;локальных и&nbsp;территориально распределённых систем</p></article>
-          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-shield"/></svg><h3>Резервирование</h3><p>Дублирование записи в&nbsp;конфигурациях для&nbsp;ответственных объектов</p></article>
-          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-archive"/></svg><h3>Работа с&nbsp;архивом</h3><p>Поиск и&nbsp;прослушивание записей через веб-интерфейс без&nbsp;установки клиентского ПО</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-shield"/></svg><h3>Резервирование</h3><p>Дублирование записи на&nbsp;ответственных объектах; в&nbsp;Phantom Cross – передача копий архива на&nbsp;отдельный сервер</p></article>
+          <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-archive"/></svg><h3>Работа с&nbsp;архивом</h3><p>Поиск и&nbsp;прослушивание через веб-интерфейс; в&nbsp;Phantom Cross 5.5.2 – экспорт записей в&nbsp;WAV и&nbsp;MP3, списков – в&nbsp;XLSX</p></article>
           <article class="benefit"><svg class="icon" aria-hidden="true"><use href="#icon-headset"/></svg><h3>Инженерная поддержка</h3><p>Помощь специалистов МДИС при&nbsp;подборе и&nbsp;эксплуатации решения</p></article>
         </div>
       </div>
@@ -414,7 +414,7 @@
         </div>
         <div class="proof-actions">
           <a class="proof-link" href="attestation-fsk-ees.html">Испытания и&nbsp;аттестация для&nbsp;электросетевого комплекса <span aria-hidden="true">↗</span></a>
-          <a class="proof-link" href="electroenergetika.html">Применение в&nbsp;электроэнергетике <span aria-hidden="true">↗</span></a>
+          <a class="proof-link" href="https://mdis.ru/support/phantom-cross-5-3-os-astra-linux/">Документация Phantom Cross 5.5.2 для&nbsp;Astra Linux <span aria-hidden="true">↗</span></a>
           <a class="proof-link" href="aviaton.html">СРДП «Авиатон»: характеристики <span aria-hidden="true">↗</span></a>
           <a class="proof-link" href="https://mdis.ru/news/mtskrs-fantom-v-reestre-rossiyskoy-promyshlennoy-produktsii-minpromtorga/">МЦКРС «Фантом» в&nbsp;реестре Минпромторга <span aria-hidden="true">↗</span></a>
           <a class="proof-link" href="https://mdis.ru/news/mtskrs-fantom-vashi-peregovory-teper-v-tekste/">Распознавание речи: модуль ASR для&nbsp;регистратора диспетчерских переговоров <span aria-hidden="true">↗</span></a>
