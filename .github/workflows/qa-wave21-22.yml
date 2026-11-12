@@ -60,9 +60,9 @@ jobs:
                       page.set_viewport_size({'width':375,'height':900})
                       menu=page.locator('details.site-mobile-menu')
                       if menu.count()==1:
-                          menu.locator('summary').click()
+                          menu.locator('summary').first.click()
                           if not menu.locator('.site-mobile-popover').is_visible():failures.append((file,'MOBILE_MENU_HIDDEN'))
-                          menu.locator('summary').click()
+                          menu.locator('summary').first.click()
                       else:failures.append((file,'MOBILE_MENU_MISSING'))
                       page.set_viewport_size({'width':1440,'height':900})
                   for theme in ['light','dark']:
