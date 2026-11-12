@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Документация Phantom Ultra | МДИС</title>
+<meta name="description" content="Техническая документация Phantom Ultra: руководство и опубликованный файл Location Manager.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="assets/hero-rhythm.css?v=20261111-solution-bg-v9">
+<link rel="stylesheet" href="assets/footer-next.css?v=20261104-4">
+<link rel="stylesheet" href="assets/footer-layout-v2.css?v=20261104-16">
+<script>(function(){try{var t=localStorage.getItem("mdis-theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t;else if(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches)document.documentElement.dataset.theme="dark"}catch(e){}})();</script>
+<style>
+:root{--ink:#172e48;--muted:#5e7288;--paper:#fff;--canvas:#f5f8fc;--soft:#edf4fa;--line:#d9e4ef;--red:#e30f2d;--red-soft:#fff0f3;--max:1180px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:85px}
+body{margin:0;background:var(--canvas);color:var(--ink);font:15px/1.6 Inter,Arial,sans-serif}
+a{color:inherit}
+.wrap{width:min(calc(100% - 48px),var(--max));margin:auto}
+.header{position:sticky;top:0;z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.header-in{min-height:64px;display:flex;align-items:center;gap:20px}
+.brand{color:var(--ink);text-decoration:none;font-size:20px;font-weight:750}
+.nav{display:flex;gap:18px;margin-left:auto}
+.nav a{font-size:13px;text-decoration:none}
+.theme{border:1px solid var(--line);background:var(--paper);border-radius:30px;padding:10px;color:var(--ink)}
+.button{display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:10px 18px;border:0;border-radius:7px;background:var(--red);color:#fff;text-decoration:none;font-size:13px;font-weight:700;cursor:pointer}
+.button--ghost{background:var(--paper);border:1px solid var(--line);color:var(--ink)}
+.hero{padding:64px 0;background:linear-gradient(120deg,#f8fbff,#eef5fd 72%,#f9f2f4)}
+.hero-in{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:center;gap:50px}
+.hero h1{margin:0;font-size:clamp(36px,4.3vw,56px);line-height:1.06;letter-spacing:-.038em;font-weight:750}
+main>.hero h1:after{content:"";display:block;width:54px;height:4px;margin-top:18px;border-radius:3px;background:var(--red)}
+.hero-subtitle{margin:20px 0 0;font-size:clamp(20px,2.1vw,27px);font-weight:500;line-height:1.3;color:var(--muted)}
+.lead{max-width:600px;margin:16px 0 0;color:var(--muted);font-size:17px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:25px}
+.support-meta{padding:24px;border:1px solid var(--line);border-radius:15px;background:var(--paper);box-shadow:0 12px 35px #19355512}
+.support-meta dl{display:grid;gap:15px;margin:0}
+.support-meta div{display:grid;grid-template-columns:100px 1fr;gap:15px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.support-meta div:last-child{border-bottom:0;padding-bottom:0}
+.support-meta dt{font-size:13px;color:var(--muted)}
+.support-meta dd{margin:0;font-weight:650;line-height:1.4}
+.section{padding:70px 0;scroll-margin-top:85px}
+.section.white{background:var(--paper)}
+.section h2{margin:0;font-size:clamp(27px,3.1vw,40px);line-height:1.18;letter-spacing:-.025em}
+.section-intro{max-width:790px;margin:15px 0 0;color:var(--muted);font-size:16px}
+.docs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:28px}
+.doc-card{display:flex;flex-direction:column;min-width:0;gap:14px;padding:26px;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
+.doc-kind{align-self:start;padding:5px 10px;border:1px solid var(--line);border-radius:100px;color:var(--muted);background:var(--soft);font-size:12px;font-weight:700}
+.doc-card h3{font-size:20px;line-height:1.28;margin:0;font-weight:700}
+.doc-card p{color:var(--muted);margin:0;line-height:1.6}
+.doc-card .filename{color:var(--ink);font-weight:600}
+.doc-card .meta{color:var(--muted);font-size:13px}
+.doc-card .button{align-self:start;margin-top:auto}
+.doc-note{margin:22px 0 0;padding:15px 19px;background:var(--soft);border-left:4px solid var(--red);border-radius:6px;color:var(--muted)}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.links a{display:inline-flex;align-items:center;min-height:42px;padding:9px 15px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:14px;font-weight:650;text-decoration:none}
+.links a:hover{color:var(--red);border-color:var(--red)}
+.request{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:center;gap:34px;padding:35px;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
+.request h2{font-size:clamp(26px,3vw,37px)}
+.request p{max-width:640px;color:var(--muted)}
+.request-action{display:grid;gap:12px;justify-items:start}
+.request-action p{margin:0;font-size:12px;line-height:1.5}
+.footer{background:#111d2f;color:#d3dfeb;padding:35px 0}
+html[data-theme="dark"]{--ink:#f4f7fc;--muted:#b8c4d6;--paper:#19283d;--canvas:#101a2a;--soft:#203249;--line:#36485f;--red-soft:#341d29}
+html[data-theme="dark"] .hero{background:linear-gradient(120deg,#17283d,#20334b 75%,#30273b)}
+html[data-theme="dark"] .footer{background:#0a111c}
+@media(max-width:900px){.hero-in,.request{grid-template-columns:1fr}.hero{padding:48px 0}.section{padding:55px 0}}
+@media(max-width:650px){.wrap{width:min(calc(100% - 32px),var(--max))}.docs-grid{grid-template-columns:1fr}.support-meta{padding:17px}.support-meta div{grid-template-columns:85px 1fr;gap:10px}.request{padding:22px}.doc-card{padding:20px}.hero h1:after{width:44px}}
+</style>
+</head>
+<body>
+<header class="header" aria-label="Навигация сайта"></header>
+<main id="top">
+<section class="hero">
+<div class="wrap hero-in">
+<div>
+<h1>Phantom Ultra</h1>
+<p class="hero-subtitle">Документация и&nbsp;служебные материалы</p>
+<p class="lead">Технические документы для&nbsp;эксплуатации и&nbsp;настройки Phantom Ultra.</p>
+<div class="hero-actions"><a class="button" href="#documents">Открыть документы</a><a class="button button--ghost" href="phantom-ultra.html">О&nbsp;Phantom Ultra</a></div>
+</div>
+<aside class="support-meta" aria-label="Сведения о разделе"><dl>
+<div><dt>Раздел</dt><dd>Техническая поддержка</dd></div>
+<div><dt>Продукт</dt><dd>Phantom Ultra</dd></div>
+<div><dt>Материалы</dt><dd>Руководство и&nbsp;Location Manager</dd></div>
+</dl></aside>
+</div></section>
+<section class="section white" id="documents">
+<div class="wrap">
+<h2>Документация</h2>
+<p class="section-intro">На&nbsp;официальной странице поддержки МДИС опубликованы два файла в&nbsp;формате DOC. Выберите нужный материал или&nbsp;уточните совместимость документа со&nbsp;своей конфигурацией.</p>
+<div class="docs-grid">
+<article class="doc-card">
+<span class="doc-kind">DOC · Документ Word</span>
+<h3>Руководство Phantom Ultra</h3>
+<p class="filename">Название на&nbsp;сайте МДИС: «Руководство Ультра»</p>
+<p>Опубликованный файл руководства Phantom Ultra. Редакцию, дату и&nbsp;применимость к&nbsp;конкретной версии ПО следует уточнять по&nbsp;содержимому документа и&nbsp;в&nbsp;службе поддержки.</p>
+<p class="meta">Размер, указанный на&nbsp;сайте МДИС: 811&nbsp;KB · Расширение: .doc</p>
+<a class="button" href="https://mdis.ru/upload/iblock/ba8/ba8a946d93918ba1abbfe2695a0e6739.doc" target="_blank" rel="noopener">Открыть руководство <span aria-hidden="true">↗</span></a>
+</article>
+<article class="doc-card">
+<span class="doc-kind">DOC · Документ Word</span>
+<h3>Location Manager</h3>
+<p class="filename">Название на&nbsp;сайте МДИС: «Location Manager»</p>
+<p>Отдельный материал из&nbsp;официального раздела поддержки Phantom Ultra. Его назначение, редакцию и&nbsp;совместимость с&nbsp;установленной системой следует уточнить до&nbsp;использования.</p>
+<p class="meta">Размер, указанный на&nbsp;сайте МДИС: 255&nbsp;KB · Расширение: .doc</p>
+<a class="button" href="https://mdis.ru/upload/iblock/508/50844d566ebdadf4523d35f6329e08c5.doc" target="_blank" rel="noopener">Открыть Location Manager <span aria-hidden="true">↗</span></a>
+</article>
+</div>
+<p class="doc-note">Состав материалов и&nbsp;указанные размеры отражают сведения официального раздела поддержки МДИС. Версии документов на&nbsp;странице не&nbsp;указаны; при&nbsp;сомнениях в&nbsp;совместимости запросите уточнение.</p>
+</div></section>
+<section class="section" id="related">
+<div class="wrap">
+<h2>Связанные разделы</h2>
+<p class="section-intro">Описание изделия, общая поддержка и&nbsp;вопросы модернизации вынесены в&nbsp;отдельные разделы.</p>
+<nav class="links" aria-label="Связанные страницы">
+<a href="support.html">Техническая поддержка</a>
+<a href="phantom-ultra.html">О&nbsp;Phantom Ultra</a>
+<a href="modernization.html">Комплексная модернизация</a>
+</nav>
+</div></section>
+<section class="section white" id="request"><div class="wrap">
+<div class="request">
+<div><h2>Не&nbsp;уверены, подходит ли руководство?</h2>
+<p>Укажите модель Phantom Ultra, версию программного обеспечения и&nbsp;используемые интерфейсы. Служба поддержки поможет определить подходящий документ.</p></div>
+<div class="request-action">
+<a class="button" href="mailto:support@mdis.ru?subject=Phantom%20Ultra%20%E2%80%94%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F&amp;body=%D0%9C%D0%BE%D0%B4%D0%B5%D0%BB%D1%8C%20%2F%20%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B0%D1%86%D0%B8%D1%8F%20Phantom%20Ultra%3A%0A%D0%92%D0%B5%D1%80%D1%81%D0%B8%D1%8F%20%D0%9F%D0%9E%3A%0A%D0%9E%D0%BF%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D0%B0%3A%0A%D0%A2%D0%B8%D0%BF%20%D0%BB%D0%B8%D0%BD%D0%B8%D0%B9%20%2F%20%D0%B8%D0%BD%D1%82%D0%B5%D1%80%D1%84%D0%B5%D0%B9%D1%81%D0%BE%D0%B2%3A%0A%D0%9A%D0%B0%D0%BA%D0%BE%D0%B9%20%D0%B4%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%20%D1%82%D1%80%D0%B5%D0%B1%D1%83%D0%B5%D1%82%D1%81%D1%8F%3A%0A%D0%9A%D0%BE%D0%BC%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%80%D0%B8%D0%B9%3A">Написать в&nbsp;поддержку</a>
+<p>Кнопка откроет почтовое приложение с&nbsp;заполненным черновиком письма.</p>
+</div>
+</div></div></section>
+</main>
+<footer class="footer" aria-label="Контакты компании"></footer>
+<script src="assets/footer-next.js?v=20261112-wave9-pages37-45-1"></script>
+<script src="assets/site-header.js?v=20261112-wave9-pages37-45-1"></script>
+</body></html>
