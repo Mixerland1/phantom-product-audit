@@ -57,21 +57,39 @@
     {label:'Granulex',href:'https://granulex.ru/'}
   ];
   const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
-  const desktopMenu=(label,list,allHref,allLabel)=>`<details class="site-menu"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div><a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a></section></details>`;
+  const desktopMenu=(label,list,allHref,allLabel,edge=false)=>`<details class="site-menu${edge?' site-menu--edge':''}"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div><a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a></section></details>`;
   const mobileMenu=(label,list,allHref,allLabel)=>`<details class="site-mobile-group"><summary>${label}<i aria-hidden="true"></i></summary><div>${cards(list)}<a class="site-mobile-all" href="${allHref}">${allLabel}</a></div></details>`;
   const services=[
     {label:'Персональные решения',href:paths.personal},
     {label:'Комплексная модернизация',href:paths.modernization},
     {label:'Обучение',href:paths.training}
   ];
-  const directLinks=[
-    {label:'Новости',href:'https://mdis.ru/news/'},
-    {label:'Поддержка',href:paths.support},
-    {label:'Компания',href:'https://mdis.ru/about/'}
+  // Both groups use the same disclosure component as Products/Services.
+  // Product guides that have not yet been migrated remain accessible via the local support hub.
+  const supportItems=[
+    {label:'Общие вопросы',href:paths.support+'#faq-general'},
+    {label:'Установка системы',href:paths.support+'#faq-install'},
+    {label:'Функции системы',href:paths.support+'#faq-functions'},
+    {label:'Коммерческие вопросы',href:paths.support+'#faq-commercial'},
+    {label:'Phantom 2',href:paths.support+'#phantom-2'},
+    {label:'Phantom 4',href:paths.support+'#phantom-4'},
+    {label:'Phantom Active',href:paths.support+'#phantom-active'},
+    {label:'Phantom Cross 5.5',href:paths.support+'#cross-docs'},
+    {label:'Фантом Ультра',href:paths.support+'#phantom-ultra'},
+    {label:'Станция записи',href:paths.support+'#station-recording'}
   ];
-  const direct=directLinks.map(item=>`<a href="${item.href}">${item.label}</a>`).join('');
-  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${direct}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${direct}`;
+  // The six Company pages are not local yet: keep their exact, verified public destinations.
+  const companyItems=[
+    {label:'Наши клиенты',href:'https://mdis.ru/about/clients/'},
+    {label:'Сертификаты и лицензии',href:'https://mdis.ru/about/license/'},
+    {label:'Реквизиты',href:'https://mdis.ru/about/requisites/'},
+    {label:'Партнёры',href:'https://mdis.ru/about/partners/'},
+    {label:'Награды',href:'https://mdis.ru/about/rewards/'},
+    {label:'История',href:'https://mdis.ru/about/history/'}
+  ];
+  const newsLink='<a href="https://mdis.ru/news/">Новости</a>';
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,'https://mdis.ru/about/','О компании',true)}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,'https://mdis.ru/about/','О компании')}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;
@@ -80,7 +98,8 @@
   const isCurrent=item=>{try{const url=new URL(item.href,location.href);return url.origin===location.origin&&decodeURIComponent(url.pathname).replace(/\/+$/,'')===currentPath}catch(error){return false}};
   // Technical subpages belong to the Phantom Cross product family, but not to extra dropdown cards.
   const isTechnicalSubpage=/\/(?:phantom-monitoring|phantom-asr)\.html$/.test(currentPath);
-  const currentGroup=isTechnicalSubpage?1:(services.some(isCurrent)?2:(solutions.some(isCurrent)?0:(products.some(isCurrent)?1:-1)));
+  const isSupportPage=/\/support(?:-[a-z0-9-]+)?\.html$/.test(currentPath);
+  const currentGroup=isSupportPage?3:(isTechnicalSubpage?1:(services.some(isCurrent)?2:(solutions.some(isCurrent)?0:(products.some(isCurrent)?1:-1))));
   if(currentGroup>=0){
     const desktopGroups=header.querySelectorAll('.site-menu');
     const mobileGroups=header.querySelectorAll('.site-mobile-group');
@@ -110,6 +129,18 @@
     if(mobile&&!mobile.contains(event.target))mobile.removeAttribute('open');
     header.querySelectorAll('.site-menu[open]').forEach(menu=>{if(!menu.contains(event.target))menu.removeAttribute('open')});
   });
+  header.addEventListener('keydown',event=>{
+    if(event.key!=='Escape')return;
+    const openMenu=header.querySelector('.site-menu[open],.site-mobile-group[open]');
+    if(openMenu){
+      openMenu.removeAttribute('open');
+      openMenu.querySelector('summary')?.focus();
+      event.stopPropagation();
+    }else if(mobile?.hasAttribute('open')){
+      mobile.removeAttribute('open');
+      mobile.querySelector('summary')?.focus();
+    }
+  });
 
   if(document.getElementById('site-header-style'))return;
   const style=document.createElement('style');
@@ -129,6 +160,7 @@
     .site-header .site-nav>a:hover,.site-header .site-nav>a:focus-visible,.site-header .site-menu>summary:hover,.site-header .site-menu>summary:focus-visible,.site-header .site-menu[open]>summary,.site-header .site-menu--current>summary{color:var(--ink);outline:none}
     .site-header .site-nav>a:hover:after,.site-header .site-nav>a:focus-visible:after,.site-header .site-menu>summary:hover:after,.site-header .site-menu>summary:focus-visible:after,.site-header .site-menu[open]>summary:after,.site-header .site-menu--current>summary:after{opacity:1;transform:scaleX(1)}
     .site-header .site-menu{position:relative}
+    .site-header .site-menu--edge .site-menu-panel{left:auto;right:-16px}
     .site-header .site-menu-panel{position:absolute;top:calc(var(--site-header-height) - 4px);left:-16px;width:396px;padding:12px 14px 15px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:0 18px 42px #12203620}
     .site-header .site-menu-list{display:grid;grid-template-columns:1fr 1fr;gap:4px}
     .site-header .site-menu-card{position:relative;display:flex;align-items:center;min-height:46px;padding:9px 27px 9px 10px;border:1px solid transparent;border-radius:8px;color:var(--ink);font-size:12.5px;font-weight:600;line-height:1.25;text-decoration:none;transition:border-color .18s,background .18s,color .18s}
