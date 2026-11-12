@@ -77,7 +77,9 @@
 
   const currentPath=decodeURIComponent(location.pathname).replace(/\/+$/,'');
   const isCurrent=item=>{try{const url=new URL(item.href,location.href);return url.origin===location.origin&&decodeURIComponent(url.pathname).replace(/\/+$/,'')===currentPath}catch(error){return false}};
-  const currentGroup=services.some(isCurrent)?2:(solutions.some(isCurrent)?0:(products.some(isCurrent)?1:-1));
+  // Technical subpages belong to the Phantom Cross product family, but not to extra dropdown cards.
+  const isTechnicalSubpage=/\/(?:phantom-monitoring|phantom-asr)\.html$/.test(currentPath);
+  const currentGroup=isTechnicalSubpage?1:(services.some(isCurrent)?2:(solutions.some(isCurrent)?0:(products.some(isCurrent)?1:-1)));
   if(currentGroup>=0){
     const desktopGroups=header.querySelectorAll('.site-menu');
     const mobileGroups=header.querySelectorAll('.site-mobile-group');
