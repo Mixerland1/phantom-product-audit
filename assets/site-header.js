@@ -39,7 +39,6 @@
     {label:'Финансовые организации',href:paths.financial},
     {label:'Электроэнергетика',href:paths.electro},
     {label:'Авиация и\u00a0транспорт',href:paths.aviation},
-    {label:'Персональные решения',href:paths.personal}
   ];
   const products=[
     {label:'Запись телефонных переговоров',href:paths.catalog+'#telephone-recording'},
