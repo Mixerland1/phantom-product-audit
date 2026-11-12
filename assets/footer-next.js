@@ -41,6 +41,12 @@
     {path:'modernization.html',name:'Комплексная модернизация'},
     {path:'training.html',name:'Обучение'}
   ];
+  // Technical modules are linked beneath Phantom Cross, without expanding the global product dropdown.
+  const technicalPages=[
+    {path:'phantom-cross.html',name:'Phantom Cross 5.5'},
+    {path:'phantom-monitoring.html',name:'Мониторинг Фантом'},
+    {path:'phantom-asr.html',name:'ASR – переговоры в тексте'}
+  ];
   const solutionPages=[
     {path:'atom-energy.html',name:'Атомная энергетика'},
     {path:'commercial.html',name:'Коммерческие предприятия'},
@@ -54,17 +60,19 @@
   const solutionIndex=solutionPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const productIndex=productPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const serviceIndex=source?-1:servicePages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const technicalIndex=source?-1:technicalPages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const isTechnical=technicalIndex>0; // Cross itself retains its standard product-menu neighbors.
   const isProduct=isCrmProduct||productIndex!==-1;
   const isSolution=solutionIndex!==-1;
   const isService=serviceIndex!==-1;
-  if(hero&&(isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
-    const pages=isProduct?productPages:(isSolution?solutionPages:servicePages);
-    const currentIndex=isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex);
-    const navigationName=isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами');
-    const previousName=isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга');
-    const nextName=isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга');
-    const allLabel=isProduct?'Все продукты':(isSolution?'Все решения':'Все услуги');
-    const allLink=isProduct?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?homePath+'#industries':'https://mdis.ru/service/');
+  if(hero&&(isTechnical||isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
+    const pages=isTechnical?technicalPages:(isProduct?productPages:(isSolution?solutionPages:servicePages));
+    const currentIndex=isTechnical?technicalIndex:(isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex));
+    const navigationName=isTechnical?'Переход между техническими модулями':(isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами'));
+    const previousName=isTechnical?'Предыдущий модуль':(isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга'));
+    const nextName=isTechnical?'Следующий модуль':(isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга'));
+    const allLabel=(isTechnical||isProduct)?'Все продукты':(isSolution?'Все решения':'Все услуги');
+    const allLink=(isTechnical||isProduct)?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?homePath+'#industries':'https://mdis.ru/service/');
     const pageAt=offset=>pages[(currentIndex+offset+pages.length)%pages.length];
     const switcher=document.createElement('nav');
     switcher.className='solutions-switcher';
