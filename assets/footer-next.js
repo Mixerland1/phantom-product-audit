@@ -7,7 +7,7 @@
 
   const hero=document.querySelector('.hero');
   const sectionLink=document.querySelector('.hero .crumb a[href*="electroenergetika"]');
-  const drilldownPage=/\/(?:selective-recording|attestation-fsk-ees)\.html$/.test(location.pathname);
+  const drilldownPage=/\/attestation-fsk-ees\.html$/.test(location.pathname);
   if(drilldownPage&&hero&&sectionLink&&!document.querySelector('.context-nav')){
     const contextNav=document.createElement('nav');
     contextNav.className='context-nav';
@@ -39,7 +39,9 @@
   const servicePages=[
     {path:'personal-solutions.html',name:'Персональные решения'},
     {path:'modernization.html',name:'Комплексная модернизация'},
-    {path:'training.html',name:'Обучение'}
+    {path:'training.html',name:'Обучение'},
+    // Support is a top-level direct navigation item after Services; it closes this service sequence.
+    {path:'support.html',name:'Техническая поддержка'}
   ];
   // Technical modules are linked beneath Phantom Cross, without expanding the global product dropdown.
   const technicalPages=[

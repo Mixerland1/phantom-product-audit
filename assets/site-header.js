@@ -24,6 +24,7 @@
     personal:page('personal-solutions.html','personal-solutions.html','personal-solutions.html'),
     modernization:page('modernization.html','modernization.html','modernization.html'),
     training:page('training.html','training.html','training.html'),
+    support:page('support.html','support.html','support.html'),
     ipTelephony:page('ip-telephony.html','ip-telephony.html','ip-telephony.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
@@ -65,7 +66,7 @@
   ];
   const directLinks=[
     {label:'Новости',href:'https://mdis.ru/news/'},
-    {label:'Поддержка',href:'https://mdis.ru/support/'},
+    {label:'Поддержка',href:paths.support},
     {label:'Компания',href:'https://mdis.ru/about/'}
   ];
   const direct=directLinks.map(item=>`<a href="${item.href}">${item.label}</a>`).join('');
