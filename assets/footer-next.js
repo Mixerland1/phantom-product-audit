@@ -22,14 +22,24 @@
   const isCrmProduct=source
     ?pathname.endsWith('/02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html')
     :pathname==='/'||pathname.endsWith('/index.html');
+  // Keep order aligned with the local entries in assets/site-header.js > products.
   const productPages=source?[
     {path:'05_Готовый_вариант_Селективная_запись.html',name:'Селективная запись'},
-    {path:'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html',name:'Интеграция с\u00a01С:CRM'},
-    {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
+    {path:'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html',name:'Интеграция с\\u00a01С:CRM'}
   ]:[
+    {path:'telephone-recording.html',name:'Запись телефонных переговоров'},
+    {path:'dispatcher-recording.html',name:'Запись диспетчерских переговоров'},
+    {path:'ip-telephony.html',name:'Запись IP-телефонии'},
     {path:'selective-recording.html',name:'Селективная запись'},
-    {path:'index.html',name:'Интеграция с\u00a01С:CRM'},
-    {path:'https://mdis.ru/catalog/ods-pulteks/',name:'ОДС PultEx'}
+    {path:'index.html',name:'Интеграция Фантом и\\u00a0CRM'},
+    {path:'pultex.html',name:'ОДС PultEx'},
+    {path:'connection-schemes.html',name:'Схемы подключения МЦКРС «Фантом»'},
+    {path:'phantom-cross.html',name:'Phantom Cross 5.5'}
+  ];
+  const servicePages=[
+    {path:'personal-solutions.html',name:'Персональные решения'},
+    {path:'modernization.html',name:'Комплексная модернизация'},
+    {path:'training.html',name:'Обучение'}
   ];
   const solutionPages=[
     {path:'atom-energy.html',name:'Атомная энергетика'},
@@ -41,18 +51,20 @@
     {path:source?'03_Готовый_вариант_Электроэнергетика.html':'electroenergetika.html',name:'Электроэнергетика'},
     {path:source?'10_Готовый_вариант_Авиация_и_транспорт.html':'aviation-transport.html',name:'Авиация и\u00a0транспорт'}
   ];
-  const solutionIndex=solutionPages.findIndex(page=>source
-    ?pathname.endsWith(`/${page.path}`)
-    :pathname.endsWith(`/${page.path}`));
+  const solutionIndex=solutionPages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const productIndex=productPages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const serviceIndex=source?-1:servicePages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const isProduct=isCrmProduct||productIndex!==-1;
   const isSolution=solutionIndex!==-1;
-  if(hero&&(isCrmProduct||isSolution)&&!document.querySelector('.solutions-switcher')){
-    const pages=isCrmProduct?productPages:solutionPages;
-    const currentIndex=isCrmProduct?1:solutionIndex;
-    const navigationName=isCrmProduct?'Переход между продуктами':'Переход между решениями';
-    const previousName=isCrmProduct?'Предыдущий продукт':'Предыдущее решение';
-    const nextName=isCrmProduct?'Следующий продукт':'Следующее решение';
-    const allLabel=isCrmProduct?'Все продукты':'Все решения';
-    const allLink=isCrmProduct?homePath+'#products':homePath+'#industries';
+  const isService=serviceIndex!==-1;
+  if(hero&&(isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
+    const pages=isProduct?productPages:(isSolution?solutionPages:servicePages);
+    const currentIndex=isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex);
+    const navigationName=isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами');
+    const previousName=isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга');
+    const nextName=isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга');
+    const allLabel=isProduct?'Все продукты':(isSolution?'Все решения':'Все услуги');
+    const allLink=isProduct?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?homePath+'#industries':'https://mdis.ru/service/');
     const pageAt=offset=>pages[(currentIndex+offset+pages.length)%pages.length];
     const switcher=document.createElement('nav');
     switcher.className='solutions-switcher';
