@@ -25,13 +25,13 @@
   // Keep order aligned with the local entries in assets/site-header.js > products.
   const productPages=source?[
     {path:'05_Готовый_вариант_Селективная_запись.html',name:'Селективная запись'},
-    {path:'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html',name:'Интеграция с\\u00a01С:CRM'}
+    {path:'02_Готовый_вариант_Интеграция_Фантом_и_1С_CRM.html',name:'Интеграция с&nbsp;1С:CRM'}
   ]:[
     {path:'telephone-recording.html',name:'Запись телефонных переговоров'},
     {path:'dispatcher-recording.html',name:'Запись диспетчерских переговоров'},
     {path:'ip-telephony.html',name:'Запись IP-телефонии'},
     {path:'selective-recording.html',name:'Селективная запись'},
-    {path:'index.html',name:'Интеграция Фантом и\\u00a0CRM'},
+    {path:'index.html',name:'Интеграция Фантом и&nbsp;CRM'},
     {path:'pultex.html',name:'ОДС PultEx'},
     {path:'connection-schemes.html',name:'Схемы подключения МЦКРС «Фантом»'},
     {path:'phantom-cross.html',name:'Phantom Cross 5.5'}
