@@ -25,6 +25,15 @@
     modernization:page('modernization.html','modernization.html','modernization.html'),
     training:page('training.html','training.html','training.html'),
     support:page('support.html','support.html','support.html'),
+    solutions:page('solutions.html','solutions.html','solutions.html'),
+    privacy:page('privacy-policy.html','privacy-policy.html','privacy-policy.html'),
+    cookie:page('cookie-policy.html','cookie-policy.html','cookie-policy.html'),
+    docs2:page('support-phantom-2.html','support-phantom-2.html','support-phantom-2.html'),
+    docs4:page('support-phantom-4.html','support-phantom-4.html','support-phantom-4.html'),
+    docsActive:page('support-phantom-active.html','support-phantom-active.html','support-phantom-active.html'),
+    docsCross:page('support-phantom-cross.html','support-phantom-cross.html','support-phantom-cross.html'),
+    docsUltra:page('support-phantom-ultra.html','support-phantom-ultra.html','support-phantom-ultra.html'),
+    docsStation:page('support-stantsiya-zapisi.html','support-stantsiya-zapisi.html','support-stantsiya-zapisi.html'),
     ipTelephony:page('ip-telephony.html','ip-telephony.html','ip-telephony.html'),
     electro:page('03_Готовый_вариант_Электроэнергетика.html','electroenergetika.html','electroenergetika.html'),
     aviation:page('10_Готовый_вариант_Авиация_и_транспорт.html','aviation-transport.html','aviation-transport.html'),
@@ -65,18 +74,18 @@
     {label:'Обучение',href:paths.training}
   ];
   // Both groups use the same disclosure component as Products/Services.
-  // Product guides that have not yet been migrated remain accessible via the local support hub.
+  // FAQ categories remain on the local support hub; document categories have dedicated local pages.
   const supportItems=[
     {label:'Общие вопросы',href:paths.support+'#faq-general'},
     {label:'Установка системы',href:paths.support+'#faq-install'},
     {label:'Функции системы',href:paths.support+'#faq-functions'},
     {label:'Коммерческие вопросы',href:paths.support+'#faq-commercial'},
-    {label:'Phantom 2',href:paths.support+'#phantom-2'},
-    {label:'Phantom 4',href:paths.support+'#phantom-4'},
-    {label:'Phantom Active',href:paths.support+'#phantom-active'},
-    {label:'Phantom Cross 5.5',href:paths.support+'#cross-docs'},
-    {label:'Фантом Ультра',href:paths.support+'#phantom-ultra'},
-    {label:'Станция записи',href:paths.support+'#station-recording'}
+    {label:'Phantom 2',href:paths.docs2},
+    {label:'Phantom 4',href:paths.docs4},
+    {label:'Phantom Active',href:paths.docsActive},
+    {label:'Phantom Cross 5.5',href:paths.docsCross},
+    {label:'Фантом Ультра',href:paths.docsUltra},
+    {label:'Станция записи',href:paths.docsStation}
   ];
   // The six Company pages are not local yet: keep their exact, verified public destinations.
   const companyItems=[
@@ -85,11 +94,13 @@
     {label:'Реквизиты',href:'https://mdis.ru/about/requisites/'},
     {label:'Партнёры',href:'https://mdis.ru/about/partners/'},
     {label:'Награды',href:'https://mdis.ru/about/rewards/'},
-    {label:'История',href:'https://mdis.ru/about/history/'}
+    {label:'История',href:'https://mdis.ru/about/history/'},
+    {label:'Политика конфиденциальности',href:paths.privacy},
+    {label:'Политика cookie',href:paths.cookie}
   ];
   const newsLink='<a href="https://mdis.ru/news/">Новости</a>';
-  const desktopNav=`${desktopMenu('Решения',solutions,paths.home+'#industries','О\\u00a0решениях Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,'https://mdis.ru/about/','О компании',true)}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,paths.home+'#industries','О\\u00a0решениях Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,'https://mdis.ru/about/','О компании')}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,'https://mdis.ru/about/','О компании',true)}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,'https://mdis.ru/about/','О компании')}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;
@@ -99,7 +110,9 @@
   // Technical subpages belong to the Phantom Cross product family, but not to extra dropdown cards.
   const isTechnicalSubpage=/\/(?:phantom-monitoring|phantom-asr)\.html$/.test(currentPath);
   const isSupportPage=/\/support(?:-[a-z0-9-]+)?\.html$/.test(currentPath);
-  const currentGroup=isSupportPage?3:(isTechnicalSubpage?1:(services.some(isCurrent)?2:(solutions.some(isCurrent)?0:(products.some(isCurrent)?1:-1))));
+  const isSolutionsHub=/\/solutions\.html$/.test(currentPath);
+  const isCompanyLegalPage=/\/(?:privacy-policy|cookie-policy)\.html$/.test(currentPath);
+  const currentGroup=isCompanyLegalPage?4:(isSupportPage?3:(isTechnicalSubpage?1:(services.some(isCurrent)?2:((isSolutionsHub||solutions.some(isCurrent))?0:(products.some(isCurrent)?1:-1)))));
   if(currentGroup>=0){
     const desktopGroups=header.querySelectorAll('.site-menu');
     const mobileGroups=header.querySelectorAll('.site-mobile-group');

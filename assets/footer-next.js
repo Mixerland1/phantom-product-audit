@@ -40,7 +40,7 @@
     {path:'personal-solutions.html',name:'Персональные решения'},
     {path:'modernization.html',name:'Комплексная модернизация'},
     {path:'training.html',name:'Обучение'},
-    // Support is a top-level direct navigation item after Services; it closes this service sequence.
+    // Support is a standalone header dropdown, but remains the last related service card.
     {path:'support.html',name:'Техническая поддержка'}
   ];
   // Technical modules are linked beneath Phantom Cross, without expanding the global product dropdown.
@@ -48,6 +48,15 @@
     {path:'phantom-cross.html',name:'Phantom Cross 5.5'},
     {path:'phantom-monitoring.html',name:'Мониторинг Фантом'},
     {path:'phantom-asr.html',name:'ASR – переговоры в тексте'}
+  ];
+  // Six support documents are local pages under the support hub.
+  const documentationPages=[
+    {path:'support-phantom-2.html',name:'Документация Phantom 2'},
+    {path:'support-phantom-4.html',name:'Документация Phantom 4'},
+    {path:'support-phantom-active.html',name:'Документация Phantom Active'},
+    {path:'support-phantom-cross.html',name:'Документация Phantom Cross 5.5'},
+    {path:'support-phantom-ultra.html',name:'Документация Phantom Ultra'},
+    {path:'support-stantsiya-zapisi.html',name:'Документация станции записи'}
   ];
   const solutionPages=[
     {path:'atom-energy.html',name:'Атомная энергетика'},
@@ -63,18 +72,20 @@
   const productIndex=productPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const serviceIndex=source?-1:servicePages.findIndex(page=>pathname.endsWith('/'+page.path));
   const technicalIndex=source?-1:technicalPages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const documentationIndex=source?-1:documentationPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const isTechnical=technicalIndex>0; // Cross itself retains its standard product-menu neighbors.
+  const isDocumentation=documentationIndex!==-1;
   const isProduct=isCrmProduct||productIndex!==-1;
   const isSolution=solutionIndex!==-1;
   const isService=serviceIndex!==-1;
-  if(hero&&(isTechnical||isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
-    const pages=isTechnical?technicalPages:(isProduct?productPages:(isSolution?solutionPages:servicePages));
-    const currentIndex=isTechnical?technicalIndex:(isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex));
-    const navigationName=isTechnical?'Переход между техническими модулями':(isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами'));
-    const previousName=isTechnical?'Предыдущий модуль':(isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга'));
-    const nextName=isTechnical?'Следующий модуль':(isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга'));
-    const allLabel=(isTechnical||isProduct)?'Все продукты':(isSolution?'Все решения':'Все услуги');
-    const allLink=(isTechnical||isProduct)?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?homePath+'#industries':'https://mdis.ru/service/');
+  if(hero&&(isDocumentation||isTechnical||isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
+    const pages=isDocumentation?documentationPages:(isTechnical?technicalPages:(isProduct?productPages:(isSolution?solutionPages:servicePages)));
+    const currentIndex=isDocumentation?documentationIndex:(isTechnical?technicalIndex:(isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex)));
+    const navigationName=isDocumentation?'Переход между документами':(isTechnical?'Переход между техническими модулями':(isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами')));
+    const previousName=isDocumentation?'Предыдущий раздел документации':(isTechnical?'Предыдущий модуль':(isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга')));
+    const nextName=isDocumentation?'Следующий раздел документации':(isTechnical?'Следующий модуль':(isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга')));
+    const allLabel=isDocumentation?'Вся документация':((isTechnical||isProduct)?'Все продукты':(isSolution?'Все решения':'Все услуги'));
+    const allLink=isDocumentation?'support.html':((isTechnical||isProduct)?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?'solutions.html':'https://mdis.ru/service/'));
     const pageAt=offset=>pages[(currentIndex+offset+pages.length)%pages.length];
     const switcher=document.createElement('nav');
     switcher.className='solutions-switcher';
@@ -112,7 +123,7 @@
       <div class="wrap footer-in footer-next">
       <div class="footer-details"><b>ООО «МДИС»</b><address>123022, Россия, г. Москва, ул. 1905 года, д. 7, стр. 1</address><a class="footer-general-phone" href="tel:+74957833379">+7 (495) 783-33-79</a></div>
       <div class="footer-channel"><b>Отдел продаж</b><a href="mailto:sales@mdis.ru">sales@mdis.ru</a></div>
-      <div class="footer-channel footer-support"><b>Техническая поддержка</b><a href="mailto:support@mdis.ru">support@mdis.ru</a><span class="footer-legal"><a href="https://mdis.ru/privacy-policy/" target="_blank" rel="noopener">Конфиденциальность</a><a href="https://mdis.ru/cookie-policy/" target="_blank" rel="noopener">Cookie</a></span></div>
+      <div class="footer-channel footer-support"><b>Техническая поддержка</b><a href="mailto:support@mdis.ru">support@mdis.ru</a><span class="footer-legal"><a href="privacy-policy.html">Конфиденциальность</a><a href="cookie-policy.html">Cookie</a></span></div>
       </div>
     </div>`;
 
