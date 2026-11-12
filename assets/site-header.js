@@ -16,6 +16,10 @@
     financial:page('financial.html','financial.html','financial.html'),
     autoDealers:page('auto-dealers.html','auto-dealers.html','auto-dealers.html'),
     catalog:page('phantom-catalog.html','phantom-catalog.html','phantom-catalog.html'),
+    telephone:page('telephone-recording.html','telephone-recording.html','telephone-recording.html'),
+    dispatcher:page('dispatcher-recording.html','dispatcher-recording.html','dispatcher-recording.html'),
+    pultex:page('pultex.html','pultex.html','pultex.html'),
+    cross:page('phantom-cross.html','phantom-cross.html','phantom-cross.html'),
     schemes:page('connection-schemes.html','connection-schemes.html','connection-schemes.html'),
     personal:page('personal-solutions.html','personal-solutions.html','personal-solutions.html'),
     modernization:page('modernization.html','modernization.html','modernization.html'),
@@ -41,13 +45,14 @@
     {label:'Авиация и\u00a0транспорт',href:paths.aviation},
   ];
   const products=[
-    {label:'Запись телефонных переговоров',href:paths.catalog+'#telephone-recording'},
-    {label:'Запись диспетчерских переговоров',href:paths.catalog+'#dispatcher-recording'},
+    {label:'Запись телефонных переговоров',href:paths.telephone},
+    {label:'Запись диспетчерских переговоров',href:paths.dispatcher},
     {label:'Запись IP-телефонии',href:paths.ipTelephony},
     {label:'Селективная запись',href:paths.selective},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
-    {label:'ОДС PultEx',href:'https://mdis.ru/catalog/ods-pulteks/'},
+    {label:'ОДС PultEx',href:paths.pultex},
     {label:'Схемы подключения МЦКРС «Фантом»',href:paths.schemes},
+    {label:'Phantom Cross 5.5',href:paths.cross},
     {label:'Granulex',href:'https://granulex.ru/'}
   ];
   const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
