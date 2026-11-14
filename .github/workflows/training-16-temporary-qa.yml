@@ -48,12 +48,13 @@ jobs:
                           try:
                               response=page.goto(url,wait_until="load",timeout=30000)
                               assert response and response.status==200, "page HTTP failure"
-                              assert page.locator("h1").count()==1 and page.locator("h1").inner_text()=="Обучение по Phantom","H1"
+                              assert page.locator("h1").count()==1 and page.locator("h1").inner_text().replace("\u00a0"," ")=="Обучение по Phantom","H1"
                               assert page.locator('meta[name="robots"]').get_attribute("content")=="noindex, nofollow","robots"
                               assert page.locator("html").get_attribute("data-theme")==theme,"Theme not applied"
                               assert page.locator(".site-header").count()==1,"Shared header absent"
                               assert page.locator("#site-footer").count()==1,"Shared footer absent"
                               assert page.locator(".demo").count()==0,"Old approval label"
+                              assert page.locator('.training-visual[role="group"][aria-label]').count()==1,"Diagram accessibility"
                               assert page.locator('.solutions-switcher[aria-label="Переход между услугами"]').count()==1,"Service switcher missing"
                               assert page.locator('.solutions-switcher-label[href="services.html"]').count()==1,"Service switcher hub wrong"
                               assert page.locator('.solutions-switcher-neighbor--previous[href="modernization.html"]').count()==1,"Previous service wrong"
