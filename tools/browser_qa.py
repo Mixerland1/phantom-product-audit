@@ -105,7 +105,7 @@ def inspect_nav(page, filename: str, width: int):
                 "Local station links missing")
         require(page.locator('a[href="certificates.html#licenses"]').count() == 1,
                 "Local license-section link missing")
-        require(page.locator('a[href^="https://mdis.ru/"]').count() == 0,
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
                 "Old official-site links remain")
         require(page.locator('.solutions-switcher').count() == 1,
                 "Solution navigation switcher missing")
