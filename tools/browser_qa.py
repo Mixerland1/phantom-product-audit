@@ -138,6 +138,14 @@ def inspect_nav(page, filename: str, width: int):
                 require(box["x"] >= -3 and box["x"] + box["width"] <= width + 3,
                         f"{label} panel outside viewport: {box}")
             group.locator("summary").click()
+        products = groups.nth(labels.index("Продукты"))
+        products.locator("summary").click()
+        featured = products.locator('.site-menu-list > a.site-menu-card--featured[href="connection-schemes.html"]')
+        require(featured.count() == 1 and featured.is_visible(),
+                "Featured connection schemes missing from desktop Products menu")
+        require(products.locator(".site-menu-list > a").first.get_attribute("href")
+                == "connection-schemes.html", "Schemes are not first in Products menu")
+        products.locator("summary").click()
     else:
         mobile = page.locator(".site-mobile-menu")
         mobile.locator(":scope > summary").click()
@@ -150,13 +158,33 @@ def inspect_nav(page, filename: str, width: int):
             ("Компания", "certificates.html"),
             ("Услуги", "services.html"),
             ("Поддержка", "faq.html"),
+            ("Продукты", "connection-schemes.html"),
         ]:
             group = groups.nth(labels.index(label))
             group.locator("summary").click()
             require(group.get_attribute("open") is not None, f"Mobile {label} did not open")
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
+            if label == "Продукты":
+                featured = group.locator('.site-menu-card--featured[href="connection-schemes.html"]')
+                require(featured.count() == 1 and featured.is_visible(),
+                        "Featured connection schemes missing from mobile Products menu")
+                require(group.locator(".site-menu-card").first.get_attribute("href")
+                        == "connection-schemes.html", "Schemes are not first on mobile")
             group.locator("summary").click()
+    if filename == "phantom-home.html" and width in (375, 1440):
+        if width > 1080:
+            menu = page.locator(".site-nav .site-menu").nth(1)
+        else:
+            menu = page.locator(".site-mobile-menu .site-mobile-group").nth(1)
+        menu.locator("summary").click()
+        menu.locator('a.site-menu-card--featured[href="connection-schemes.html"]').click()
+        page.wait_for_url("**/connection-schemes.html", timeout=15000)
+        require("Схемы подключения" in page.locator("h1").inner_text(),
+                "Featured menu link opened the wrong page")
+        page.go_back(wait_until="load", timeout=15000)
+        require(page.url.endswith("/phantom-home.html"),
+                "Home page was not restored after featured menu navigation")
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:

@@ -77,17 +77,17 @@
     {label:'Авиация и\u00a0транспорт',href:paths.aviation},
   ];
   const products=[
+    {label:'Схемы подключения',href:paths.schemes,featured:true,description:'4 схемы МЦКРС «Фантом» для АТС и IP-телефонии'},
     {label:'Запись телефонных переговоров',href:paths.telephone},
     {label:'Запись диспетчерских переговоров',href:paths.dispatcher},
     {label:'Запись IP-телефонии',href:paths.ipTelephony},
     {label:'Селективная запись',href:paths.selective},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
     {label:'ОДС PultEx',href:paths.pultex},
-    {label:'Схемы подключения МЦКРС «Фантом»',href:paths.schemes},
     {label:'Phantom Cross 5.5',href:paths.cross},
     {label:'Granulex',href:'https://granulex.ru/'}
   ];
-  const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
+  const cards=list=>list.map(item=>`<a class="site-menu-card${item.featured?' site-menu-card--featured':''}" href="${item.href}">${item.featured?`<span class="site-menu-card-copy"><strong>${item.label}</strong><small>${item.description}</small></span>`:item.label}<b aria-hidden="true">↗</b></a>`).join('');
   const desktopMenu=(label,list,allHref,allLabel,edge=false)=>`<details class="site-menu${edge?' site-menu--edge':''}"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div><a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a></section></details>`;
   const mobileMenu=(label,list,allHref,allLabel)=>`<details class="site-mobile-group"><summary>${label}<i aria-hidden="true"></i></summary><div>${cards(list)}<a class="site-mobile-all" href="${allHref}">${allLabel}</a></div></details>`;
   const services=[
@@ -205,6 +205,10 @@
     .site-header .site-menu-list{display:grid;grid-template-columns:1fr 1fr;gap:4px}
     .site-header .site-menu-card{position:relative;display:flex;align-items:center;min-height:46px;padding:9px 27px 9px 10px;border:1px solid transparent;border-radius:8px;color:var(--ink);font-size:12.5px;font-weight:600;line-height:1.25;text-decoration:none;transition:border-color .18s,background .18s,color .18s}
     .site-header .site-menu-card b{position:absolute;right:10px;color:var(--red);font-size:13px}
+    .site-header .site-menu-card--featured{grid-column:1/-1;min-height:58px;border-color:var(--line);background:var(--soft);padding-left:13px}
+    .site-header .site-menu-card--featured strong{display:block;font-size:13px;font-weight:750}
+    .site-header .site-menu-card--featured small{display:block;margin-top:3px;color:var(--muted);font-size:11px;font-weight:500;line-height:1.35}
+    .site-header .site-menu-card--featured b{font-size:16px}
     .site-header .site-menu-card:hover,.site-header .site-menu-card:focus-visible{border-color:var(--line);background:var(--soft);color:var(--red);outline:none}
     .site-header .site-menu-all{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding:10px 3px 0;border-top:1px solid var(--line);color:var(--ink);font-size:11.5px;font-weight:700;text-decoration:none}
     .site-header .site-menu-all b{color:var(--red);font-size:15px}.site-header .site-menu-all:hover,.site-header .site-menu-all:focus-visible{color:var(--red);outline:none}
