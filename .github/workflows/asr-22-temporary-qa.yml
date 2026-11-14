@@ -1,0 +1,123 @@
+name: ASR prompt 22 temporary Chromium QA
+on:
+  pull_request:
+    branches: [main]
+    paths: ['phantom-asr.html', '.github/workflows/asr-22-temporary-qa.yml']
+permissions:
+  contents: read
+jobs:
+  asr-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium Playwright
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Playwright checks for ASR page
+        run: |
+          python - <<'PY'
+          import json,threading
+          from functools import partial
+          from http.server import ThreadingHTTPServer,SimpleHTTPRequestHandler
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          class Quiet(SimpleHTTPRequestHandler):
+              def log_message(self,*args):pass
+          server=ThreadingHTTPServer(("127.0.0.1",0),partial(Quiet,directory=str(Path.cwd())))
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          url=f"http://127.0.0.1:{server.server_port}/phantom-asr.html"
+          Path("qa-asr-artifacts").mkdir(exist_ok=True)
+          passed,failed=[],[]
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
+                  for width,height in [(375,812),(768,900),(1024,768),(1440,900)]:
+                      for theme in ("light","dark"):
+                          context=browser.new_context(viewport={"width":width,"height":height},reduced_motion="reduce")
+                          context.add_init_script(f"localStorage.setItem('mdis-theme','{theme}')")
+                          page=context.new_page()
+                          errors=[]
+                          page.on("pageerror",lambda error:errors.append(str(error)))
+                          key=f"phantom-asr.html {width}px {theme}"
+                          try:
+                              resp=page.goto(url,wait_until="load",timeout=30000)
+                              assert resp and resp.status==200,"HTML status not 200"
+                              assert page.locator("h1").count()==1,"H1 count"
+                              assert page.locator("h1").inner_text().replace("\u00a0"," ")=="ASR для МЦКРС «Фантом»","H1 content"
+                              assert page.locator('meta[name="robots"]').get_attribute("content")=="noindex, nofollow","Robots meta"
+                              assert page.locator("html").get_attribute("data-theme")==theme,"Wrong applied theme"
+                              assert page.locator(".demo").count()==0,"Old approval banner"
+                              assert page.locator(".site-header").count()==1,"Shared header missing"
+                              assert page.locator("#site-footer").count()==1,"Shared footer missing"
+                              assert page.locator('.visual[role="group"][aria-label]').count()==1,"ASR process diagram a11y"
+                              assert page.locator('.comparison[role="table"]').count()==1,"Comparison table missing"
+                              assert page.locator('.comparison [role="row"]').count()==6,"Comparison table rows missing"
+                              assert page.locator('.comparison [role="columnheader"]').count()==2,"Comparison headers missing"
+                              assert page.locator('.comparison [role="cell"]').count()==10,"Comparison cells missing"
+                              assert page.locator(".solutions-switcher").count()==1,"Technical switcher missing"
+                              assert page.locator('.solutions-switcher-label[href="phantom-catalog.html"]').count()==1,"Technical switcher hub incorrect"
+                              assert page.locator('.solutions-switcher-neighbor--previous[href="phantom-monitoring.html"]').count()==1,"Technical previous nav incorrect"
+                              assert page.locator('.solutions-switcher-neighbor--next[href="phantom-cross.html"]').count()==1,"Technical next nav incorrect"
+                              assert page.locator('.links a[href="ip-telephony.html"]').count()==1,"IP recording link absent"
+                              assert page.locator('a[href="news.html#news-asr"]').count()==1,"News local source link absent"
+                              assert page.locator('a[href="phantom-cross.html"]').count()>=1,"Phantom Cross link absent"
+                              assert page.locator('a[href="dispatcher-recording.html"]').count()>=1,"Dispatch link absent"
+                              assert not page.locator('main a[href^="https://mdis.ru"]').count(),"Legacy website link visible"
+                              mail=page.locator('main a[href^="mailto:sales@mdis.ru?"]')
+                              assert mail.count()==1,"Missing consultation CTA"
+                              parts=mail.evaluate("""e=>{let u=new URL(e.href);return {to:u.pathname,subject:u.searchParams.get('subject'),body:u.searchParams.get('body')}}""")
+                              assert parts["to"]=="sales@mdis.ru","Wrong sales email"
+                              assert "ASR" in parts["subject"],"Missing ASR in subject"
+                              for label in ("Версия Phantom:","Тип связи:","Язык переговоров:","Ориентировочный объём записей:","Как планируется использовать текст:","Нужна ли интеграция с внешней системой:","Дополнительные требования:"):
+                                  assert label in parts["body"],"Missing mailto field "+label
+                              m=page.evaluate("""()=>{let h=document.querySelector('main>.hero');let inner=h?.querySelector('.hero-in');let a=h?.getBoundingClientRect(),b=inner?.getBoundingClientRect();return {vp:document.documentElement.clientWidth,doc:document.documentElement.scrollWidth,body:document.body.scrollWidth,hero:a?{y:a.y,height:a.height}:null,inner:b?{y:b.y,height:b.height}:null}}""")
+                              assert m["doc"]<=m["vp"]+2 and m["body"]<=m["vp"]+2,f"Horizontal overflow {m}"
+                              if width>=1000:
+                                  a,b=m["hero"],m["inner"]
+                                  assert b["y"]>=a["y"]-3 and b["y"]+b["height"]<=a["y"]+a["height"]+3,f"Hero clipped {m}"
+                              broken=page.evaluate("""()=>[...document.images].filter(i=>i.complete&&i.naturalWidth===0&&new URL(i.src).origin===location.origin).map(i=>i.src)""")
+                              assert not broken,f"Broken images {broken}"
+                              testLink=page.locator('.links a[href="ip-telephony.html"]')
+                              testLink.focus()
+                              assert testLink.evaluate("(e)=>getComputedStyle(e).outlineStyle")!="none","No visible keyboard outline"
+                              toggle=page.locator(".site-theme-toggle")
+                              toggle.click()
+                              other="dark" if theme=="light" else "light"
+                              assert page.locator("html").get_attribute("data-theme")==other,"Toggle failed"
+                              assert page.evaluate("localStorage.getItem('mdis-theme')")==other,"Theme persistence failed"
+                              toggle.click()
+                              assert page.locator("html").get_attribute("data-theme")==theme,"Theme restore failed"
+                              if width<=1080:
+                                  menu=page.locator(".site-mobile-menu")
+                                  menu.locator(":scope > summary").click()
+                                  assert menu.get_attribute("open") is not None,"Mobile menu open failed"
+                                  menu.locator(":scope > summary").click()
+                              assert not errors,f"Page JavaScript errors: {errors}"
+                              page.evaluate("window.scrollTo(0,0)")
+                              page.screenshot(path=f"qa-asr-artifacts/asr-{width}-{theme}.png",full_page=True)
+                              passed.append(key)
+                              print("PASS",key,"hero",m["hero"],"inner",m["inner"],flush=True)
+                          except Exception as e:
+                              failed.append(f"{key}: {e}")
+                              print("FAIL",key,str(e),flush=True)
+                              try:page.screenshot(path=f"qa-asr-artifacts/FAIL-asr-{width}-{theme}.png",full_page=True)
+                              except Exception: pass
+                          context.close()
+                  browser.close()
+          finally:
+              server.shutdown()
+          print(json.dumps({"passed":len(passed),"failed":len(failed),"errors":failed},ensure_ascii=False),flush=True)
+          if failed:raise SystemExit(1)
+          PY
+      - name: Upload screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: asr-22-qa
+          path: qa-asr-artifacts/
+          if-no-files-found: warn
