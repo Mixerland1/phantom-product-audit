@@ -63,7 +63,7 @@ jobs:
                               assert any("Ультра" in x for x in labels), f"Wrong previous product: {labels}"
                               assert any("Платы Phantom" in x for x in labels), f"Wrong next product: {labels}"
                               assert page.locator('.text-link[href="training.html"]').count()==1,"Old external training link remains"
-                              assert page.locator('.resource[href="support-phantom-active.html"]').count()==3,"Local document hub missing"
+                              assert all(page.locator(f'.resource[href="support-phantom-active.html#{anchor}"]').count()==1 for anchor in ("manuals","integrations","brochures")),"Document deep-links missing"
                               assert page.locator('.text-link[href="ip-telephony.html"]').count()==1,"IP recording link missing"
                               assert page.locator('.active-spec[role="table"] [role="row"]').count()==6, "Specs table invalid"
                               assert page.locator('.product-form[data-subject="Запрос по Phantom Active"]').count()==1,"Form subject invalid"
