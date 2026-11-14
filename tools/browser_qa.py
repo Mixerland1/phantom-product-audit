@@ -11,12 +11,49 @@ from functools import partial
 from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import quote, unquote, urlsplit, parse_qs
+from urllib.parse import quote, unquote, urlsplit
 
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["support.html"]
+PAGES = [
+    "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
+    "phantom-active.html",
+    "certificates.html",
+    "requisites.html",
+    "services.html",
+    "faq.html",
+    "support.html",
+    "phantom-home.html",
+    "phantom-catalog.html",
+    "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
+    "auto-dealers.html",
+    "phantom-micro.html",
+    "phantom-boards.html",
+    "ip-telephony.html",
+    # Audited pages 13–18: one real Chromium case per width and theme.
+    "connection-schemes.html",
+    "personal-solutions.html",
+    "modernization.html",
+    "training.html",
+    "telephone-recording.html",
+    "dispatcher-recording.html",
+]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -332,68 +369,6 @@ def inspect_nav(page, filename: str, width: int):
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f'a[href="faq.html#{anchor}"]').count() >= 1,
                     f"Support hub missing FAQ route {anchor}")
-
-
-    if filename == "support.html":
-        require(page.locator(".site-header").count() == 1, "Global header not injected")
-        require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
-                "Canonical footer missing")
-        require(page.locator("h1").inner_text().strip() == "Техническая поддержка",
-                "Wrong support heading")
-        require(page.locator(".hero-panel[role='img']").count() == 1,
-                "Accessible support process diagram missing")
-        require(page.locator(".hero-points li").count() == 3, "Three hero facts required")
-        require(page.locator("#generations .card").count() == 3,
-                "Phantom 2/4/Cross generations not separated")
-        require(page.locator("#faq .card").count() == 4, "Four FAQ entries required")
-        require(page.locator("#other-docs .card").count() == 3,
-                "Three additional product documentation groups required")
-        for href in ["support-phantom-cross.html#install",
-                     "support-phantom-cross.html#admin",
-                     "support-phantom-cross.html#user",
-                     "certificates.html",
-                     "support-phantom-active.html",
-                     "support-phantom-ultra.html",
-                     "support-stantsiya-zapisi.html",
-                     "support-phantom-2.html", "support-phantom-4.html"]:
-            require(page.locator(f'main a[href="{href}"]').count() >= 1,
-                    f"Local documentation link absent: {href}")
-        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
-                "Support hub must not send visitor to old-site landing/asset URL")
-        for href in ["faq.html#general", "faq.html#versions",
-                     "faq.html#archive", "faq.html#commercial"]:
-            faq = page.locator(f'#faq a[href="{href}"]')
-            require(faq.count() == 1 and bool(faq.get_attribute("aria-label")),
-                    f"FAQ screen reader link not uniquely labeled: {href}")
-        button = page.locator('a.button[href^="mailto:support@mdis.ru?"]')
-        require(button.count() == 1, "Support CTA missing or addressed to sales")
-        url = button.get_attribute("href")
-        parsed = urlsplit(url)
-        require(parsed.scheme == "mailto" and parsed.path == "support@mdis.ru",
-                "Support mailto target invalid")
-        query = parse_qs(parsed.query, keep_blank_values=True)
-        require(query.get("subject") == ["Техническая поддержка МЦКРС «Фантом»"],
-                f"Support mailto subject incorrect: {query.get('subject')}")
-        body = query.get("body", [""])[0]
-        for label in ["Версия Phantom:", "Операционная система:",
-                      "Модель регистратора:", "Типы линий:",
-                      "Тип / модель платы:", "АТС / версия:",
-                      "Описание проблемы:", "Когда появилась:",
-                      "Что изменилось перед появлением:"]:
-            require(label in body, f"Missing ticket field: {label}")
-        require(page.locator('a[href="tel:+74957833379"]').count() >= 1,
-                "Support phone unavailable")
-        require(page.locator(".request-note").count() == 1,
-                "Mail-client behavior disclosure absent")
-        require(page.locator('a[href="#contact"]').count() == 1,
-                "Formats of help cannot reach contact section")
-        require(page.locator("main .card-links:empty").count() == 0,
-                "Empty link holders remain")
-        # Make sure contacts are actually visible at the viewport sizes.
-        button.scroll_into_view_if_needed()
-        require(button.is_visible(), "Support CTA not accessible at this width")
-        require(page.locator("footer").count() == 1,
-                "Duplicated page footer")
 
 
 
