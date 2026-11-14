@@ -1,0 +1,32 @@
+name: Import original MDIS scans
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tools/import_mdis_original_assets.py'
+      - '.github/workflows/import-original-assets.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  import-and-commit:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'integrator/pages-31-33-35-20261114'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          persist-credentials: true
+      - name: Download and validate 11 original assets
+        run: python3 tools/import_mdis_original_assets.py
+      - name: Commit exact binaries to integration branch
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/awards/ assets/reviews/ assets/original-asset-manifest.json
+          git commit -m "assets: preserve original MDIS award scans and customer letters"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"

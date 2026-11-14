@@ -29,7 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install playwright
           python -m playwright install --with-deps chromium
-      - name: Audit all local links and test 14 pages at 4 widths in 2 themes
+      - name: Verify imported PDFs/PNGs, audit links and test 17 pages at 4 widths in 2 themes
         run: python tools/browser_qa.py
       - name: Upload QA report and failure screenshots
         if: always()
