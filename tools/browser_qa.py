@@ -159,11 +159,12 @@ def inspect_nav(page, filename: str, width: int):
                 fact.getBoundingClientRect().bottom <= bounds.bottom + 4 &&
                 picture.getBoundingClientRect().bottom <= bounds.bottom + 4;
         }"""), "Hero content clipped")
+        original_theme = page.locator('html').get_attribute('data-theme')
         page.locator('header .site-theme-toggle').click()
-        require(page.locator('html').get_attribute('data-theme') != ('dark' if width < 0 else theme),
+        require(page.locator('html').get_attribute('data-theme') != original_theme,
                 "Theme toggle did not switch")
         page.locator('header .site-theme-toggle').click()
-        assert_theme(page, theme)
+        assert_theme(page, original_theme)
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
