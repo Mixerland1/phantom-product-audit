@@ -46,6 +46,7 @@ PAGES = [
     "phantom-micro.html",
     "phantom-boards.html",
     "ip-telephony.html",
+    "modernization.html",  # audit-only; reverted after Chromium evidence
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -101,6 +102,86 @@ def inspect_theme_persistence(page, base: str, initial: str):
             "Could not return to company page")
     assert_theme(page, initial)
 
+
+
+def inspect_modernization(page, width: int, theme: str):
+    """Audit-only: validate modernization content and navigation in Chromium."""
+    require(page.locator("main > .hero h1").inner_text() ==
+            "Комплексная модернизация Phantom", "Incorrect modernization H1")
+    require(page.locator(".demo").count() == 0, "Preview-only banner remains")
+    require(page.locator("header .brand").count() == 0,
+            "Legacy independent header brand remains")
+    require(page.locator('.solutions-switcher-label[href="services.html"]').count() == 1,
+            "Services hub route missing in context cycle")
+    require(page.locator('.solutions-switcher-neighbor--previous[href="personal-solutions.html"]').count() == 1,
+            "Wrong previous service in context cycle")
+    require(page.locator('.solutions-switcher-neighbor--next[href="training.html"]').count() == 1,
+            "Wrong next service in context cycle")
+    require(page.locator('.site-header a[href="modernization.html"]').count() >= 1,
+            "Header service dropdown lacks modernization link")
+    require(page.locator("#situations article.card").count() == 6,
+            "Six industrial modernization triggers missing")
+    require(page.locator("#workflow .timeline article").count() == 6,
+            "Six modernization stages missing")
+    require(page.locator("#service article.card").count() == 2,
+            "Warranty service plans missing")
+    require(page.locator("#preserve article.card").count() == 3,
+            "Compatibility keep/replace cards missing")
+    require(page.locator("#case .kpi").inner_text().find("67") >= 0,
+            "67 object case KPI missing")
+    require("ООО «ССТ»" in page.locator("#case").inner_text(),
+            "Modernization project partner missing")
+    require("6.12.34-1-generic" in page.locator("#linux").inner_text() and
+            "6.1.141-1-generic" in page.locator("#linux").inner_text(),
+            "Precise Cross kernel compatibility missing")
+    require("Phantom Cross" in page.locator("#linux").inner_text(),
+            "Cross component compatibility distinction missing")
+    require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+            "Main content refers to old site")
+    for href in ["phantom-boards.html", "faq.html#versions", "phantom-cross.html",
+                 "news.html#news-cross", "ip-telephony.html", "phantom-active.html",
+                 "phantom-monitoring.html", "phantom-asr.html", "history.html",
+                 "support.html", "personal-solutions.html", "training.html",
+                 "phantom-catalog.html", "news.html#news-minprom"]:
+        require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                f"Missing useful local route {href}")
+    mail = page.locator('main #request a[href^="mailto:sales@mdis.ru?subject="]')
+    require(mail.count() == 1, "Primary CTA mailto absent")
+    require("body=" in mail.get_attribute("href"), "CTA mail draft body absent")
+    from urllib.parse import unquote
+    decoded = unquote(mail.get_attribute("href"))
+    for phrase in ["Версия ПО", "Операционная система", "Типы линий",
+                   "Что планируется изменить", "Требуемый результат"]:
+        require(phrase in decoded, f"CTA mail template missing {phrase}")
+    box = page.evaluate("""() => {
+        const hero=document.querySelector('main > .hero').getBoundingClientRect();
+        const diagram=document.querySelector('.hero .diagram').getBoundingClientRect();
+        const points=document.querySelector('.hero .hero-points').getBoundingClientRect();
+        return {heroTop:hero.top,heroBottom:hero.bottom,
+                diagramTop:diagram.top,diagramBottom:diagram.bottom,
+                pointsTop:points.top,pointsBottom:points.bottom,
+                line:getComputedStyle(document.querySelector('main > .hero h1'),'::after').width}
+    }""")
+    require(box["diagramTop"] >= box["heroTop"] - 5 and
+            box["diagramBottom"] <= box["heroBottom"] + 5,
+            f"Hero diagram clipped by hero: {box}")
+    require(box["pointsTop"] >= box["heroTop"] - 5 and
+            box["pointsBottom"] <= box["heroBottom"] + 5,
+            f"Hero fact strip clipped: {box}")
+    require(box["line"] in ("54px", "44px"), f"Red accent missing: {box}")
+    if theme == "dark":
+        require(page.locator("#linux .source-link").first.evaluate(
+            "(el)=>getComputedStyle(el).color") == "rgb(255, 128, 148)",
+            "Dark mode technical links are low contrast")
+    def line_count(node):
+        return node.evaluate("""el=>{
+          const cs=getComputedStyle(el);
+          const h=parseFloat(cs.lineHeight);
+          return h ? Math.round(el.getBoundingClientRect().height/h) : 0;
+        }""")
+    if width == 1440:
+        rows=[line_count(item) for item in page.locator("#situations .card h3").all()]
+        print("MODERNIZATION HEADINGS 1440:", rows, flush=True)
 
 def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
@@ -403,6 +484,8 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
+                                if filename == "modernization.html":
+                                    inspect_modernization(page, width, theme)
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
