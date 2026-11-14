@@ -55,6 +55,7 @@ jobs:
                               response=page.goto(url,wait_until="load",timeout=30000)
                               check(response and response.status==200,"HTTP failure")
                               check(page.locator("h1").count()==1,"H1 count")
+          check(page.locator("html").get_attribute("data-theme")==theme,"theme preference was not applied")
                               check(page.locator("h1").inner_text().strip()=="Госструктуры","wrong H1")
                               check(page.locator('meta[name="robots"]').get_attribute("content")=="noindex, nofollow","robots")
                               check(page.locator(".site-header").count()==1,"shared header not mounted")
@@ -85,7 +86,8 @@ jobs:
                                   mobile.locator(":scope > summary").click()
                                   check(mobile.get_attribute("open") is not None,"mobile menu failed")
                                   mobile.locator(":scope > summary").click()
-                              page.screenshot(path=f"qa-artifacts/government-{width}-{theme}.png",full_page=True)
+                              page.evaluate("window.scrollTo(0,0)")
+                    page.screenshot(path=f"qa-artifacts/government-{width}-{theme}.png",full_page=True)
                               results.append(ident)
                               print("PASS",ident,flush=True)
                           except Exception as e:
