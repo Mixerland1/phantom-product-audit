@@ -287,8 +287,8 @@ def inspect_nav(page, filename: str, width: int):
                     "(el) => getComputedStyle(el).color")
                 require(accent == "rgb(255, 156, 174)",
                         f"Dark KPI accent has insufficient contrast: {accent}")
-        require(page.locator("footer.footer .footer-in").count() == 0,
-                "Old duplicated footer remains")
+        require("МДИС / «Фантом»" not in page.locator("footer.footer").inner_text(),
+                "Obsolete hard-coded footer text remains")
 
 
 
