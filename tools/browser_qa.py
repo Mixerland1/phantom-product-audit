@@ -92,9 +92,9 @@ def inspect_nav(page, filename: str, width: int):
         page.locator('details.sz-details summary').click()
         require(page.locator('details.sz-details').get_attribute('open') is not None,
                 "Technical details did not open")
-        require(page.locator('a[href="support-stantsiya-zapisi.html"]').count() == 1,
+        require(page.locator('main a[href="support-stantsiya-zapisi.html"]').count() == 1,
                 "Local support link missing")
-        require(page.locator('a[href="certificates.html"]').count() == 1,
+        require(page.locator('main a[href="certificates.html"]').count() == 1,
                 "Local certificates link missing")
         require(page.locator('form.product-form[data-subject]').count() == 1,
                 "Request form or mailto subject missing")
