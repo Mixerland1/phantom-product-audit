@@ -17,6 +17,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
+    "atom-energy.html",
     "company.html",
     "news.html",
     "clients.html",
@@ -98,6 +99,31 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "atom-energy.html":
+        require(page.locator(".demo").count() == 0, "Obsolete preview banner still visible")
+        require(page.locator('a[href="stantsiya-zapisi.html"]').count() >= 2,
+                "Local station links missing")
+        require(page.locator('a[href="certificates.html#licenses"]').count() == 1,
+                "Local license-section link missing")
+        require(page.locator('a[href^="https://mdis.ru/"]').count() == 0,
+                "Old official-site links remain")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Solution navigation switcher missing")
+        require(page.locator('.solutions-switcher-label[href="solutions.html"]').count() == 1,
+                "Switcher's central link should lead to local solutions")
+        require(page.locator('a[href="aviation-transport.html"]').count() >= 1,
+                "Previous solution local link missing")
+        hero_check = page.evaluate("""() => {
+            const hero = document.querySelector('main > .hero');
+            const css = getComputedStyle(hero).backgroundImage;
+            const bounds = hero.getBoundingClientRect();
+            const facts = hero.querySelector('.hero-points').getBoundingClientRect();
+            const cta = hero.querySelector('.hero-cta').getBoundingClientRect();
+            return {wrong_image: css.includes('energy-landscape.png'),
+                    clipped_facts: facts.bottom > bounds.bottom + 3,
+                    clipped_cta: cta.bottom > bounds.bottom + 3};
+        }""")
+        require(not any(hero_check.values()), f"Hero image/clip regression: {hero_check}")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
