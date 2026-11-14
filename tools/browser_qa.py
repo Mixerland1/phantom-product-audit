@@ -46,6 +46,7 @@ PAGES = [
     "phantom-micro.html",
     "phantom-boards.html",
     "ip-telephony.html",
+    "connection-schemes.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -198,6 +199,68 @@ def inspect_nav(page, filename: str, width: int):
                      "phantom-ultra.html"]:
             require(page.locator(f'.product-image[href="{href}"]').count() == 1,
                     f"Catalog model card missing route {href}")
+    if filename == "connection-schemes.html":
+        require(page.locator("main#main").count() == 1, "Accessible main landmark missing")
+        require(page.locator("a.skip[href='#main']").count() == 1, "Skip-to-content link missing")
+        require(page.locator(".demo").count() == 0, "Obsolete internal preview banner remains")
+        require(page.locator('header.header .site-header').count() == 1 or
+                page.locator('.site-header').count() == 1,
+                "Shared site header missing or duplicated")
+        require(page.locator(".jump a").count() == 4, "Expected exactly four scheme jump links")
+        for anchor in ["ip-principle", "tricom", "minicom", "protocols"]:
+            require(page.locator(f"section#{anchor}").count() == 1,
+                    f"Diagram anchor {anchor} missing")
+            require(page.locator(f'.jump a[href="#{anchor}"]').count() == 1,
+                    f"Jump link for {anchor} missing")
+        require(page.locator(".scheme-image").count() == 4, "Expected four diagrams")
+        require(page.locator("a.scheme-fullsize").count() == 4,
+                "Each diagram must have a full-size action")
+        image_check = page.evaluate("""() => {
+            const figures = [...document.querySelectorAll('figure.diagram')];
+            return figures.map(figure => {
+                const link=figure.querySelector('a.scheme-fullsize');
+                const img=figure.querySelector('img.scheme-image');
+                return {src:img.getAttribute('src'), href:link.getAttribute('href'),
+                        new_tab:link.target==='_blank' && link.rel.includes('noopener'),
+                        label:link.getAttribute('aria-label'), alt:img.alt,
+                        caption:figure.querySelector('figcaption')?.innerText,
+                        width:img.getAttribute('width'),height:img.getAttribute('height')};
+            });
+        }""")
+        require(len(image_check) == 4, "Wrong figure count")
+        for im in image_check:
+            require(im["src"] == im["href"], "Image/full-size destination mismatch")
+            require(im["new_tab"] and "новой вкладке" in im["label"],
+                    "Diagram new-tab behavior not explained")
+            require(len(im["alt"]) > 80, f"Diagram alt description too short: {im['src']}")
+            require("Нажмите" in im["caption"], "Visible image-open cue missing")
+            require(im["width"] == "1448" and im["height"] == "1086",
+                    "Unexpected diagram dimensions in markup")
+        require(len(set(im["label"] for im in image_check)) == 4,
+                "Diagram actions have identical accessible labels")
+        require(page.locator('.solutions-switcher-neighbor--previous[href="pultex.html"]').count() == 1,
+                "Wrong preceding product (expected PultEx)")
+        require(page.locator('.solutions-switcher-neighbor--next[href="phantom-cross.html"]').count() == 1,
+                "Wrong following product (expected Phantom Cross)")
+        require(page.locator('.solutions-switcher-label[href="phantom-catalog.html"]').count() == 1,
+                "Missing local central catalog link")
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+                "Historical-source outbound links in official new page")
+        require(page.locator('main a[href="ip-telephony.html"]').count() == 1,
+                "IP telephony link missing")
+        require(page.locator('main a[href="phantom-catalog.html"]').count() == 1,
+                "Product catalog link missing")
+        require(page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').count() == 1,
+                "Configured engineer mailto missing")
+        for im_idx in range(4):
+            page.locator("img.scheme-image").nth(im_idx).scroll_into_view_if_needed()
+            page.wait_for_function("""idx => {
+                const img=document.querySelectorAll('img.scheme-image')[idx];
+                return img.complete && img.naturalWidth===1448 && img.naturalHeight===1086;
+            }""", im_idx, timeout=15000)
+        page.locator('.jump a[href="#minicom"]').click()
+        require(page.evaluate("location.hash") == "#minicom",
+                "In-page jump to MiniCom did not navigate")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
