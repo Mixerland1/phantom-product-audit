@@ -1,0 +1,68 @@
+[
+  {
+    "path": "assets/awards/award-2002-information-technology.pdf",
+    "source": "https://mdis.ru/upload/iblock/11f/11ff038dfa7ca4b4b1b3f932b0c3437e.pdf",
+    "bytes": 118026,
+    "sha256": "a31bf751d707c8d08f25a1970d1747e8c418c8124988bc21b3a14356089e5cd4"
+  },
+  {
+    "path": "assets/awards/award-2004-sea-and-river.pdf",
+    "source": "https://mdis.ru/upload/iblock/dff/dff33a58a90211ff68ec95ce6311285f.pdf",
+    "bytes": 116617,
+    "sha256": "7f29ea8766842586a6679a9a8654b950a06743dff68a149fc9cf0efc0f48b3a0"
+  },
+  {
+    "path": "assets/awards/award-2008-euraas.pdf",
+    "source": "https://mdis.ru/upload/iblock/f05/f056e3ce7a2e74c594c628670b65586f.pdf",
+    "bytes": 235017,
+    "sha256": "625923e710009fd2632ed73d8737370715e90c43d7a32f1bb357e0cafc860eed"
+  },
+  {
+    "path": "assets/awards/award-2008-transrussia.pdf",
+    "source": "https://mdis.ru/upload/iblock/dbc/dbca74aa76d559bde0e9a9a8cdf137b8.pdf",
+    "bytes": 195172,
+    "sha256": "652e120f252ad88100d2f5e6dba5902b900007b26eb10ab38cca1c80ab02777d"
+  },
+  {
+    "path": "assets/awards/award-2011-itenergy.pdf",
+    "source": "https://mdis.ru/upload/iblock/e35/e35bfffe9761ec67923cd5e0c8f4876c.pdf",
+    "bytes": 183128,
+    "sha256": "f2b0c447d3ca5570a23158c134d71c6c5bc42b16e54586c3b039521ecfaee2ea"
+  },
+  {
+    "path": "assets/reviews/mes-centre-2024.png",
+    "source": "https://mdis.ru/upload/medialibrary/144/14417d2d091470229766854bd837c760.png",
+    "bytes": 194728,
+    "sha256": "375b78bc14f2252678269790d8e4031e696c2837dd808270ccf9fb93e6888bdc"
+  },
+  {
+    "path": "assets/reviews/mes-south-2024.png",
+    "source": "https://mdis.ru/upload/medialibrary/8bf/8bf3436a32badd77b7bed2021af9a38b.png",
+    "bytes": 424186,
+    "sha256": "f3be18609aa022f95b4e3a6ef7fd8bdee6bd4b9c5a5b8750069834d708bfe43b"
+  },
+  {
+    "path": "assets/reviews/mes-ural-2024.png",
+    "source": "https://mdis.ru/upload/medialibrary/a9b/a9b7bcbcd8e78754a00a876a6d44f96a.png",
+    "bytes": 238362,
+    "sha256": "c1fc07f2cfccf1549667777be62c4ec186ae69e2671db4003051bdcf50dd22a5"
+  },
+  {
+    "path": "assets/reviews/mes-northwest-2024.png",
+    "source": "https://mdis.ru/upload/medialibrary/e4b/e4b84b04006c93ff290f02fd95ee1640.png",
+    "bytes": 223350,
+    "sha256": "4ecddca76e8377cff899d60e70f8238819533d6af0106bb7ff34192698558163"
+  },
+  {
+    "path": "assets/reviews/mes-siberia-2024.png",
+    "source": "https://mdis.ru/upload/medialibrary/6e2/6e238153bd8dcc0efddde2e2efaa25aa.png",
+    "bytes": 187370,
+    "sha256": "0c4c0ca1b27711b024d8d8d2dc17c0b26a91d14bed55ce0ed02287686588fccb"
+  },
+  {
+    "path": "assets/reviews/mes-volga-2024.png",
+    "source": "https://mdis.ru/upload/medialibrary/51d/51dd5f7626439b1e0438f82fc1d466c9.png",
+    "bytes": 284032,
+    "sha256": "bb33f16d59868a96499e95cb850a0c18576d20b5d40a7b73b767e52606b1c177"
+  }
+]
