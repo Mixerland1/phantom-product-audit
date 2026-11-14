@@ -203,8 +203,8 @@
        when the pointer leaves, the current section keeps its underline.
        Do not hide focus indicators or alter touch/mobile navigation. */
     @media(hover:hover) and (pointer:fine){
-      .site-header .site-nav:has(> .site-menu:not(.site-menu--current):hover, > a:not([aria-current="page"]):not([data-section-current="true"]):hover) .site-menu--current>summary:after,
-      .site-header .site-nav:has(> .site-menu:hover, > a:not([aria-current="page"]):not([data-section-current="true"]):hover) >a:is([aria-current="page"],[data-section-current="true"]):after{opacity:0;transform:scaleX(.4)}
+      .site-header .site-nav:has(> .site-menu:not(.site-menu--current):hover, > a:not([aria-current="page"]):not([data-section-current="true"]):hover) .site-menu--current>summary:not(:focus-visible):after,
+      .site-header .site-nav:has(> .site-menu:hover, > a:not([aria-current="page"]):not([data-section-current="true"]):hover) >a:is([aria-current="page"],[data-section-current="true"]):not(:focus-visible):after{opacity:0;transform:scaleX(.4)}
     }
     .site-header .site-menu{position:relative}
     .site-header .site-menu--edge .site-menu-panel{left:auto;right:-16px}
