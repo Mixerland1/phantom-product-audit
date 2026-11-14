@@ -98,7 +98,15 @@
     const nextName=isCompany?'Следующий раздел компании':(isDocumentation?'Следующий раздел документации':(isTechnical?'Следующий модуль':(isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга'))));
     const allLabel=isCompany?'О компании':(isDocumentation?'Вся поддержка':((isTechnical||isProduct)?'Все продукты':(isSolution?'Все решения':'Все услуги')));
     const allLink=isCompany?'company.html':(isDocumentation?'support.html':((isTechnical||isProduct)?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?'solutions.html':'services.html')));
-    const pageAt=offset=>pages[(currentIndex+offset+pages.length)%pages.length];
+    // The services hub is the permanent central link, not a duplicate neighbour.
+    // Cycle the three actual services independently; the hub retains its own switcher.
+    const pageAt=offset=>{
+      if(isService&&serviceIndex>0){
+        const detailPages=servicePages.slice(1);
+        return detailPages[(serviceIndex-1+offset+detailPages.length)%detailPages.length];
+      }
+      return pages[(currentIndex+offset+pages.length)%pages.length];
+    };
     const switcher=document.createElement('nav');
     switcher.className='solutions-switcher';
     switcher.setAttribute('aria-label',navigationName);

@@ -46,6 +46,13 @@ PAGES = [
     "phantom-micro.html",
     "phantom-boards.html",
     "ip-telephony.html",
+    # Audited pages 13–18: one real Chromium case per width and theme.
+    "connection-schemes.html",
+    "personal-solutions.html",
+    "modernization.html",
+    "training.html",
+    "telephone-recording.html",
+    "dispatcher-recording.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -198,6 +205,57 @@ def inspect_nav(page, filename: str, width: int):
                      "phantom-ultra.html"]:
             require(page.locator(f'.product-image[href="{href}"]').count() == 1,
                     f"Catalog model card missing route {href}")
+    if filename == "connection-schemes.html":
+        expected = ["ip-principle", "tricom", "minicom", "protocols"]
+        for anchor in expected:
+            require(page.locator(f"#{anchor}").count() == 1,
+                    f"Missing original connection scheme section: {anchor}")
+        for img in ["ip-principle.webp", "tricom-gip.webp",
+                    "minicom-dx500.webp", "protocols-sip-h323.webp"]:
+            require(page.locator(f'img[src="assets/schemes/{img}"]').count() == 1,
+                    f"Connection scheme image missing: {img}")
+        require(page.locator("a[href^='https://mdis.ru/']").count() == 0,
+                "Connection schemes link to legacy site")
+    if filename in {"personal-solutions.html", "modernization.html", "training.html"}:
+        require(page.locator('.solutions-switcher-label[href="services.html"]').count() == 1,
+                "Service hub link missing")
+        require(page.locator(".solutions-switcher").count() == 1,
+                "Duplicate or missing service navigation")
+    if filename == "personal-solutions.html":
+        require(page.locator('.solutions-switcher-neighbor--previous[href="training.html"]').count() == 1,
+                "Service cycle should wrap from personal solutions to training")
+        require(page.locator('.solutions-switcher-neighbor--next[href="modernization.html"]').count() == 1,
+                "Personal solutions next link incorrect")
+    if filename == "modernization.html":
+        require(page.locator('.solutions-switcher-neighbor--previous[href="personal-solutions.html"]').count() == 1,
+                "Modernization previous link incorrect")
+        require(page.locator('.solutions-switcher-neighbor--next[href="training.html"]').count() == 1,
+                "Modernization next link incorrect")
+        require(page.locator('a[href="history.html#modernization"]').count() >= 1,
+                "Modernization case should link to local history")
+    if filename == "training.html":
+        require(page.locator('.solutions-switcher-neighbor--previous[href="modernization.html"]').count() == 1,
+                "Training previous neighbour incorrect")
+        require(page.locator('.solutions-switcher-neighbor--next[href="personal-solutions.html"]').count() == 1,
+                "Training next neighbour must be personal solutions, not the hub")
+        require(page.locator('a[href="connection-schemes.html"]').count() >= 1,
+                "Training page lacks connection schemes")
+        if width == 375:
+            page.locator(".solutions-switcher-control").last.click()
+            page.wait_for_url("**/personal-solutions.html", timeout=15000)
+            page.go_back(wait_until="load", timeout=15000)
+            require(page.url.endswith("/training.html"),
+                    "Service next arrow did not navigate and return correctly")
+    if filename == "telephone-recording.html":
+        for href in ["phantom-boards.html", "connection-schemes.html",
+                     "phantom-catalog.html#telephone-recording"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Telephone-recording local route missing: {href}")
+    if filename == "dispatcher-recording.html":
+        for href in ["attestation-fsk-ees.html", "telephone-recording.html",
+                     "connection-schemes.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Dispatcher-recording local route missing: {href}")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
