@@ -175,6 +175,26 @@ def inspect_nav(page, filename: str, width: int):
             require(page.locator(f'a[href="faq.html#{anchor}"]').count() >= 1,
                     f"Support hub missing FAQ route {anchor}")
 
+    if filename == "commercial.html":
+        require(page.locator('.solutions-switcher-label[href="solutions.html"]').count() == 1,
+                "Commercial solutions hub missing")
+        for path in ["atom-energy.html", "industrial.html"]:
+            require(page.locator(f'.solutions-switcher-neighbor[href="{path}"]').count() == 1,
+                    f"Commercial neighbor missing: {path}")
+        require(page.locator('#related a.link-card').count() == 3,
+                "Commercial related links must total three")
+        for path in ["index.html", "phantom-asr.html", "phantom-pro-level-5.html",
+                     "phantom-active.html", "ip-telephony.html", "selective-recording.html"]:
+            require(page.locator(f'main a[href="{path}"]').count() >= 1,
+                    f"Commercial link missing: {path}")
+        require(page.locator('.demo').count() == 0, "Editorial demo banner remains")
+        if width > 768:
+            links = page.locator('#products .card > a.link-card')
+            require(links.count() == 2, "Product detail links missing")
+            boxes = [links.nth(i).bounding_box() for i in range(2)]
+            require(all(boxes) and abs(boxes[0]["y"] - boxes[1]["y"]) <= 2,
+                    f"Product links misaligned: {boxes}")
+
 
 
 class LinkParser(HTMLParser):
@@ -280,6 +300,12 @@ def main():
                             try:
                                 response = page.goto(base + quote(filename), wait_until="load", timeout=25000)
                                 require(response is not None and response.status == 200, "HTML returned non-200")
+                                if filename == "commercial.html":
+                                    # Test the rendered theme, not merely a localStorage value.
+                                    if page.locator("html").get_attribute("data-theme") != theme:
+                                        page.locator(".site-theme-toggle").click()
+                                    require(page.locator("html").get_attribute("data-theme") == theme,
+                                            f"Expected active {theme} theme")
                                 require(page.locator("h1").count() == 1, "Missing or duplicated H1")
                                 require(page.locator('meta[name="robots"]').get_attribute("content")
                                         == "noindex, nofollow", "Preview noindex missing")
