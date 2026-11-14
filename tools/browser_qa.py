@@ -220,6 +220,50 @@ def inspect_nav(page, filename: str, width: int):
                     f"Support hub missing FAQ route {anchor}")
 
 
+    if filename == "phantom-catalog.html":
+        require(page.locator(".demo").count() == 0, "Obsolete draft banner in catalog")
+        require(page.locator("#choose a.task").count() == 5, "Five task links missing")
+        require(page.locator("#selection-steps .step").count() == 5, "Five selection criteria missing")
+        require(page.locator("#telephone-recording .product-card").count() == 5,
+                "Five registrar cards missing")
+        expected = [
+            "phantom-micro.html", "phantom-pc-2.html", "phantom-pro-level-5.html",
+            "phantom-pro-level-6.html", "phantom-ultra.html",
+        ]
+        for idx, href in enumerate(expected):
+            card = page.locator("#telephone-recording .product-card").nth(idx)
+            image = card.locator(".product-image img")
+            require(card.locator(f'a.detail[href="{href}"]').count() == 1,
+                    f"Missing detail link: {href}")
+            require(card.locator(f'a.product-image[href="{href}"]').count() == 1,
+                    f"Missing image link: {href}")
+            require(bool(image.get_attribute("alt")), f"Image alt missing: {href}")
+            image.scroll_into_view_if_needed(timeout=10000)
+            require(image.evaluate("""i => new Promise((resolve) => {
+                if (i.complete) return resolve(i.naturalWidth > 0);
+                i.addEventListener('load', () => resolve(i.naturalWidth > 0), {once:true});
+                i.addEventListener('error', () => resolve(false), {once:true});
+            })"""), f"Local image did not load: {href}")
+        comparison = page.locator("#comparison .table-wrap")
+        require(comparison.get_attribute("tabindex") == "0",
+                "Scrollable table must be keyboard focusable")
+        if width <= 768:
+            sizes = comparison.evaluate("""el => ({
+                client: el.clientWidth, scroll: el.scrollWidth
+            })""")
+            require(sizes["scroll"] > sizes["client"],
+                    f"Expected mobile horizontal table scroll: {sizes}")
+            require(page.locator("#comparison .table-hint").is_visible(),
+                    "Mobile table hint missing")
+            comparison.evaluate("(el) => {el.scrollLeft = 150}")
+            require(comparison.evaluate("(el) => el.scrollLeft > 0"),
+                    "Horizontal table scrolling does not work")
+        require(page.locator('#connection-schemes a[href="connection-schemes.html"]').count() == 1,
+                "Schemes local route missing")
+        require(page.locator('#registry a[href="news.html#news-minprom"]').count() == 1,
+                "Registry source route missing")
+
+
 
 class LinkParser(HTMLParser):
     def __init__(self):
