@@ -41,10 +41,15 @@
     {path:'modernization.html',name:'Комплексная модернизация'},
     {path:'training.html',name:'Обучение'}
   ];
+  // Local corporate cycle: hub followed by the order of migrated Company dropdown entries.
+  // The not-yet-migrated Awards page will be added only after prompt 31.
   const companyPages=[
     {path:'company.html',name:'О компании'},
+    {path:'clients.html',name:'Наши клиенты'},
     {path:'certificates.html',name:'Сертификаты и лицензии'},
-    {path:'requisites.html',name:'Реквизиты'}
+    {path:'requisites.html',name:'Реквизиты'},
+    {path:'partners.html',name:'Партнёры'},
+    {path:'history.html',name:'История МДИС'}
   ];
   // Technical modules are linked beneath Phantom Cross, without expanding the global product dropdown.
   const technicalPages=[
@@ -106,6 +111,27 @@
     next.addEventListener('click',()=>{window.location.href=pageAt(1).path});
     hero.insertAdjacentElement('afterend',switcher);
   }
+
+  // News is a top-level destination, not part of the Company dropdown.
+  // Its local switcher points to actual news items on this hub, not to missing article pages.
+  const isNewsHub=!source&&/\/news\.html$/.test(pathname);
+  if(isNewsHub&&hero&&!document.querySelector('.solutions-switcher')){
+    const switcher=document.createElement('nav');
+    switcher.className='solutions-switcher';
+    switcher.setAttribute('aria-label','Навигация по новостям');
+    switcher.innerHTML='<div class="wrap"><div class="solutions-switcher-layout">'
+      +'<a class="solutions-switcher-neighbor solutions-switcher-neighbor--previous" href="#news-cross">Phantom Cross 5.5</a>'
+      +'<div class="solutions-switcher-toolbar">'
+      +'<button class="solutions-switcher-control" type="button" aria-label="Последняя новость: Phantom Cross 5.5"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>'
+      +'<a class="solutions-switcher-label" href="#updates">Все новости</a>'
+      +'<button class="solutions-switcher-control" type="button" aria-label="Первая новость: распознавание речи"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>'
+      +'</div><a class="solutions-switcher-neighbor solutions-switcher-neighbor--next" href="#news-asr">Распознавание речи</a></div></div>';
+    const controls=switcher.querySelectorAll('.solutions-switcher-control');
+    controls[0].addEventListener('click',()=>{location.hash='news-cross'});
+    controls[1].addEventListener('click',()=>{location.hash='news-asr'});
+    hero.insertAdjacentElement('afterend',switcher);
+  }
+
   if((document.querySelector('.context-nav')||document.querySelector('.solutions-switcher'))&&!document.getElementById('context-nav-style')){
     const style=document.createElement('style');
     style.id='context-nav-style';
