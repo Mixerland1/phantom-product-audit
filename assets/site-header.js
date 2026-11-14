@@ -199,6 +199,13 @@
     .site-header .site-nav>a:after,.site-header .site-menu>summary:after{position:absolute;right:0;bottom:0;left:0;height:2px;background:var(--red);content:"";opacity:0;transform:scaleX(.4);transition:opacity .18s,transform .18s}
     .site-header .site-nav>a[aria-current="page"],.site-header .site-nav>a[data-section-current="true"],.site-header .site-nav>a:hover,.site-header .site-nav>a:focus-visible,.site-header .site-menu>summary:hover,.site-header .site-menu>summary:focus-visible,.site-header .site-menu[open]>summary,.site-header .site-menu--current>summary{color:var(--ink);outline:none}
     .site-header .site-nav>a[aria-current="page"]:after,.site-header .site-nav>a[data-section-current="true"]:after,.site-header .site-nav>a:hover:after,.site-header .site-nav>a:focus-visible:after,.site-header .site-menu>summary:hover:after,.site-header .site-menu>summary:focus-visible:after,.site-header .site-menu[open]>summary:after,.site-header .site-menu--current>summary:after{opacity:1;transform:scaleX(1)}
+    /* On pointer hover the underline follows the hovered top-level item;
+       when the pointer leaves, the current section keeps its underline.
+       Do not hide focus indicators or alter touch/mobile navigation. */
+    @media(hover:hover) and (pointer:fine){
+      .site-header .site-nav:has(> .site-menu:not(.site-menu--current):hover, > a:not([aria-current="page"]):not([data-section-current="true"]):hover) .site-menu--current>summary:after,
+      .site-header .site-nav:has(> .site-menu:hover, > a:not([aria-current="page"]):not([data-section-current="true"]):hover) >a:is([aria-current="page"],[data-section-current="true"]):after{opacity:0;transform:scaleX(.4)}
+    }
     .site-header .site-menu{position:relative}
     .site-header .site-menu--edge .site-menu-panel{left:auto;right:-16px}
     .site-header .site-menu-panel{position:absolute;top:calc(var(--site-header-height) - 4px);left:-16px;width:396px;padding:12px 14px 15px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:0 18px 42px #12203620}
