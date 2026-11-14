@@ -142,7 +142,7 @@ def inspect_monitoring(page, width, theme):
             "Official 15+ parameters claim missing")
     require(page.locator('#mon-web-app').inner_text().find("6010") >= 0,
             "Documented monitoring panel port 6010 missing")
-    require(page.locator('#web-difference').inner_text().find("Не предназначен") >= 0,
+    require(page.locator('#web-difference').inner_text().replace("\u00a0", " ").find("Не предназначен") >= 0,
             "Monitoring UI must be explicitly distinct from recording UI")
     require(page.locator('.mon-diagram[role="img"]').count() == 1,
             "Semantic architecture diagram missing")
