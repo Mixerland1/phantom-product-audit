@@ -82,6 +82,8 @@ jobs:
                               if width>=1100:
                                   a,b=m["hero"],m["inner"]
                                   assert b["y"]>=a["y"]-3 and b["y"]+b["height"]<=a["y"]+a["height"]+3,"Hero content clipped "+str(m)
+                                  facts=page.evaluate("()=>{const hero=document.querySelector('main>.hero').getBoundingClientRect(),facts=document.querySelector('main>.hero .hero-facts').getBoundingClientRect();return {heroTop:hero.top,heroBottom:hero.bottom,factsTop:facts.top,factsBottom:facts.bottom}}")
+                                  assert facts["factsTop"]>=facts["heroTop"]-3 and facts["factsBottom"]<=facts["heroBottom"]+3,"Hero facts clipped "+str(facts)
                               broken=page.evaluate("""()=>[...document.images].filter(i=>i.complete&&i.naturalWidth===0&&new URL(i.src).origin===location.origin).map(i=>i.getAttribute('src'))""")
                               assert not broken,"Broken images: "+str(broken)
                               link=page.locator('a.pill-link[href="connection-schemes.html"]').first
