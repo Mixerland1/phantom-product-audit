@@ -202,6 +202,58 @@ def inspect_nav(page, filename: str, width: int):
                     f"Financial page missing local route {href}")
         require(page.locator(".demo").count() == 0,
                 "Financial page still shows a draft notice")
+    if filename == "financial.html":
+        require(page.locator('main#main').count() == 1, "Accessible main landmark missing")
+        require(page.locator('a.skip[href="#main"]').count() == 1, "Skip-to-main link missing")
+        require(page.locator('header.site-header').count() == 1,
+                "Canonical injected header missing or duplicate header")
+        require(page.locator('header .site-brand-logo').count() == 1,
+                "Brand logo missing from shared header")
+        require(page.locator('footer.footer .footer-logo-band').count() == 1,
+                "Canonical shared footer not present")
+        require(page.locator('.hero-points--solution > li').count() == 3,
+                "Financial hero must show three facts")
+        for fact in page.locator('.hero-points--solution > li').all():
+            require(fact.locator(':scope > strong').count() == 1,
+                    "Hero fact missing a strong title")
+            require(fact.locator(':scope > span').count() == 1,
+                    "Hero fact missing a lighter explanation")
+        require(page.locator('main > .hero .hero-visual[role="img"]').count() == 1,
+                "Schematic hero visual missing accessible description")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Sector navigation missing")
+        require(page.locator('.solutions-switcher-label[href="phantom-home.html#industries"]').count() == 1,
+                "All solutions center navigation wrong")
+        require(page.locator('.solutions-switcher-neighbor--previous[href="government.html"]').count() == 1,
+                "Previous sector must be government")
+        require(page.locator('.solutions-switcher-neighbor--next[href="electroenergetika.html"]').count() == 1,
+                "Next sector must be energy")
+        for href in ['index.html','news.html#news-minprom','phantom-pro-level-5.html',
+                     'phantom-pro-level-6.html','ip-telephony.html','selective-recording.html']:
+            require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                    f"Financial page local link missing: {href}")
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+                "Links to old MDIS public website remain in page")
+        require(page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').count() == 1,
+                "Presales configured mailto missing")
+        require(page.locator('main h2').filter(has_text='Банки среди клиентов МДИС').count() == 1,
+                "Bank clients must be described without claiming specific deployments")
+        require(page.locator('main .pill-row > span').count() == 2,
+                "Both bank client names should be retained")
+        require(page.locator('main').get_by_text('10838442', exact=True).count() >= 1,
+                "Minpromtorg registry number missing")
+        clip_check = page.evaluate("""() => {
+            const hero = document.querySelector('main > .hero');
+            const bounds=hero.getBoundingClientRect();
+            return [...hero.querySelectorAll('h1,.hero-subtitle,.lead,.hero-points,.hero-visual')]
+                .filter(el => {
+                    const r=el.getBoundingClientRect();
+                    return r.top < bounds.top-3 || r.bottom > bounds.bottom+3;
+                }).map(el => ({name:el.className || el.tagName,
+                                top:el.getBoundingClientRect().top, bottom:el.getBoundingClientRect().bottom,
+                                heroTop:bounds.top,heroBottom:bounds.bottom}));
+        }""")
+        require(not clip_check, f"Financial hero elements clipped: {clip_check}")
     if filename == "auto-dealers.html":
         for href in ["clients.html#sector-6", "phantom-asr.html"]:
             require(page.locator(f'a[href="{href}"]').count() >= 1,
