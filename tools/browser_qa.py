@@ -39,13 +39,13 @@ PAGES = [
     "industrial.html",
     "government.html",
     "commercial.html",
-    # Audited page set 07–12: keep every review permanently in Chromium CI.
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
     "auto-dealers.html",
     "phantom-micro.html",
     "phantom-boards.html",
-    "phantom-active.html",
     "ip-telephony.html",
-    "phantom-catalog.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -150,6 +150,13 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "financial.html":
+        for href in ["index.html", "news.html#news-minprom",
+                     "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Financial page missing local route {href}")
+        require(page.locator(".demo").count() == 0,
+                "Financial page still shows a draft notice")
     if filename == "auto-dealers.html":
         for href in ["clients.html#sector-6", "phantom-asr.html"]:
             require(page.locator(f'a[href="{href}"]').count() >= 1,
@@ -344,6 +351,8 @@ def verify_original_assets():
 
 
 def main():
+    require(len(PAGES) == len(set(PAGES)),
+            "Duplicate HTML pages in browser QA matrix")
     check_local_links()
     verify_original_assets()
     handler = partial(QuietHandler, directory=str(ROOT))
