@@ -248,7 +248,7 @@ def inspect_nav(page, filename: str, width: int):
                 "Historical-source outbound links in official new page")
         require(page.locator('main a[href="ip-telephony.html"]').count() == 1,
                 "IP telephony link missing")
-        require(page.locator('main a[href="phantom-catalog.html"]').count() == 1,
+        require(page.locator('main .related a[href="phantom-catalog.html"]').count() == 1,
                 "Product catalog link missing")
         require(page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').count() == 1,
                 "Configured engineer mailto missing")
