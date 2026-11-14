@@ -2,6 +2,7 @@
 """Browser QA of Phantom integration pages; run from the repository checkout."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -132,6 +133,25 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "partners.html":
         require(page.locator('a[href="company.html"]').count() >= 1,
                 "Partners missing company hub")
+    if filename == "requisites.html":
+        downloads = [
+            ("assets/requisites/mdis-ooo-mdis.jpg", "Реквизиты_ООО_МДИС.jpg",
+             "fdb14b28ea84c6fc255bf830b7d060e9f7f59e5c198c69600948c05f120eb85b"),
+            ("assets/requisites/mdis-information-systems.jpg",
+             "Реквизиты_ООО_МД_Информационные_Системы.jpg",
+             "7bb1b5742079d0090245eb0264eba4560fb5c792efbf9c9b15c20f6873dd2615"),
+        ]
+        for href, name, checksum in downloads:
+            link = page.locator(f'.doc-card a.open-link[href="{href}"][download="{name}"]')
+            require(link.count() == 1, f"Local requisites download missing: {href}")
+            if width == 375:
+                with page.expect_download(timeout=15000) as download_event:
+                    link.click()
+                saved = download_event.value
+                require(saved.suggested_filename == name,
+                        f"Unexpected download filename: {saved.suggested_filename}")
+                actual = hashlib.sha256(Path(saved.path()).read_bytes()).hexdigest()
+                require(actual == checksum, f"Downloaded requisites JPG checksum mismatch: {href}")
     if filename == "rewards.html":
         require(page.locator(".rewards-nav").count() == 0, "Obsolete rewards nav remains")
         require(page.locator('a[href^="assets/awards/"][type="application/pdf"]').count() == 5,
