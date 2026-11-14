@@ -53,7 +53,6 @@ PAGES = [
     "training.html",
     "telephone-recording.html",
     "dispatcher-recording.html",
-    "phantom-monitoring.html",  # audit-only; reverted after complete 4x2 Chromium regression
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -147,80 +146,6 @@ def inspect_active_underline_hover(page, filename: str, width: int):
     require(underline_opacity() > 0.95,
             "Current nav underline did not return after pointer left navigation")
 
-
-def inspect_monitoring(page, width, theme):
-    """Independent audit-only Chrome checks for prompt 21."""
-    require(page.locator('main > .hero h1').inner_text() == "Мониторинг МЦКРС «Фантом»",
-            "Incorrect H1")
-    require(page.locator('main .hero .hero-points li').count() == 3,
-            "Hero facts must include Real-time, 15+ and SNMP")
-    require(page.locator('#purpose .mon-card').count() == 4, "Four purpose cards missing")
-    require(page.locator('#modes .mon-card').count() == 2, "Two operating modes missing")
-    require(page.locator('#integration .mon-checklist li').count() == 10,
-            "Integration checklist incomplete")
-    require(page.locator('#web-difference .mon-table tbody tr').count() == 5,
-            "Monitoring/Web App comparison table incomplete")
-    require(page.locator('.mon-table-scroll[role="region"][tabindex="0"]').count() == 1,
-            "Comparison table not keyboard focusable")
-    require(page.locator('main a[href="phantom-monitoring.html"]').count() == 0,
-            "Page contains erroneous self link")
-    require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
-            "Page still references legacy official site")
-    require(page.locator('#documents a[href="support-phantom-cross.html"]').count() == 1,
-            "Local Cross documentation missing")
-    require(page.locator('#documents a[href="phantom-cross.html"]').count() == 1,
-            "Local platform link missing")
-    require(page.locator('.solutions-switcher-label[href="phantom-catalog.html"]').count() == 1,
-            "Technical module center must be product hub")
-    require(page.locator('.solutions-switcher-neighbor--previous[href="phantom-cross.html"]').count() == 1,
-            "Wrong previous technical module")
-    require(page.locator('.solutions-switcher-neighbor--next[href="phantom-asr.html"]').count() == 1,
-            "Wrong next technical module")
-    require(page.locator('#parameters').inner_text().find("15") >= 0,
-            "Official 15+ parameters claim missing")
-    require(page.locator('#mon-web-app').inner_text().find("6010") >= 0,
-            "Documented monitoring panel port 6010 missing")
-    require(page.locator('#web-difference').inner_text().replace("\u00a0", " ").find("Не предназначен") >= 0,
-            "Monitoring UI must be explicitly distinct from recording UI")
-    require(page.locator('.mon-diagram[role="img"]').count() == 1,
-            "Semantic architecture diagram missing")
-    nodes = page.locator('.mon-diagram-node').all_inner_texts()
-    require(nodes.index("SNMP") < nodes.index("Phantom Mon Web App"),
-            f"Mon Web App must receive data through SNMP: {nodes}")
-    require(nodes.index("SNMP") < nodes.index("Система мониторинга заказчика"),
-            f"Customer monitoring must receive data through SNMP: {nodes}")
-    mail = page.locator('#request a[href^="mailto:sales@mdis.ru?subject="]')
-    require(mail.count() == 1 and "body=" in mail.get_attribute("href"),
-            "Customer CTA mailto subject/body missing")
-    from urllib.parse import unquote
-    body = unquote(mail.get_attribute("href"))
-    for field in ["Версия Phantom", "Версия Astra Linux", "Количество регистраторов",
-                  "Количество площадок", "SNMP"]:
-        require(field in body, f"Mail template missing: {field}")
-    bounds = page.evaluate("""() => {
-       const hero=document.querySelector('main>.hero').getBoundingClientRect();
-       const diagram=document.querySelector('.mon-diagram').getBoundingClientRect();
-       const facts=document.querySelector('.mon-hero .hero-points').getBoundingClientRect();
-       return {top:hero.top,bottom:hero.bottom,diTop:diagram.top,diBottom:diagram.bottom,
-               factsTop:facts.top,factsBottom:facts.bottom};
-    }""")
-    require(bounds["diTop"] >= bounds["top"]-5 and bounds["diBottom"] <= bounds["bottom"]+5,
-            f"Hero diagram clipping: {bounds}")
-    require(bounds["factsTop"] >= bounds["top"]-5 and bounds["factsBottom"] <= bounds["bottom"]+5,
-            f"Hero fact clipping: {bounds}")
-    if theme == "dark":
-        hover = page.locator('#documents .mon-links a').first
-        hover.hover()
-        require(hover.evaluate("(el)=>getComputedStyle(el).color") == "rgb(255, 128, 148)",
-                "Dark-mode links do not meet contrast target")
-    if width == 1440:
-        counts = page.locator('#purpose .mon-card h3').evaluate_all("""els=>els.map(el=>{
-            const s=getComputedStyle(el);
-            const line=parseFloat(s.lineHeight);
-            return Math.round(el.getBoundingClientRect().height/line);
-        })""")
-        print("MONITORING PURPOSE HEADINGS 1440:", counts, flush=True)
-        require(len(set(counts)) == 1, f"Peer card headings have inconsistent lines: {counts}")
 
 def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
@@ -574,8 +499,6 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
-                                if filename == "phantom-monitoring.html":
-                                    inspect_monitoring(page, width, theme)
                                 inspect_active_underline_hover(page, filename, width)
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
