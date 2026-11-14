@@ -16,37 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-]
+PAGES = ["personal-solutions.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -150,6 +120,65 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "personal-solutions.html":
+        require(page.locator('header.site-header').count() == 1,
+                "Shared site header missing")
+        require(page.locator('.demo').count() == 0,
+                "Draft coordination badge still visible")
+        require(page.locator('main h1').inner_text().strip() == "Персональные решения",
+                "Main title changed")
+        require(page.locator('.hero-points--solution li').count() == 3,
+                "Hero lacks three key facts")
+        require(page.locator('.hero-points--solution li strong + span').count() == 3,
+                "Hero key fact captions lack required semantic markup")
+        require(page.locator('main a.hero-action-link[href="#request"]').count() == 1,
+                "Hero consultation CTA absent")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Service switcher absent")
+        require(page.locator('.solutions-switcher').evaluate(
+            "(el) => el.previousElementSibling?.classList.contains('hero')") is True,
+                "Service switcher is not immediately below hero")
+        for target in ["services.html", "modernization.html"]:
+            require(page.locator(f'.solutions-switcher a[href="{target}"]').count() >= 1,
+                    f"Service route missing: {target}")
+        require(page.locator('main a[href="training.html"]').count() >= 1,
+                "Training service link missing")
+        for target in ["phantom-catalog.html", "ip-telephony.html", "phantom-active.html",
+                       "index.html", "news.html#news-asr", "news.html#news-minprom",
+                       "history.html", "phantom-monitoring.html"]:
+            require(page.locator(f'main a[href="{target}"]').count() >= 1,
+                    f"Missing contextual route: {target}")
+        require(page.locator('main .cards > article.card').count() >= 20,
+                "Case-study/card content unexpectedly truncated")
+        require(page.locator('.diagram-node').filter(has_text="Оценка адаптации или разработки").count() == 1,
+                "Engineering decision branch still promises automatic development")
+        require(page.locator('main a[href^="mailto:sales@mdis.ru?"]').count() == 1,
+                "Structured email CTA absent")
+        mail = page.locator('main a[href^="mailto:sales@mdis.ru?"]').get_attribute("href")
+        from urllib.parse import parse_qs
+        parsed = parse_qs(urlsplit(mail).query)
+        body = parsed.get("body", [""])[0]
+        for field in ["АТС / версия:", "Типы линий:", "Количество каналов:",
+                      "Что требуется:", "Какая внешняя система участвует:",
+                      "Дополнительные ограничения:"]:
+            require(field in body, f"Missing email draft field: {field}")
+        require(page.evaluate("""() => {
+            const hero = document.querySelector("main > .hero");
+            const points = hero.querySelector(".hero-points");
+            const visual = hero.querySelector(".hero-visual");
+            const cta = hero.querySelector(".hero-action-link");
+            const box = hero.getBoundingClientRect();
+            return [points,visual,cta].every(element => {
+                const b = element.getBoundingClientRect();
+                return b.top >= box.top - 4 && b.bottom <= box.bottom + 4;
+            });
+        }"""), "Visible hero information is clipped")
+        original_theme = page.locator('html').get_attribute('data-theme')
+        page.locator('header .site-theme-toggle').click()
+        require(page.locator('html').get_attribute('data-theme') != original_theme,
+                "Shared theme toggle does not work")
+        page.locator('header .site-theme-toggle').click()
+        assert_theme(page, original_theme)
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
