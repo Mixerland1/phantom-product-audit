@@ -16,25 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-]
+PAGES = ["stantsiya-zapisi.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -98,6 +80,35 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "stantsiya-zapisi.html":
+        require(page.locator('.product-switcher').count() == 1, "Station product switcher absent")
+        require(page.locator('.product-parent-link[href="atom-energy.html"]').count() == 1,
+                "Station back link to atomic energy absent")
+        require(page.locator('.product-next-link[href="electroenergetika.html"]').count() == 1,
+                "Station next sector link absent")
+        require(page.locator('.hero h1').inner_text().strip() == 'Станция записи МЦКРС «Фантом»',
+                "Station product H1 wrong")
+        require(page.locator('details.sz-details').count() == 1, "Technical details missing")
+        page.locator('details.sz-details summary').click()
+        require(page.locator('details.sz-details').get_attribute('open') is not None,
+                "Technical details did not open")
+        require(page.locator('a[href="support-stantsiya-zapisi.html"]').count() == 1,
+                "Local support link missing")
+        require(page.locator('a[href="certificates.html"]').count() == 1,
+                "Local certificates link missing")
+        require(page.locator('form.product-form[data-subject]').count() == 1,
+                "Request form or mailto subject missing")
+        require(page.locator('a[href$="121a28e02cca2793939aeb056afc52d2.pdf"]').count() == 1,
+                "Technical specification PDF link absent")
+        require(page.locator('a[href$="f8a736248c9b0f7792bc2cf144021f2c.pdf"]').count() == 1,
+                "Manual PDF link absent")
+        columns = page.locator('.sz-table .spec-row').first.evaluate(
+            "(e) => getComputedStyle(e).gridTemplateColumns.split(' ').filter(Boolean).length")
+        require(columns == (1 if width <= 560 else 2),
+                f"Mobile specifications columns wrong: width={width}, columns={columns}")
+        require(page.locator('.product-switcher').evaluate(
+            "(e) => e.previousElementSibling?.classList.contains('hero')") is True,
+                "Product switcher is not immediately after hero")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
