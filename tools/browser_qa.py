@@ -169,7 +169,7 @@ def inspect_nav(page, filename: str, width: int):
                 "Hero key facts not semantically styled")
         require(page.locator('.hero .hero-schema[role="img"]').count() == 1,
                 "Accessible IP recording scheme is missing")
-        require("Три архитектуры записи" in page.locator('.schema-heading').inner_text(),
+        require("Три архитектуры записи" in page.locator('.schema-heading').text_content(),
                 "CSTA falsely classified as audio transport")
         require("аудио" in page.locator('.schema-row').nth(1).inner_text(),
                 "CSTA call-control and audio mechanisms not distinguished")
