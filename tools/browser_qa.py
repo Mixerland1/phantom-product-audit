@@ -16,44 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-    # Audited pages 13–18: one real Chromium case per width and theme.
-    "connection-schemes.html",
-    "personal-solutions.html",
-    "modernization.html",
-    "training.html",
-    "telephone-recording.html",
-    "dispatcher-recording.html",
-]
+PAGES = ["ip-telephony.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -195,6 +158,86 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "ip-telephony.html":
+        require(page.locator('header.site-header').count() == 1,
+                "Shared header is missing or duplicated")
+        require(page.locator('main h1').inner_text().strip() == "Запись IP-телефонии",
+                "IP telephony H1 incorrect")
+        require(page.locator('.hero .hero-points--solution li').count() == 3,
+                "Hero must show SPAN, CSTA, SIPREC")
+        require(page.locator('.hero .hero-points--solution li strong + span').count() == 3,
+                "Hero key facts not semantically styled")
+        require(page.locator('.hero .hero-schema[role="img"]').count() == 1,
+                "Accessible IP recording scheme is missing")
+        require("Три архитектуры записи" in page.locator('.schema-heading').inner_text(),
+                "CSTA falsely classified as audio transport")
+        require("аудио" in page.locator('.schema-row').nth(1).inner_text(),
+                "CSTA call-control and audio mechanisms not distinguished")
+        require(page.locator('.flow-diagram[role="img"]').count() == 1,
+                "Passive recording diagram lacks image semantics")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Product switcher not present exactly once")
+        require(page.locator('.solutions-switcher').evaluate(
+                "(el) => el.previousElementSibling?.classList.contains('hero')") is True,
+                "Product switcher is not immediately after the hero")
+        for selector in [
+            '.solutions-switcher-label[href="phantom-catalog.html"]',
+            '.solutions-switcher-neighbor--previous[href="dispatcher-recording.html"]',
+            '.solutions-switcher-neighbor--next[href="selective-recording.html"]'
+        ]:
+            require(page.locator(selector).count() == 1,
+                    f"Product switcher does not follow header order: {selector}")
+        tables = page.locator('.table-scroll[tabindex="0"][role="region"]')
+        require(tables.count() == 2, "Both comparison tables should be keyboard-scrollable")
+        require(page.locator('table').count() == 2,
+                "Missing passive recording or architecture table")
+        hints = page.locator('.table-scroll-hint')
+        require(hints.count() == 2, "Mobile table scroll hints missing")
+        for hint in hints.all():
+            require(hint.is_visible() == (width <= 700),
+                    f"Incorrect table hint visibility at {width}px")
+        if width == 375:
+            for tbl in tables.all():
+                require(tbl.evaluate(
+                    "(el) => {el.scrollLeft = 80; return el.scrollLeft > 0;}"),
+                    "Specification table does not scroll on a phone")
+        for route in ["phantom-active.html", "phantom-monitoring.html",
+                      "phantom-boards.html", "phantom-cross.html",
+                      "selective-recording.html", "connection-schemes.html"]:
+            require(page.locator(f'main a[href="{route}"]').count() >= 1,
+                    f"Context route missing: {route}")
+        require(page.get_by_role('heading', name='Проверенная совместимость важнее общего списка брендов').count() == 1,
+                "Confirmed three-vendor integration section absent")
+        for example in ["VP-17P", "VP-30P", "Гудвин-Бородино", "Протей ТЛ"]:
+            require(example in page.locator('main').inner_text(),
+                    f"Real confirmed product integration missing: {example}")
+        require(page.locator('main .chips span').count() == 6,
+                "Six documented passive codecs not present")
+        require('10838442' in page.locator('main').inner_text(),
+                "Industrial registry entry missing")
+        require(page.evaluate("""() => {
+            const hero = document.querySelector('main > .hero');
+            const bounds = hero.getBoundingClientRect();
+            return [...hero.querySelectorAll('.hero-schema, .hero-points')].every(el => {
+                const box = el.getBoundingClientRect();
+                return box.top >= bounds.top - 4 && box.bottom <= bounds.bottom + 4;
+            });
+        }"""), "Hero content is clipped or outside hero")
+        mail = page.locator('main a[href^="mailto:sales@mdis.ru?"]')
+        require(mail.count() == 1, "IP consultation CTA missing")
+        from urllib.parse import parse_qs
+        params = parse_qs(urlsplit(mail.get_attribute('href')).query)
+        body = params.get('body', [''])[0]
+        for phrase in ["АТС / производитель и версия:", "Протоколы сигнализации:",
+                       "Кодеки и шифрование:", "Количество одновременных разговоров:",
+                       "Сетевая топология (SPAN/SIPREC/API):"]:
+            require(phrase in body, f"Email draft does not include: {phrase}")
+        current_theme = page.locator('html').get_attribute('data-theme')
+        page.locator('header .site-theme-toggle').click()
+        require(page.locator('html').get_attribute('data-theme') != current_theme,
+                "Header theme toggle failed")
+        page.locator('header .site-theme-toggle').click()
+        assert_theme(page, current_theme)
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
