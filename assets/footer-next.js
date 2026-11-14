@@ -49,6 +49,7 @@
     {path:'certificates.html',name:'Сертификаты и лицензии'},
     {path:'requisites.html',name:'Реквизиты'},
     {path:'partners.html',name:'Партнёры'},
+    {path:'rewards.html',name:'Награды'},
     {path:'history.html',name:'История МДИС'}
   ];
   // Technical modules are linked beneath Phantom Cross, without expanding the global product dropdown.
@@ -129,6 +130,31 @@
     const controls=switcher.querySelectorAll('.solutions-switcher-control');
     controls[0].addEventListener('click',()=>{location.hash='news-cross'});
     controls[1].addEventListener('click',()=>{location.hash='news-asr'});
+    hero.insertAdjacentElement('afterend',switcher);
+  }
+
+
+  // Articles and customer letters are child sections, not new top-level nav items.
+  const extraContext=!source&&/\/(?:articles|reviews)\.html$/.test(pathname);
+  if(extraContext&&hero&&!document.querySelector('.solutions-switcher')){
+    const isArticles=/\/articles\.html$/.test(pathname);
+    const previous=isArticles?{href:'news.html',label:'Новости МДИС'}:{href:'clients.html',label:'Наши клиенты'};
+    const next=isArticles?{href:'#archive',label:'Архив статей'}:{href:'#letters',label:'Письма клиентов'};
+    const hub=isArticles?{href:'news.html',label:'Новости и статьи'}:{href:'clients.html',label:'Все клиенты'};
+    const switcher=document.createElement('nav');
+    switcher.className='solutions-switcher';
+    switcher.setAttribute('aria-label',isArticles?'Навигация по статьям':'Навигация по отзывам клиентов');
+    switcher.innerHTML=`<div class="wrap"><div class="solutions-switcher-layout">
+      <a class="solutions-switcher-neighbor solutions-switcher-neighbor--previous" href="${previous.href}">${previous.label}</a>
+      <div class="solutions-switcher-toolbar">
+        <button class="solutions-switcher-control" type="button" aria-label="Предыдущий раздел: ${previous.label}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+        <a class="solutions-switcher-label" href="${hub.href}">${hub.label}</a>
+        <button class="solutions-switcher-control" type="button" aria-label="Следующий раздел: ${next.label}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      </div><a class="solutions-switcher-neighbor solutions-switcher-neighbor--next" href="${next.href}">${next.label}</a>
+      </div></div>`;
+    const controls=switcher.querySelectorAll('.solutions-switcher-control');
+    controls[0].addEventListener('click',()=>{location.href=previous.href});
+    controls[1].addEventListener('click',()=>{location.href=next.href});
     hero.insertAdjacentElement('afterend',switcher);
   }
 

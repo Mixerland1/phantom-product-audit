@@ -21,6 +21,9 @@ PAGES = [
     "clients.html",
     "partners.html",
     "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
     "phantom-active.html",
     "certificates.html",
     "requisites.html",
@@ -97,10 +100,11 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
-    if filename in {"company.html", "clients.html", "certificates.html", "requisites.html", "partners.html", "history.html"}:
+    if filename in {"company.html", "clients.html", "certificates.html", "requisites.html", "partners.html", "rewards.html", "history.html"}:
         require(page.locator('.solutions-switcher-label[href="company.html"]').count() == 1,
                 "Company cycle link missing")
     if filename == "news.html":
+        require(page.locator('a[href="articles.html"]').count() >= 1, "News lack articles link")
         require(page.locator('.solutions-switcher-label[href="#updates"]').count() == 1,
                 "News hub context-navigation link missing")
         require(page.locator('a[href="#news-asr"]').count() >= 1,
@@ -118,6 +122,7 @@ def inspect_nav(page, filename: str, width: int):
         require(page.locator('a[href="news.html#news-cross"]').count() >= 1,
                 "History missing local Cross release")
     if filename == "clients.html":
+        require(page.locator('a[href="reviews.html"]').count() >= 1, "Clients lack reviews link")
         require(page.locator('a[href="history.html"]').count() >= 1,
                 "Clients missing local company history")
     if filename == "company.html":
@@ -127,6 +132,20 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "partners.html":
         require(page.locator('a[href="company.html"]').count() >= 1,
                 "Partners missing company hub")
+    if filename == "rewards.html":
+        require(page.locator(".rewards-nav").count() == 0, "Obsolete rewards nav remains")
+        require(page.locator('a[href^="assets/awards/"][type="application/pdf"]').count() == 5,
+                "Five local award documents missing")
+    if filename == "reviews.html":
+        require(page.locator('.solutions-switcher-label[href="clients.html"]').count() == 1,
+                "Reviews child navigation missing")
+        require(page.locator('a[href^="assets/reviews/"]').count() == 6,
+                "Six local customer letter scans missing")
+    if filename == "articles.html":
+        require(page.locator('.solutions-switcher-label[href="news.html"]').count() == 1,
+                "Articles child navigation missing")
+        require(page.locator('a[href="news.html"]').count() >= 1,
+                "Articles lack news backlink")
     if filename == "services.html":
         require(page.locator('a[href="personal-solutions.html"]').count() >= 1,
                 "Services hub missing personal solutions")
@@ -187,8 +206,33 @@ def check_local_links():
         print("BROKEN LINK", item, flush=True)
 
 
+
+def verify_original_assets():
+    manifest_path = ROOT / "assets/original-asset-manifest.json"
+    require(manifest_path.is_file(), "Original asset manifest not present")
+    entries = json.loads(manifest_path.read_text(encoding="utf-8"))
+    require(len(entries) == 11, f"Expected 11 verified originals, got {len(entries)}")
+    pdfs = [e for e in entries if e['path'].endswith('.pdf')]
+    pngs = [e for e in entries if e['path'].endswith('.png')]
+    require(len(pdfs) == 5 and len(pngs) == 6,
+            f'Expected 5 award PDFs and 6 letter PNGs; got {len(pdfs)}, {len(pngs)}')
+    require(len({e['path'] for e in entries}) == 11,
+            'Duplicate original asset manifest paths')
+    import hashlib
+    for entry in entries:
+        path = ROOT / entry["path"]
+        require(path.is_file(), f"Missing original: {entry['path']}")
+        data = path.read_bytes()
+        magic = b"%PDF-" if path.suffix == ".pdf" else bytes.fromhex("89504e470d0a1a0a")
+        require(data.startswith(magic), f"Not a valid original: {path}")
+        require(len(data) == entry["bytes"], f"Size mismatch: {path}")
+        require(hashlib.sha256(data).hexdigest() == entry["sha256"], f"Hash mismatch: {path}")
+    print("ORIGINAL ASSETS: 5 PDF and 6 PNG, signatures and SHA256 verified", flush=True)
+
+
 def main():
     check_local_links()
+    verify_original_assets()
     handler = partial(QuietHandler, directory=str(ROOT))
     server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
