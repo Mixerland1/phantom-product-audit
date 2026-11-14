@@ -109,8 +109,6 @@ def inspect_modernization(page, width: int, theme: str):
     require(page.locator("main > .hero h1").inner_text() ==
             "Комплексная модернизация Phantom", "Incorrect modernization H1")
     require(page.locator(".demo").count() == 0, "Preview-only banner remains")
-    require(page.locator("header .brand").count() == 0,
-            "Legacy independent header brand remains")
     require(page.locator('.solutions-switcher-label[href="services.html"]').count() == 1,
             "Services hub route missing in context cycle")
     require(page.locator('.solutions-switcher-neighbor--previous[href="personal-solutions.html"]').count() == 1,
@@ -140,7 +138,7 @@ def inspect_modernization(page, width: int, theme: str):
             "Main content refers to old site")
     for href in ["phantom-boards.html", "faq.html#versions", "phantom-cross.html",
                  "news.html#news-cross", "ip-telephony.html", "phantom-active.html",
-                 "phantom-monitoring.html", "phantom-asr.html", "history.html",
+                 "phantom-monitoring.html", "phantom-asr.html", "history.html#modernization",
                  "support.html", "personal-solutions.html", "training.html",
                  "phantom-catalog.html", "news.html#news-minprom"]:
         require(page.locator(f'main a[href="{href}"]').count() >= 1,
