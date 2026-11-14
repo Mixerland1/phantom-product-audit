@@ -171,7 +171,7 @@
 
   footer.innerHTML=`
     <div class="footer-logo-band"><div class="wrap"><div class="footer-logos" aria-label="Партнёры МДИС">
-      <a href="https://mdis.ru/" aria-label="МДИС"><img src="assets/logos/mdis.svg" alt="МДИС"></a>
+      <a href="company.html" aria-label="МДИС — о компании"><img src="assets/logos/mdis.svg" alt="МДИС"></a>
       <a href="${homePath}" aria-label="Фантом"><img class="footer-phantom-light" src="assets/logos/phantom-black.svg" alt="Фантом"><img class="footer-phantom-dark" src="assets/logos/phantom.svg" alt=""></a>
       <a href="https://granulex.ru/" target="_blank" rel="noopener" aria-label="Granulex"><img src="assets/logos/granulex.svg" alt="Granulex"></a>
       <a class="footer-pultex" href="https://pultex.pro/" target="_blank" rel="noopener" aria-label="PultEx"><img class="footer-pultex-color" src="assets/logos/pultex.svg" alt="PultEx"><img class="footer-pultex-white" src="assets/logos/pultex-white.svg" alt=""></a>

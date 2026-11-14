@@ -2,6 +2,18 @@
   const header=document.querySelector('.header');
   if(!header)return;
 
+  // The user-selected theme must survive navigation and a full page reload.
+  // Inline page bootstraps may set the theme earlier; this shared fallback
+  // handles pages without one and keeps the theme toggle in sync.
+  try {
+    const savedTheme=localStorage.getItem('mdis-theme');
+    if(savedTheme==='light'||savedTheme==='dark'){
+      document.documentElement.dataset.theme=savedTheme;
+    }else if(window.matchMedia){
+      document.documentElement.dataset.theme=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+    }
+  }catch(error){}
+
   const pathname=decodeURIComponent(location.pathname);
   const source=pathname.includes('/макеты/');
   const localPreview=location.protocol==='file:'&&pathname.includes('/предпросмотр_руководство/');

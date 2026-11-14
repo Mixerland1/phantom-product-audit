@@ -34,6 +34,11 @@ PAGES = [
     "phantom-home.html",
     "phantom-catalog.html",
     "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -52,10 +57,50 @@ def require(condition, message: str):
         raise AssertionError(message)
 
 
+def assert_theme(page, expected: str):
+    actual = page.locator("html").get_attribute("data-theme")
+    require(actual == expected, f"Theme mismatch: expected {expected}, got {actual}")
+    pressed = page.locator(".site-theme-toggle").get_attribute("aria-pressed")
+    require(pressed == str(expected == "dark").lower(),
+            f"Theme toggle state mismatch: {pressed}")
+
+
+def inspect_theme_persistence(page, base: str, initial: str):
+    """Exercise real theme-toggle clicks, styling, navigation, and reload."""
+    opposite = "dark" if initial == "light" else "light"
+    original_paper = page.evaluate(
+        "() => getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()")
+    page.locator(".site-theme-toggle").click()
+    assert_theme(page, opposite)
+    require(page.evaluate("() => localStorage.getItem('mdis-theme')") == opposite,
+            "Theme choice not saved")
+    changed_paper = page.evaluate(
+        "() => getComputedStyle(document.documentElement).getPropertyValue('--paper').trim()")
+    require(original_paper != changed_paper, "Theme did not change page styling")
+    response = page.goto(base + "commercial.html", wait_until="load", timeout=25000)
+    require(response is not None and response.status == 200,
+            "Theme navigation target unavailable")
+    assert_theme(page, opposite)
+    require(page.evaluate("() => localStorage.getItem('mdis-theme')") == opposite,
+            "Theme lost on navigation")
+    page.reload(wait_until="load", timeout=25000)
+    assert_theme(page, opposite)
+    page.locator(".site-theme-toggle").click()
+    assert_theme(page, initial)
+    require(page.evaluate("() => localStorage.getItem('mdis-theme')") == initial,
+            "Theme not restored after toggling back")
+    response = page.goto(base + "company.html", wait_until="load", timeout=25000)
+    require(response is not None and response.status == 200,
+            "Could not return to company page")
+    assert_theme(page, initial)
+
+
 def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
     require(page.locator(".site-header").count() == 1, "Shared header missing")
     require(page.locator(".footer").count() >= 1, "Footer missing")
+    require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
+            "MDIS footer logo must link to local company page")
     if width > 1080:
         groups = page.locator(".site-nav details.site-menu")
         labels = [group.locator("summary").inner_text().strip() for group in groups.all()]
@@ -270,7 +315,9 @@ def main():
                             device_scale_factor=1,
                             reduced_motion="reduce",
                         )
-                        context.add_init_script(f"localStorage.setItem('mdis-theme','{theme}')")
+                        context.add_init_script(f"""if (!localStorage.getItem('mdis-theme')) {{
+                            localStorage.setItem('mdis-theme','{theme}');
+                        }}""")
                         page = context.new_page()
                         for filename in PAGES:
                             errors = []
@@ -297,7 +344,10 @@ def main():
                                        new URL(i.src).origin === location.origin)
                                     .map(i => i.getAttribute('src'))""")
                                 require(not broken, f"Broken local images: {broken}")
+                                assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
+                                if filename == "company.html":
+                                    inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
                                 print("PASS", ident, flush=True)
                             except Exception as error:
