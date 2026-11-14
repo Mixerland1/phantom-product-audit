@@ -37,12 +37,12 @@
     {path:'phantom-cross.html',name:'Phantom Cross 5.5'}
   ];
   const servicePages=[
+    {path:'services.html',name:'Все услуги'},
     {path:'personal-solutions.html',name:'Персональные решения'},
     {path:'modernization.html',name:'Комплексная модернизация'},
     {path:'training.html',name:'Обучение'}
   ];
-  // Local corporate cycle: hub followed by the order of migrated Company dropdown entries.
-  // The not-yet-migrated Awards page will be added only after prompt 31.
+  // Corporate cycle: hub followed by the current Company dropdown entries.
   const companyPages=[
     {path:'company.html',name:'О компании'},
     {path:'clients.html',name:'Наши клиенты'},
