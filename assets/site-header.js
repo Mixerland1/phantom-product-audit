@@ -25,6 +25,11 @@
     modernization:page('modernization.html','modernization.html','modernization.html'),
     training:page('training.html','training.html','training.html'),
     support:page('support.html','support.html','support.html'),
+    faq:page('faq.html','faq.html','faq.html'),
+    company:page('company.html','company.html','company.html'),
+    certificates:page('certificates.html','certificates.html','certificates.html'),
+    requisites:page('requisites.html','requisites.html','requisites.html'),
+    services:page('services.html','services.html','services.html'),
     solutions:page('solutions.html','solutions.html','solutions.html'),
     privacy:page('privacy-policy.html','privacy-policy.html','privacy-policy.html'),
     cookie:page('cookie-policy.html','cookie-policy.html','cookie-policy.html'),
@@ -74,12 +79,13 @@
     {label:'Обучение',href:paths.training}
   ];
   // Both groups use the same disclosure component as Products/Services.
-  // FAQ categories remain on the local support hub; document categories have dedicated local pages.
+  // FAQ categories link directly into the new local FAQ; product documentation has separate pages.
   const supportItems=[
-    {label:'Общие вопросы',href:paths.support+'#faq-general'},
-    {label:'Установка системы',href:paths.support+'#faq-install'},
-    {label:'Функции системы',href:paths.support+'#faq-functions'},
-    {label:'Коммерческие вопросы',href:paths.support+'#faq-commercial'},
+    {label:'База вопросов',href:paths.faq},
+    {label:'Общие вопросы',href:paths.faq+'#general'},
+    {label:'Установка системы',href:paths.faq+'#versions'},
+    {label:'Функции системы',href:paths.faq+'#archive'},
+    {label:'Коммерческие вопросы',href:paths.faq+'#commercial'},
     {label:'Phantom 2',href:paths.docs2},
     {label:'Phantom 4',href:paths.docs4},
     {label:'Phantom Active',href:paths.docsActive},
@@ -87,11 +93,11 @@
     {label:'Фантом Ультра',href:paths.docsUltra},
     {label:'Станция записи',href:paths.docsStation}
   ];
-  // The six Company pages are not local yet: keep their exact, verified public destinations.
+  // Migrate company pages individually; keep future pages on official URLs until completed.
   const companyItems=[
     {label:'Наши клиенты',href:'https://mdis.ru/about/clients/'},
-    {label:'Сертификаты и лицензии',href:'https://mdis.ru/about/license/'},
-    {label:'Реквизиты',href:'https://mdis.ru/about/requisites/'},
+    {label:'Сертификаты и лицензии',href:paths.certificates},
+    {label:'Реквизиты',href:paths.requisites},
     {label:'Партнёры',href:'https://mdis.ru/about/partners/'},
     {label:'Награды',href:'https://mdis.ru/about/rewards/'},
     {label:'История',href:'https://mdis.ru/about/history/'},
@@ -99,8 +105,8 @@
     {label:'Политика cookie',href:paths.cookie}
   ];
   const newsLink='<a href="https://mdis.ru/news/">Новости</a>';
-  const desktopNav=`${desktopMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,'https://mdis.ru/about/','О компании',true)}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,'https://mdis.ru/service/','Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,'https://mdis.ru/about/','О компании')}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,paths.company,'О компании',true)}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,paths.company,'О компании')}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;
@@ -109,10 +115,11 @@
   const isCurrent=item=>{try{const url=new URL(item.href,location.href);return url.origin===location.origin&&decodeURIComponent(url.pathname).replace(/\/+$/,'')===currentPath}catch(error){return false}};
   // Technical subpages belong to the Phantom Cross product family, but not to extra dropdown cards.
   const isTechnicalSubpage=/\/(?:phantom-monitoring|phantom-asr)\.html$/.test(currentPath);
-  const isSupportPage=/\/support(?:-[a-z0-9-]+)?\.html$/.test(currentPath);
+  const isSupportPage=/\/(?:support(?:-[a-z0-9-]+)?|faq)\.html$/.test(currentPath);
   const isSolutionsHub=/\/solutions\.html$/.test(currentPath);
-  const isCompanyLegalPage=/\/(?:privacy-policy|cookie-policy)\.html$/.test(currentPath);
-  const currentGroup=isCompanyLegalPage?4:(isSupportPage?3:(isTechnicalSubpage?1:(services.some(isCurrent)?2:((isSolutionsHub||solutions.some(isCurrent))?0:(products.some(isCurrent)?1:-1)))));
+  const isCompanyLegalPage=/\/(?:privacy-policy|cookie-policy|company|certificates|requisites)\.html$/.test(currentPath);
+  const isServicesHub=/\/services\.html$/.test(currentPath);
+  const currentGroup=isCompanyLegalPage?4:(isSupportPage?3:(isTechnicalSubpage?1:((isServicesHub||services.some(isCurrent))?2:((isSolutionsHub||solutions.some(isCurrent))?0:(products.some(isCurrent)?1:-1)))));
   if(currentGroup>=0){
     const desktopGroups=header.querySelectorAll('.site-menu');
     const mobileGroups=header.querySelectorAll('.site-mobile-group');

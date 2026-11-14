@@ -1,0 +1,40 @@
+name: Phantom browser QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '**/*.html'
+      - 'assets/**'
+      - 'tools/browser_qa.py'
+      - '.github/workflows/phantom-browser-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Test 9 pages at 4 widths in 2 themes
+        run: python tools/browser_qa.py
+      - name: Upload QA report and failure screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phantom-browser-qa
+          path: qa-artifacts/
+          if-no-files-found: warn
