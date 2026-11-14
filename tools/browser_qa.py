@@ -109,6 +109,44 @@ def inspect_theme_persistence(page, base: str, initial: str):
     assert_theme(page, initial)
 
 
+def inspect_active_underline_hover(page, filename: str, width: int):
+    """The current top-level nav underline yields to a different hovered item."""
+    if width != 1440 or filename not in {
+        "connection-schemes.html", "atom-energy.html", "training.html",
+        "company.html", "faq.html", "news.html",
+    }:
+        return
+    if filename == "news.html":
+        active = page.locator('.site-nav > a[href="news.html"][aria-current="page"]')
+        other = page.locator(".site-nav > details.site-menu").nth(1).locator("summary")
+    else:
+        active = page.locator(".site-nav > details.site-menu--current > summary")
+        other = page.locator('.site-nav > a[href="news.html"]')
+    require(active.count() == 1 and other.count() == 1,
+            f"Active/other nav items not resolved on {filename}")
+
+    def underline_opacity():
+        return float(active.evaluate(
+            "(node) => getComputedStyle(node, '::after').opacity"))
+
+    page.mouse.move(2, 500)
+    page.wait_for_timeout(260)
+    require(underline_opacity() > 0.95,
+            "Current nav underline missing with pointer away")
+    active.hover()
+    page.wait_for_timeout(260)
+    require(underline_opacity() > 0.95,
+            "Current nav underline should stay while hovering its own item")
+    other.hover()
+    page.wait_for_timeout(260)
+    require(underline_opacity() < 0.05,
+            "Current nav underline remains visible while another nav item is hovered")
+    page.mouse.move(2, 500)
+    page.wait_for_timeout(260)
+    require(underline_opacity() > 0.95,
+            "Current nav underline did not return after pointer left navigation")
+
+
 def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
     require(page.locator(".site-header").count() == 1, "Shared header missing")
@@ -461,6 +499,7 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
+                                inspect_active_underline_hover(page, filename, width)
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
