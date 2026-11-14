@@ -53,6 +53,7 @@ PAGES = [
     "training.html",
     "telephone-recording.html",
     "dispatcher-recording.html",
+    "pultex.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -294,6 +295,57 @@ def inspect_nav(page, filename: str, width: int):
                      "connection-schemes.html"]:
             require(page.locator(f'a[href="{href}"]').count() >= 1,
                     f"Dispatcher-recording local route missing: {href}")
+    if filename == "pultex.html":
+        require(page.locator("main#main").count() == 1, "Accessible main landmark missing")
+        require(page.locator("a.skip[href='#main']").count() == 1, "Skip to content missing")
+        require(page.locator(".site-header").count() == 1, "Shared header not unique")
+        require(page.locator("header .site-brand-logo").count() == 1,
+                "Duplicated or missing shared logo")
+        require(page.locator('footer.footer .footer-logo-band').count() == 1,
+                "Canonical shared footer not mounted")
+        require(page.locator('.compare[role="table"]').count() == 1,
+                "PultEx/Phantom semantic comparison missing")
+        require(page.locator('.compare [role="row"]').count() == 8,
+                "Comparison must have header and seven semantic rows")
+        for r in page.locator('.compare [role="row"]').all():
+            require(r.locator(':scope > div').count() == 3,
+                    "Each comparison row must have three cells")
+        require(page.locator('.compare [role="columnheader"]').count() == 3,
+                "Comparison header cells missing")
+        require(page.locator('.compare [role="rowheader"]').count() == 7,
+                "Comparison row headers missing")
+        require(page.locator('.compare [role="cell"]').count() == 14,
+                "Comparison data cells missing")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Shared contextual navigation missing")
+        require(page.locator('.solutions-switcher-label[href="phantom-catalog.html"]').count() == 1,
+                "All products route missing")
+        require(page.locator('.solutions-switcher-neighbor--previous[href="index.html"]').count() == 1,
+                "Previous product group neighbor wrong")
+        require(page.locator('.solutions-switcher-neighbor--next[href="connection-schemes.html"]').count() == 1,
+                "Next product group neighbor wrong")
+        require(page.locator('a[href^="mailto:sales@mdis.ru?subject="]').count() == 1,
+                "Project engineer mailto missing")
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+                "Legacy production website link found in target page")
+        urls = page.locator('#docs a.related-card').evaluate_all(
+            "(links) => links.map(link => ({href:link.href,target:link.target,rel:link.rel}))")
+        require(len(urls) == 4, "Four vendor PDFs required")
+        for link in urls:
+            require(link["href"].startswith("https://pultex.pro/wp-content/uploads/") and
+                    link["href"].endswith(".pdf") and
+                    link["target"] == "_blank" and "noopener" in link["rel"],
+                    "Vendor documentation link is not precise or secure")
+        for sect in ["protey", "agat"]:
+            link = page.locator(f'#{sect} a.text-link')
+            require(link.count() == 1 and "pultex.pro/" in link.get_attribute("href"),
+                    f"Direct vendor test article missing for {sect}")
+            require(link.get_attribute("href") != "https://pultex.pro/",
+                    f"Vendor article {sect} incorrectly links to homepage")
+        require(page.locator('.hero .arch-optional').count() == 1,
+                "Phantom should be optional in PultEx architecture")
+        require(page.locator('.hero .arch-disclaimer').count() == 1,
+                "Project architecture disclaimer missing")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
