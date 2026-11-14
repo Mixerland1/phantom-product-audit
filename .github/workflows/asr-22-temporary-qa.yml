@@ -57,6 +57,9 @@ jobs:
                               assert page.locator('.visual[role="group"][aria-label]').count()==1,"ASR process diagram a11y"
                               assert page.locator("#workflow ol.process > li.process-node").count()==5,"Explicit five-stage recording-to-ASR chain missing"
                               assert page.locator("#workflow .process li b[aria-hidden='true']").count()==5,"Decorative process numbering not a11y-hidden"
+                              markerColors=page.locator("#workflow .process-node b").first.evaluate("e=>({fg:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor})")
+                              expectedColors=({"fg":"rgb(244, 247, 251)","bg":"rgb(36, 64, 93)"} if theme=="dark" else {"fg":"rgb(32, 51, 77)","bg":"rgb(220, 236, 251)"})
+                              assert markerColors==expectedColors,"Number markers unreadable in "+theme+": "+str(markerColors)
                               assert ["АТС","МЦКРС «Фантом»","Аудиозапись","Дополнительный модуль ASR","Текстовое представление"]==[t.split(" – ")[0].split(",")[0].split(" разговора")[0] for t in page.locator("#workflow .process li span").all_inner_texts()],"Five process stages in wrong order"
                               assert "Совместимость ASR" in page.locator("#workflow .note").inner_text(),"Missing per-configuration ASR caveat"
                               assert page.locator('.comparison[role="table"]').count()==1,"Comparison table missing"
