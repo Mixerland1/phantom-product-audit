@@ -1,0 +1,124 @@
+name: Telephone recording prompt 17 temporary Chromium QA
+on:
+  pull_request:
+    branches: [main]
+    paths: ['telephone-recording.html', '.github/workflows/telephone-17-temporary-qa.yml']
+permissions:
+  contents: read
+jobs:
+  telephone-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium Playwright
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Browser QA telephone recording
+        run: |
+          python - <<'PY'
+          import json,threading
+          from functools import partial
+          from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          class Quiet(SimpleHTTPRequestHandler):
+              def log_message(self,*a):pass
+          server=ThreadingHTTPServer(("127.0.0.1",0),partial(Quiet,directory=str(Path.cwd())))
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          url=f"http://127.0.0.1:{server.server_port}/telephone-recording.html"
+          Path("qa-telephone-artifacts").mkdir(exist_ok=True)
+          passed,failed=[],[]
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
+                  for width,height in [(375,812),(768,900),(1024,768),(1440,900)]:
+                      for theme in ("light","dark"):
+                          context=browser.new_context(viewport={"width":width,"height":height},reduced_motion="reduce")
+                          context.add_init_script(f"localStorage.setItem('mdis-theme','{theme}')")
+                          page=context.new_page()
+                          errors=[]
+                          page.on("pageerror",lambda error:errors.append(str(error)))
+                          case=f"telephone-recording.html {width}px {theme}"
+                          try:
+                              response=page.goto(url,wait_until="load",timeout=30000)
+                              assert response and response.status==200,"HTTP failure"
+                              assert page.locator("h1").count()==1 and page.locator("h1").inner_text()=="Запись телефонных переговоров","H1 invalid"
+                              assert page.locator('meta[name="robots"]').get_attribute("content")=="noindex, nofollow","robots invalid"
+                              assert page.locator("html").get_attribute("data-theme")==theme,"theme initialization invalid"
+                              assert page.locator(".site-header").count()==1,"shared header missing"
+                              assert page.locator("#site-footer").count()==1,"shared footer missing"
+                              assert page.locator(".hero-diagram[role='group'][aria-label]").count()==1,"accessible hero architecture diagram absent"
+                              assert page.locator('.hero-facts li').count()==3,"three hero facts missing"
+                              assert page.locator('#physical-interfaces .tile').count()==3,"analog/digital/E1 cards missing"
+                              assert page.locator('#ip-architecture .tile').count()==3,"IP techniques cards missing"
+                              assert page.locator('#how-it-works .step').count()==4,"four architecture steps missing"
+                              assert page.locator('.solutions-switcher[aria-label="Переход между продуктами"]').count()==1,"context switcher missing"
+                              assert page.locator('.solutions-switcher-label[href="phantom-catalog.html"]').count()==1,"catalog center link invalid"
+                              assert page.locator('.solutions-switcher-neighbor--previous[href="phantom-cross.html"]').count()==1,"previous product wrong"
+                              assert page.locator('.solutions-switcher-neighbor--next[href="dispatcher-recording.html"]').count()==1,"next product wrong"
+                              assert page.locator('a[href="ip-telephony.html"]').count()>=1,"IP recording local route missing"
+                              assert page.locator('a[href="connection-schemes.html"]').count()>=1,"connection scheme local route missing"
+                              assert page.locator('a[href="phantom-active.html"]').count()>=1,"Phantom Active local route missing"
+                              assert page.locator('a[href="selective-recording.html"]').count()>=1,"Selective recording route missing"
+                              assert page.locator('a[href="phantom-asr.html"]').count()>=1,"ASR link missing"
+                              assert page.locator('a[href="phantom-monitoring.html"]').count()>=1,"Monitoring link missing"
+                              assert page.locator('a[href="news.html#news-minprom"]').count()>=1,"Registry local link missing"
+                              assert page.locator('a[href="index.html"]').count()>=1,"CRM local link missing"
+                              assert page.locator('main a[href^="https://mdis.ru"]').count()==0,"legacy official links in visitor content"
+                              mail=page.locator('main a[href^="mailto:sales@mdis.ru?"]')
+                              assert mail.count()==1,"email CTA missing"
+                              parts=mail.evaluate("""e=>{let u=new URL(e.href);return {to:u.pathname,subject:u.searchParams.get('subject'),body:u.searchParams.get('body')}}""")
+                              assert parts["to"]=="sales@mdis.ru","wrong mailto recipient"
+                              assert "Запись телефонных переговоров" in parts["subject"],"incorrect subject"
+                              for field in ("АТС / версия:","Типы линий:","Количество каналов:","IP-телефония:","Требования к архиву:","Дополнительные интеграции:"):
+                                  assert field in parts["body"],"missing mailto field: "+field
+                              m=page.evaluate("""()=>{let h=document.querySelector('main>.hero');let a=h?.getBoundingClientRect(),inner=h?.querySelector('.hero-in'),b=inner?.getBoundingClientRect();return {vp:document.documentElement.clientWidth,html:document.documentElement.scrollWidth,body:document.body.scrollWidth,hero:a?{y:a.y,height:a.height}:null,inner:b?{y:b.y,height:b.height}:null}}""")
+                              assert m["html"]<=m["vp"]+2 and m["body"]<=m["vp"]+2,"Horizontal overflow "+str(m)
+                              if width>=1100:
+                                  a,b=m["hero"],m["inner"]
+                                  assert b["y"]>=a["y"]-3 and b["y"]+b["height"]<=a["y"]+a["height"]+3,"Hero content clipped "+str(m)
+                              broken=page.evaluate("""()=>[...document.images].filter(i=>i.complete&&i.naturalWidth===0&&new URL(i.src).origin===location.origin).map(i=>i.getAttribute('src'))""")
+                              assert not broken,"Broken images: "+str(broken)
+                              link=page.locator('a.pill-link[href="connection-schemes.html"]').first
+                              link.focus()
+                              assert link.evaluate("(e)=>getComputedStyle(e).outlineStyle")!="none","missing keyboard focus indication"
+                              switch=page.locator(".site-theme-toggle")
+                              switch.click()
+                              other="dark" if theme=="light" else "light"
+                              assert page.locator("html").get_attribute("data-theme")==other,"theme button did not switch"
+                              assert page.evaluate("localStorage.getItem('mdis-theme')")==other,"theme state not persisted"
+                              switch.click()
+                              assert page.locator("html").get_attribute("data-theme")==theme,"theme button did not restore"
+                              if width<=1080:
+                                  menu=page.locator(".site-mobile-menu")
+                                  menu.locator(":scope > summary").click()
+                                  assert menu.get_attribute("open") is not None,"mobile menu not opened"
+                                  menu.locator(":scope > summary").click()
+                              assert not errors,"page errors "+str(errors)
+                              page.evaluate("window.scrollTo(0,0)")
+                              page.screenshot(path=f"qa-telephone-artifacts/telephone-{width}-{theme}.png",full_page=True)
+                              passed.append(case)
+                              print("PASS",case,"metrics",m,flush=True)
+                          except Exception as exc:
+                              failed.append(f"{case}: {exc}")
+                              print("FAIL",case,str(exc),flush=True)
+                              try:page.screenshot(path=f"qa-telephone-artifacts/FAIL-telephone-{width}-{theme}.png",full_page=True)
+                              except Exception:pass
+                          context.close()
+                  browser.close()
+          finally:server.shutdown()
+          print(json.dumps({"passed":len(passed),"failed":len(failed),"errors":failed},ensure_ascii=False),flush=True)
+          if failed:raise SystemExit(1)
+          PY
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: telephone-17-qa
+          path: qa-telephone-artifacts/
+          if-no-files-found: warn
