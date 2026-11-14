@@ -39,9 +39,12 @@
   const servicePages=[
     {path:'personal-solutions.html',name:'Персональные решения'},
     {path:'modernization.html',name:'Комплексная модернизация'},
-    {path:'training.html',name:'Обучение'},
-    // Support is a standalone header dropdown, but remains the last related service card.
-    {path:'support.html',name:'Техническая поддержка'}
+    {path:'training.html',name:'Обучение'}
+  ];
+  const companyPages=[
+    {path:'company.html',name:'О компании'},
+    {path:'certificates.html',name:'Сертификаты и лицензии'},
+    {path:'requisites.html',name:'Реквизиты'}
   ];
   // Technical modules are linked beneath Phantom Cross, without expanding the global product dropdown.
   const technicalPages=[
@@ -51,6 +54,7 @@
   ];
   // Six support documents are local pages under the support hub.
   const documentationPages=[
+    {path:'faq.html',name:'База вопросов'},
     {path:'support-phantom-2.html',name:'Документация Phantom 2'},
     {path:'support-phantom-4.html',name:'Документация Phantom 4'},
     {path:'support-phantom-active.html',name:'Документация Phantom Active'},
@@ -71,6 +75,7 @@
   const solutionIndex=solutionPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const productIndex=productPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const serviceIndex=source?-1:servicePages.findIndex(page=>pathname.endsWith('/'+page.path));
+  const companyIndex=source?-1:companyPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const technicalIndex=source?-1:technicalPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const documentationIndex=source?-1:documentationPages.findIndex(page=>pathname.endsWith('/'+page.path));
   const isTechnical=technicalIndex>0; // Cross itself retains its standard product-menu neighbors.
@@ -78,14 +83,15 @@
   const isProduct=isCrmProduct||productIndex!==-1;
   const isSolution=solutionIndex!==-1;
   const isService=serviceIndex!==-1;
-  if(hero&&(isDocumentation||isTechnical||isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
-    const pages=isDocumentation?documentationPages:(isTechnical?technicalPages:(isProduct?productPages:(isSolution?solutionPages:servicePages)));
-    const currentIndex=isDocumentation?documentationIndex:(isTechnical?technicalIndex:(isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex)));
-    const navigationName=isDocumentation?'Переход между документами':(isTechnical?'Переход между техническими модулями':(isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами')));
-    const previousName=isDocumentation?'Предыдущий раздел документации':(isTechnical?'Предыдущий модуль':(isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга')));
-    const nextName=isDocumentation?'Следующий раздел документации':(isTechnical?'Следующий модуль':(isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга')));
-    const allLabel=isDocumentation?'Вся документация':((isTechnical||isProduct)?'Все продукты':(isSolution?'Все решения':'Все услуги'));
-    const allLink=isDocumentation?'support.html':((isTechnical||isProduct)?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?'solutions.html':'https://mdis.ru/service/'));
+  const isCompany=companyIndex!==-1;
+  if(hero&&(isCompany||isDocumentation||isTechnical||isProduct||isSolution||isService)&&!document.querySelector('.solutions-switcher')&&!document.querySelector('.product-switcher')){
+    const pages=isCompany?companyPages:(isDocumentation?documentationPages:(isTechnical?technicalPages:(isProduct?productPages:(isSolution?solutionPages:servicePages))));
+    const currentIndex=isCompany?companyIndex:(isDocumentation?documentationIndex:(isTechnical?technicalIndex:(isProduct?(productIndex===-1?productPages.findIndex(page=>page.path.endsWith('index.html')):productIndex):(isSolution?solutionIndex:serviceIndex))));
+    const navigationName=isCompany?'Переход между разделами компании':(isDocumentation?'Переход между документами':(isTechnical?'Переход между техническими модулями':(isProduct?'Переход между продуктами':(isSolution?'Переход между решениями':'Переход между услугами'))));
+    const previousName=isCompany?'Предыдущий раздел компании':(isDocumentation?'Предыдущий раздел документации':(isTechnical?'Предыдущий модуль':(isProduct?'Предыдущий продукт':(isSolution?'Предыдущее решение':'Предыдущая услуга'))));
+    const nextName=isCompany?'Следующий раздел компании':(isDocumentation?'Следующий раздел документации':(isTechnical?'Следующий модуль':(isProduct?'Следующий продукт':(isSolution?'Следующее решение':'Следующая услуга'))));
+    const allLabel=isCompany?'О компании':(isDocumentation?'Вся поддержка':((isTechnical||isProduct)?'Все продукты':(isSolution?'Все решения':'Все услуги')));
+    const allLink=isCompany?'company.html':(isDocumentation?'support.html':((isTechnical||isProduct)?(source?homePath+'#products':'phantom-catalog.html'):(isSolution?'solutions.html':'services.html')));
     const pageAt=offset=>pages[(currentIndex+offset+pages.length)%pages.length];
     const switcher=document.createElement('nav');
     switcher.className='solutions-switcher';
