@@ -27,6 +27,10 @@
     support:page('support.html','support.html','support.html'),
     faq:page('faq.html','faq.html','faq.html'),
     company:page('company.html','company.html','company.html'),
+    clients:page('clients.html','clients.html','clients.html'),
+    partners:page('partners.html','partners.html','partners.html'),
+    history:page('history.html','history.html','history.html'),
+    news:page('news.html','news.html','news.html'),
     certificates:page('certificates.html','certificates.html','certificates.html'),
     requisites:page('requisites.html','requisites.html','requisites.html'),
     services:page('services.html','services.html','services.html'),
@@ -95,16 +99,17 @@
   ];
   // Migrate company pages individually; keep future pages on official URLs until completed.
   const companyItems=[
-    {label:'Наши клиенты',href:'https://mdis.ru/about/clients/'},
+    {label:'Наши клиенты',href:paths.clients},
     {label:'Сертификаты и лицензии',href:paths.certificates},
     {label:'Реквизиты',href:paths.requisites},
-    {label:'Партнёры',href:'https://mdis.ru/about/partners/'},
+    {label:'Партнёры',href:paths.partners},
     {label:'Награды',href:'https://mdis.ru/about/rewards/'},
-    {label:'История',href:'https://mdis.ru/about/history/'},
+    {label:'История',href:paths.history},
     {label:'Политика конфиденциальности',href:paths.privacy},
     {label:'Политика cookie',href:paths.cookie}
   ];
-  const newsLink='<a href="https://mdis.ru/news/">Новости</a>';
+  const isNewsPage=/\/news\.html$/.test(pathname);
+  const newsLink=`<a href="${paths.news}"${isNewsPage?' aria-current="page"':''}>Новости</a>`;
   const desktopNav=`${desktopMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${desktopMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,paths.company,'О компании',true)}`;
   const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,paths.company,'О компании')}`;
 
@@ -117,7 +122,7 @@
   const isTechnicalSubpage=/\/(?:phantom-monitoring|phantom-asr)\.html$/.test(currentPath);
   const isSupportPage=/\/(?:support(?:-[a-z0-9-]+)?|faq)\.html$/.test(currentPath);
   const isSolutionsHub=/\/solutions\.html$/.test(currentPath);
-  const isCompanyLegalPage=/\/(?:privacy-policy|cookie-policy|company|certificates|requisites)\.html$/.test(currentPath);
+  const isCompanyLegalPage=/\/(?:privacy-policy|cookie-policy|company|clients|certificates|requisites|partners|history)\.html$/.test(currentPath);
   const isServicesHub=/\/services\.html$/.test(currentPath);
   const currentGroup=isCompanyLegalPage?4:(isSupportPage?3:(isTechnicalSubpage?1:((isServicesHub||services.some(isCurrent))?2:((isSolutionsHub||solutions.some(isCurrent))?0:(products.some(isCurrent)?1:-1)))));
   if(currentGroup>=0){
@@ -177,8 +182,8 @@
     .site-header .site-menu>summary i{width:6px;height:6px;border-right:1.4px solid currentColor;border-bottom:1.4px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .18s}
     .site-header .site-menu[open]>summary i{transform:translateY(2px) rotate(225deg)}
     .site-header .site-nav>a:after,.site-header .site-menu>summary:after{position:absolute;right:0;bottom:0;left:0;height:2px;background:var(--red);content:"";opacity:0;transform:scaleX(.4);transition:opacity .18s,transform .18s}
-    .site-header .site-nav>a:hover,.site-header .site-nav>a:focus-visible,.site-header .site-menu>summary:hover,.site-header .site-menu>summary:focus-visible,.site-header .site-menu[open]>summary,.site-header .site-menu--current>summary{color:var(--ink);outline:none}
-    .site-header .site-nav>a:hover:after,.site-header .site-nav>a:focus-visible:after,.site-header .site-menu>summary:hover:after,.site-header .site-menu>summary:focus-visible:after,.site-header .site-menu[open]>summary:after,.site-header .site-menu--current>summary:after{opacity:1;transform:scaleX(1)}
+    .site-header .site-nav>a[aria-current="page"],.site-header .site-nav>a:hover,.site-header .site-nav>a:focus-visible,.site-header .site-menu>summary:hover,.site-header .site-menu>summary:focus-visible,.site-header .site-menu[open]>summary,.site-header .site-menu--current>summary{color:var(--ink);outline:none}
+    .site-header .site-nav>a[aria-current="page"]:after,.site-header .site-nav>a:hover:after,.site-header .site-nav>a:focus-visible:after,.site-header .site-menu>summary:hover:after,.site-header .site-menu>summary:focus-visible:after,.site-header .site-menu[open]>summary:after,.site-header .site-menu--current>summary:after{opacity:1;transform:scaleX(1)}
     .site-header .site-menu{position:relative}
     .site-header .site-menu--edge .site-menu-panel{left:auto;right:-16px}
     .site-header .site-menu-panel{position:absolute;top:calc(var(--site-header-height) - 4px);left:-16px;width:396px;padding:12px 14px 15px;border:1px solid var(--line);border-radius:12px;background:var(--paper);box-shadow:0 18px 42px #12203620}

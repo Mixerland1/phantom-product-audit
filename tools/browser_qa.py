@@ -7,15 +7,21 @@ import os
 import re
 import threading
 from functools import partial
+from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, unquote, urlsplit
 
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
     "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "phantom-active.html",
     "certificates.html",
     "requisites.html",
     "services.html",
@@ -91,9 +97,36 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
-    if filename in {"company.html", "certificates.html", "requisites.html"}:
+    if filename in {"company.html", "clients.html", "certificates.html", "requisites.html", "partners.html", "history.html"}:
         require(page.locator('.solutions-switcher-label[href="company.html"]').count() == 1,
                 "Company cycle link missing")
+    if filename == "news.html":
+        require(page.locator('.solutions-switcher-label[href="#updates"]').count() == 1,
+                "News hub context-navigation link missing")
+        require(page.locator('a[href="#news-asr"]').count() >= 1,
+                "News hub forward navigation missing")
+        require(page.locator('a[href="#news-cross"]').count() >= 1,
+                "News hub back navigation missing")
+        for anchor in ["news-asr", "news-minprom", "news-aviaton", "news-cross"]:
+            require(page.locator(f"#{anchor}").count() == 1,
+                    f"News article anchor missing: {anchor}")
+        require(page.locator('.site-nav a[href="news.html"][aria-current="page"]').count() == 1,
+                "News active menu highlight missing")
+    if filename == "history.html":
+        require(page.locator("nav.history-nav").count() == 0,
+                "Obsolete duplicate history navigation remains")
+        require(page.locator('a[href="news.html#news-cross"]').count() >= 1,
+                "History missing local Cross release")
+    if filename == "clients.html":
+        require(page.locator('a[href="history.html"]').count() >= 1,
+                "Clients missing local company history")
+    if filename == "company.html":
+        for href in ["clients.html", "partners.html", "history.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Company missing local destination {href}")
+    if filename == "partners.html":
+        require(page.locator('a[href="company.html"]').count() >= 1,
+                "Partners missing company hub")
     if filename == "services.html":
         require(page.locator('a[href="personal-solutions.html"]').count() >= 1,
                 "Services hub missing personal solutions")
@@ -103,7 +136,59 @@ def inspect_nav(page, filename: str, width: int):
                     f"Support hub missing FAQ route {anchor}")
 
 
+
+class LinkParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.refs = []
+        self.ids = set()
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if attrs.get("id"):
+            self.ids.add(attrs["id"])
+        for key in ("href", "src"):
+            if attrs.get(key):
+                self.refs.append((key, attrs[key]))
+
+
+def check_local_links():
+    """Check local HTML/CSS/JS assets and fragment anchors across all root pages."""
+    files = sorted(ROOT.glob("*.html"))
+    parsed = {}
+    for filename in files:
+        parser = LinkParser()
+        parser.feed(filename.read_text(encoding="utf-8"))
+        parsed[filename.resolve()] = parser
+    broken = []
+    checked = 0
+    for file, parser in parsed.items():
+        for _kind, ref in parser.refs:
+            url = urlsplit(ref)
+            if url.scheme or url.netloc or ref.startswith("//"):
+                continue
+            if url.path:
+                target = (ROOT / unquote(url.path.lstrip("/"))).resolve() if url.path.startswith("/") else (file.parent / unquote(url.path)).resolve()
+            else:
+                target = file
+            if not target.is_file():
+                # Directory-only links can be valid routes when served by a web server.
+                if target.is_dir() or (not url.path and not url.fragment):
+                    continue
+                broken.append(f"{file.name}: missing target {ref}")
+                continue
+            checked += 1
+            if url.fragment and target.suffix.lower() in (".html", ".htm"):
+                if target in parsed and unquote(url.fragment) not in parsed[target].ids:
+                    broken.append(f"{file.name}: broken anchor {ref}")
+    print(f"LINK AUDIT: {len(files)} HTML pages, {checked} local references, {len(broken)} broken", flush=True)
+    for item in broken[:100]:
+        ERRORS.append(item)
+        print("BROKEN LINK", item, flush=True)
+
+
 def main():
+    check_local_links()
     handler = partial(QuietHandler, directory=str(ROOT))
     server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
