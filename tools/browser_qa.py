@@ -34,7 +34,6 @@ PAGES = [
     "phantom-home.html",
     "phantom-catalog.html",
     "privacy-policy.html",
-    "industrial.html",  # audit-only: remove after Chromium evidence
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -99,27 +98,6 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
-    if filename == "industrial.html":
-        require(page.locator(".demo").count() == 0, "Preview-only banner still present")
-        require(page.locator("main > .hero h1").inner_text() == "Промышленные предприятия", "Incorrect industry H1")
-        require(page.locator("#channels").inner_text().find("селекторных совещаний") >= 0, "Selector meetings omitted")
-        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0, "Legacy site link remains")
-        require(page.locator('.solutions-switcher-label[href="solutions.html"]').count() == 1, "Industry cycle missing")
-        require(page.locator('main a[href="solutions.html"]').count() >= 2, "Other industry link absent")
-        require(page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').count() == 1, "CTA not mailto")
-        mail = page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').get_attribute("href")
-        require("body=" in mail, "Mail template missing body")
-        require(page.locator("html").get_attribute("data-theme") in ("light", "dark"), "Theme attribute missing")
-        frame = page.evaluate("""() => {
-            const hero = document.querySelector("main > .hero").getBoundingClientRect();
-            const inner = document.querySelector("main > .hero .hero-in").getBoundingClientRect();
-            const cta = document.querySelector("main > .hero .hero-console-cta").getBoundingClientRect();
-            return {heroTop:hero.top,heroBottom:hero.bottom,innerTop:inner.top,innerBottom:inner.bottom,ctaTop:cta.top,ctaBottom:cta.bottom}
-        }""")
-        require(frame["innerTop"] >= frame["heroTop"] - 5 and frame["innerBottom"] <= frame["heroBottom"] + 5,
-                f"Hero content clipped: {frame}")
-        require(frame["ctaTop"] >= frame["heroTop"] - 5 and frame["ctaBottom"] <= frame["heroBottom"] + 5,
-                f"Hero CTA clipped: {frame}")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
