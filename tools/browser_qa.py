@@ -222,7 +222,7 @@ def inspect_nav(page, filename: str, width: int):
                 "Schematic hero visual missing accessible description")
         require(page.locator('.solutions-switcher').count() == 1,
                 "Sector navigation missing")
-        require(page.locator('.solutions-switcher-label[href="phantom-home.html#industries"]').count() == 1,
+        require(page.locator('.solutions-switcher-label[href="solutions.html"]').count() == 1,
                 "All solutions center navigation wrong")
         require(page.locator('.solutions-switcher-neighbor--previous[href="government.html"]').count() == 1,
                 "Previous sector must be government")
