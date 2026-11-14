@@ -105,7 +105,7 @@ def inspect_nav(page, filename: str, width: int):
         require(page.locator("#channels").inner_text().find("селекторных совещаний") >= 0, "Selector meetings omitted")
         require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0, "Legacy site link remains")
         require(page.locator('.solutions-switcher-label[href="solutions.html"]').count() == 1, "Industry cycle missing")
-        require(page.locator('main a[href="solutions.html"]').count() == 1, "Other industry link absent")
+        require(page.locator('main a[href="solutions.html"]').count() >= 2, "Other industry link absent")
         require(page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').count() == 1, "CTA not mailto")
         mail = page.locator('main a[href^="mailto:sales@mdis.ru?subject="]').get_attribute("href")
         require("body=" in mail, "Mail template missing body")
