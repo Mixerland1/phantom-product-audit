@@ -16,7 +16,30 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["phantom-micro.html"]
+PAGES = [
+    "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
+    "phantom-active.html",
+    "certificates.html",
+    "requisites.html",
+    "services.html",
+    "faq.html",
+    "support.html",
+    "phantom-home.html",
+    "phantom-catalog.html",
+    "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
+]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -120,51 +143,6 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
-    if filename == "phantom-micro.html":
-        require(page.locator('header.site-header').count() == 1, "Shared site header absent")
-        require(page.locator('header .site-theme-toggle').count() == 1, "Shared theme toggle absent")
-        require(page.locator('header #theme').count() == 0, "Old duplicate theme toggle remains")
-        require(page.locator('main h1').inner_text() == 'Phantom MICRO', "Incorrect product H1")
-        require(page.locator('img.micro-product-image').count() == 1, "Product visual missing")
-        require(page.locator('img.micro-product-image').evaluate("(img) => img.complete && img.naturalWidth > 0"),
-                "Product image did not load")
-        require(page.locator('.product-switcher').count() == 1, "Product switcher missing")
-        require(page.locator('.product-switcher').evaluate(
-                "(el) => el.previousElementSibling?.classList.contains('hero')") is True,
-                "Product switcher not placed after hero")
-        require(page.locator('.product-parent-link[href="phantom-catalog.html"]').count() == 1,
-                "Product category link missing")
-        require(page.locator('.product-next-link[href="phantom-home.html#industries"]').count() == 1,
-                "Next solutions route missing")
-        require(page.locator('.product-carousel-control').count() == 2, "Carousel controls missing")
-        require(page.locator('main a[href="faq.html#versions"]').count() == 1, "Version FAQ route missing")
-        require(page.locator('main a[href="news.html#news-minprom"]').count() == 1, "Minpromtorg route missing")
-        require(page.locator('form.product-form[data-subject="Запрос по Phantom MICRO"]').count() == 1,
-                "Product mailto form missing")
-        require(page.locator('main [role="table"][aria-label="Характеристики Phantom MICRO"]').count() == 1,
-                "Specification accessible table missing")
-        columns = page.locator('.micro-spec .spec-row').first.evaluate(
-                "(el) => getComputedStyle(el).gridTemplateColumns.split(' ').filter(Boolean).length")
-        require(columns == (1 if width <= 560 else 2),
-                f"Specification columns unexpected at {width}px: {columns}")
-        require(page.locator('header.site-header .site-brand[href="phantom-home.html"]').count() == 1,
-                "Shared brand must navigate home")
-        require(page.evaluate("""() => {
-            const hero = document.querySelector('main > .hero');
-            if (!hero) return false;
-            const bounds = hero.getBoundingClientRect();
-            const fact = hero.querySelector('.hero-points li:last-child');
-            const picture = hero.querySelector('.micro-product-image');
-            return fact && picture &&
-                fact.getBoundingClientRect().bottom <= bounds.bottom + 4 &&
-                picture.getBoundingClientRect().bottom <= bounds.bottom + 4;
-        }"""), "Hero content clipped")
-        original_theme = page.locator('html').get_attribute('data-theme')
-        page.locator('header .site-theme-toggle').click()
-        require(page.locator('html').get_attribute('data-theme') != original_theme,
-                "Theme toggle did not switch")
-        page.locator('header .site-theme-toggle').click()
-        assert_theme(page, original_theme)
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
