@@ -17,6 +17,7 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
+    "auto-dealers.html",
     "company.html",
     "news.html",
     "clients.html",
@@ -143,6 +144,41 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "auto-dealers.html":
+        require(page.locator(".demo").count() == 0,
+                "Preview-only banner remains on automotive page")
+        require(page.locator('a[href="clients.html#sector-6"]').count() == 1,
+                "Autodealers case must lead to local customer sector")
+        require(page.locator('a[href="phantom-asr.html"]').count() == 1,
+                "Optional ASR must link to local module")
+        require(page.locator('a[href="news.html#news-minprom"]').count() == 1,
+                "Industrial register must link to local dated news")
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+                "Page body still has legacy outbound MDIS links")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Solutions switcher missing")
+        require(page.locator('.solutions-switcher-label[href="solutions.html"]').count() == 1,
+                "Switcher's central hub link must lead to local solutions")
+        require(page.locator('.solutions-switcher-neighbor--previous[href="industrial.html"]').count() == 1,
+                "Expected prior solution is industrial")
+        require(page.locator('.solutions-switcher-neighbor--next[href="government.html"]').count() == 1,
+                "Expected next solution is government")
+        require(page.locator('.site-header a[href="auto-dealers.html"]').count() >= 1,
+                "No local auto-dealers route in shared header")
+        hero_state = page.evaluate("""() => {
+            const hero = document.querySelector('main > .hero');
+            const css = getComputedStyle(hero).backgroundImage;
+            const bounds = hero.getBoundingClientRect();
+            const items = ['h1', '.hero-facts', '.hero-panel'];
+            const clipped = items.filter(sel => {
+                const el = hero.querySelector(sel), rect = el.getBoundingClientRect();
+                return rect.bottom > bounds.bottom + 3 || rect.left < bounds.left - 3;
+            });
+            return {incorrect_image:css.includes('energy-landscape.png'),
+                    clipped};
+        }""")
+        require(not hero_state["incorrect_image"] and not hero_state["clipped"],
+                f"Automotive hero background/clipping regression: {hero_state}")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
