@@ -39,6 +39,7 @@ PAGES = [
     "industrial.html",
     "government.html",
     "commercial.html",
+    "phantom-boards.html",  # audit-only: reverted after Chromium evidence
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -93,6 +94,85 @@ def inspect_theme_persistence(page, base: str, initial: str):
     require(response is not None and response.status == 200,
             "Could not return to company page")
     assert_theme(page, initial)
+
+
+
+def inspect_boards(page, width: int):
+    """Audit-only real Chromium QA for the Phantom boards product page."""
+    require(page.locator("main > .hero h1").inner_text() == "Платы Phantom",
+            "Boards H1 changed")
+    require(page.locator(".demo").count() == 0, "Preview-only banner remains")
+    require(page.locator("header #theme").count() == 0,
+            "Obsolete independent theme toggle remains")
+    expected = [
+        ("phantom-ph-200.jpg", "Ph-200"),
+        ("phantom-ph-500.png", "Ph-500"),
+        ("phantom-ph-600.jpg", "Ph-600"),
+    ]
+    figures = page.locator(".boards-photo-item")
+    require(figures.count() == 3, "Must show three separate original PCB photos")
+    photos = page.evaluate("""() => [...document.querySelectorAll('.boards-photo-item')].map(item => {
+        const img = item.querySelector('img');
+        const hero = document.querySelector('main > .hero').getBoundingClientRect();
+        const rect = item.getBoundingClientRect();
+        return {
+            src: img.getAttribute('src'),
+            alt: img.alt,
+            loaded: img.complete && img.naturalWidth > 0 && img.naturalHeight > 0,
+            label: item.querySelector('figcaption strong')?.textContent.trim(),
+            heroTop: hero.top, heroBottom: hero.bottom,
+            cardTop: rect.top, cardBottom: rect.bottom,
+        };
+    })""")
+    for photo, (expected_file, family) in zip(photos, expected):
+        require(photo["src"].endswith(expected_file), f"Incorrect PCB photo: {photo}")
+        require(photo["loaded"], f"Unloaded PCB image: {photo}")
+        require(photo["label"] == family and family in photo["alt"],
+                f"PCB family label mismatch: {photo}")
+        require(photo["cardTop"] >= photo["heroTop"] - 4 and
+                photo["cardBottom"] <= photo["heroBottom"] + 4,
+                f"Photo card clipped by hero: {photo}")
+    require(page.locator('.product-switcher').count() == 1,
+            "Shared product switcher did not render")
+    require(page.locator('.product-carousel-control').count() == 2,
+            "Previous/next product controls missing")
+    require(page.locator('.product-parent-link[href="phantom-catalog.html"]').count() == 1,
+            "Catalog link missing")
+    require(page.locator('.product-next-link[href="phantom-home.html#industries"]').count() == 1,
+            "Industry link missing")
+    for href in ["support-phantom-2.html", "support-phantom-4.html", "news.html#news-minprom"]:
+        require(page.locator(f'main a[href="{href}"]:not([target])').count() == 1,
+                f"Missing ordinary local navigation: {href}")
+    require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+            "Unexpected link to old official website")
+    require(page.locator('.board-table-scroll table').count() == 7,
+            "Board specification tables missing")
+    require(page.locator('.board-table-scroll[role="region"][tabindex="0"]').count() == 7,
+            "Keyboard accessible scroll regions missing")
+    if width == 375:
+        table = page.locator(".board-table-scroll").first
+        table.focus()
+        scrolled = page.evaluate("""() => {
+            const el = document.querySelector('.board-table-scroll');
+            el.scrollLeft = 110;
+            return {left:el.scrollLeft,width:el.clientWidth,content:el.scrollWidth,
+                    focus:document.activeElement === el};
+        }""")
+        require(scrolled["focus"] and scrolled["content"] > scrolled["width"] and scrolled["left"] > 0,
+                f"Technical table cannot be scrolled: {scrolled}")
+    more = page.locator("#ph500 details.board-legacy").first
+    more.locator("summary").click()
+    require(more.get_attribute("open") is not None,
+            "Legacy compatibility details cannot be opened")
+    more.locator("summary").click()
+    require(more.get_attribute("open") is None,
+            "Legacy compatibility details cannot be closed")
+    require(page.locator('.product-form[data-subject="Запрос по интерфейсным платам Phantom"]').count() == 1,
+            "Product mailto form missing")
+    require(page.locator('.product-form button[type="submit"]').count() == 1,
+            "Product CTA submit missing")
+    require(page.locator("#families .board-warning").count() == 1,
+            "PCI legacy / compatibility warning missing")
 
 
 def inspect_nav(page, filename: str, width: int):
@@ -346,6 +426,8 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
+                                if filename == "phantom-boards.html":
+                                    inspect_boards(page, width)
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
