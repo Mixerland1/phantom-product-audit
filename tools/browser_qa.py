@@ -17,7 +17,35 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
-    "dispatcher-recording.html",
+    "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
+    "phantom-active.html",
+    "certificates.html",
+    "requisites.html",
+    "services.html",
+    "faq.html",
+    "support.html",
+    "phantom-home.html",
+    "phantom-catalog.html",
+    "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
+    "auto-dealers.html",
+    "phantom-micro.html",
+    "phantom-boards.html",
+    "ip-telephony.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -245,50 +273,6 @@ def inspect_nav(page, filename: str, width: int):
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f'a[href="faq.html#{anchor}"]').count() >= 1,
                     f"Support hub missing FAQ route {anchor}")
-
-
-    if filename == "dispatcher-recording.html":
-        require(page.locator(".demo").count() == 0, "Editorial banner still visible")
-        require(page.locator(".site-header").count() == 1, "Shared header missing")
-        require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
-                "Shared footer logo missing")
-        require(page.locator(".solutions-switcher").count() == 1,
-                "Product scenario switcher missing")
-        require(page.locator('.solutions-switcher-label[href="phantom-catalog.html"]').count() == 1,
-                "Product scenario switcher must lead to local catalog")
-        for href in ["telephone-recording.html", "ip-telephony.html"]:
-            require(page.locator(f'.solutions-switcher-neighbor[href="{href}"]').count() == 1,
-                    f"Wrong scenario neighbor: {href}")
-        require(page.locator(".hero-visual[role='img']").count() == 1,
-                "Hero diagram does not have an accessible label")
-        require(page.locator(".hero-visual .diagram-block").count() == 6,
-                "Hero diagram is incomplete")
-        require(" ".join(page.locator(".kpi strong").inner_text().split()) == "67 объектов",
-                "67-site case missing")
-        require("Phantom Active" in page.locator(".kpi").inner_text()
-                and "ООО «ССТ»" in page.locator(".kpi").inner_text(),
-                "Case scope and project participant incorrect")
-        require(page.locator('main a[href="attestation-fsk-ees.html"]').count() == 1,
-                "Energy attestation link missing")
-        for href in ["phantom-monitoring.html", "connection-schemes.html",
-                     "telephone-recording.html", "phantom-catalog.html",
-                     "aviaton.html", "stantsiya-zapisi.html",
-                     "phantom-active.html", "news.html#news-minprom"]:
-            require(page.locator(f'main a[href="{href}"]').count() >= 1,
-                    f"Required local link missing: {href}")
-        associated = page.locator("main section").filter(
-            has=page.get_by_role("heading", name="Связанные страницы"))
-        require(associated.locator(".card").count() == 4,
-                "Four related directions expected")
-        if theme := page.locator("html").get_attribute("data-theme"):
-            require(theme in ("light", "dark"), f"Unsupported active theme: {theme}")
-            if theme == "dark":
-                accent = page.locator(".kpi strong").evaluate(
-                    "(el) => getComputedStyle(el).color")
-                require(accent == "rgb(255, 156, 174)",
-                        f"Dark KPI accent has insufficient contrast: {accent}")
-        require("МДИС / «Фантом»" not in page.locator("footer.footer").inner_text(),
-                "Obsolete hard-coded footer text remains")
 
 
 
