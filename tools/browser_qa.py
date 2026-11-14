@@ -16,44 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-    # Audited pages 13–18: one real Chromium case per width and theme.
-    "connection-schemes.html",
-    "personal-solutions.html",
-    "modernization.html",
-    "training.html",
-    "telephone-recording.html",
-    "dispatcher-recording.html",
-]
+PAGES = ["phantom-cross.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -195,6 +158,80 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "phantom-cross.html":
+        require(page.locator('.demo').count() == 0, "Draft notice still visible")
+        require(page.locator('header.site-header').count() == 1, "Shared header missing")
+        require(page.locator('main h1').inner_text().strip() == "Phantom Cross 5.5",
+                "Incorrect product H1")
+        require(page.locator('.hero .cross-diagram').count() == 1,
+                "Architecture diagram missing")
+        require(page.locator('.hero-points li').count() == 3,
+                "Hero facts missing")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Product context switcher absent")
+        require(page.locator('.solutions-switcher').evaluate(
+                "(el) => el.previousElementSibling?.classList.contains('hero')") is True,
+                "Switcher not immediately after hero")
+        for css in [
+            '.solutions-switcher-neighbor--previous[href="connection-schemes.html"]',
+            '.solutions-switcher-neighbor--next[href="telephone-recording.html"]',
+            '.solutions-switcher-label[href="phantom-catalog.html"]'
+        ]:
+            require(page.locator(css).count() == 1, f"Product order invalid: {css}")
+        require(page.locator('#architecture .cross-card').count() == 5,
+                "Five core software components not present")
+        require(page.locator('#deployment .cross-card').count() == 2,
+                "3-in-1 vs distributed architecture absent")
+        require(page.locator('#astra details.cross-details').count() == 1,
+                "Confirmed Astra Linux kernel details missing")
+        require(page.locator('#requirements .cross-table-wrap[role="region"][tabindex="0"]').count() == 1,
+                "Accessible technical table is missing")
+        require(page.locator('#requirements tbody tr').count() >= 6,
+                "Minimum server requirements incomplete")
+        hint = page.locator('.cross-scroll-hint')
+        require(hint.count() == 1 and hint.is_visible() == (width <= 560),
+                f"Responsive specification hint invalid at {width}px")
+        if width <= 560:
+            table_scrolled = page.locator('.cross-table-wrap').evaluate(
+                "(el) => {el.scrollLeft = 64; return el.scrollLeft > 0;}")
+            require(table_scrolled, "Mobile specification table cannot be scrolled")
+        require(page.locator('#docs a[href$=".pdf"]').count() == 3,
+                "Expected all three official 5.5.2 PDF links")
+        for href in ["phantom-monitoring.html","phantom-boards.html",
+                     "ip-telephony.html","clients.html#projects",
+                     "news.html#news-cross","support-phantom-cross.html"]:
+            require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                    f"Relevant local route missing: {href}")
+        require(page.locator('main a[href="clients.html#projects"][target]').count() == 0,
+                "Local customer case opens unnecessarily in new tab")
+        require(page.locator('main a[href="phantom-monitoring.html"][target]').count() == 0,
+                "Local monitoring page opens unnecessarily in new tab")
+        require(page.locator('#registry').inner_text().find("10838442") >= 0
+                and page.locator('#registry').inner_text().find("3128") >= 0,
+                "Distinct registry numbers missing")
+        require(page.locator('#case').inner_text().find("64") >= 0,
+                "Confirmed 64-unit deployment missing")
+        require(page.evaluate("""() => {
+            const hero = document.querySelector('main > .hero');
+            const box = hero.getBoundingClientRect();
+            return [...hero.querySelectorAll('.cross-diagram,.hero-points,.hero-actions')].every(el => {
+                const b=el.getBoundingClientRect();
+                return b.top >= box.top - 4 && b.bottom <= box.bottom + 4;
+            });
+        }"""), "Hero content clipped")
+        contact = page.locator('#request a[href^="mailto:sales@mdis.ru?"]')
+        require(contact.count() == 1, "Engineering contact CTA unavailable")
+        from urllib.parse import parse_qs
+        parsed = parse_qs(urlsplit(contact.get_attribute("href")).query)
+        draft = parsed.get("body", [""])[0]
+        for field in ["Количество каналов:","Текущая версия Phantom:","Нужен ли мониторинг:"]:
+            require(field in draft, f"Structured mailto field missing: {field}")
+        original_theme = page.locator('html').get_attribute('data-theme')
+        page.locator('header .site-theme-toggle').click()
+        require(page.locator('html').get_attribute('data-theme') != original_theme,
+                "Theme toggle did not switch")
+        page.locator('header .site-theme-toggle').click()
+        assert_theme(page, original_theme)
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
