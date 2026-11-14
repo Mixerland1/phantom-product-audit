@@ -1,0 +1,57 @@
+name: Import original MDIS requisites JPG files (temporary)
+
+on:
+  push:
+    branches: [asset-import/requisites-jpg-20261114]
+    paths: [.github/workflows/import-requisites-jpg.yml]
+
+permissions:
+  contents: write
+
+jobs:
+  import-originals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout import branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download untouched original images from mdis.ru
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/requisites
+          curl --fail --location --silent --show-error --retry 5 --retry-all-errors --retry-delay 3 --connect-timeout 20 --max-time 100 \
+            --proto '=https' --tlsv1.2 \
+            'https://mdis.ru/upload/iblock/689/yf1afh91e0176j1wqo0e8q4l7zzeoe0p.jpg' \
+            --output assets/requisites/mdis-ooo-mdis.jpg
+          curl --fail --location --silent --show-error --retry 5 --retry-all-errors --retry-delay 3 --connect-timeout 20 --max-time 100 \
+            --proto '=https' --tlsv1.2 \
+            'https://mdis.ru/upload/iblock/387/8edmkea1wtaobmotb6boblhr0fuqs4td.jpg' \
+            --output assets/requisites/mdis-information-systems.jpg
+      - name: Verify JPEG signatures, sizes and SHA-256
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          for name in ('mdis-ooo-mdis.jpg', 'mdis-information-systems.jpg'):
+              p=Path('assets/requisites')/name
+              b=p.read_bytes()
+              if not (100_000 <= len(b) <= 1_000_000):
+                  raise SystemExit(f'Wrong JPG size: {name} {len(b)} bytes')
+              if not b.startswith(b'\xff\xd8\xff') or not b.endswith(b'\xff\xd9'):
+                  raise SystemExit(f'Invalid JPG signature: {name}')
+              print(name, 'bytes', len(b), 'SHA256', hashlib.sha256(b).hexdigest())
+          PY
+      - name: Commit original binaries to import branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- assets/requisites/mdis-ooo-mdis.jpg assets/requisites/mdis-information-systems.jpg
+          git diff --cached --exit-code && exit 0 || true
+          git commit -m 'Import two unmodified original MDIS requisites JPGs'
+          git push origin "HEAD:refs/heads/asset-import/requisites-jpg-20261114"
