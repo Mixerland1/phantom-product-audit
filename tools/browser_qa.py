@@ -39,6 +39,13 @@ PAGES = [
     "industrial.html",
     "government.html",
     "commercial.html",
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
+    "auto-dealers.html",
+    "phantom-micro.html",
+    "phantom-boards.html",
+    "ip-telephony.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -143,6 +150,54 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "financial.html":
+        for href in ["index.html", "news.html#news-minprom",
+                     "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Financial page missing local route {href}")
+        require(page.locator(".demo").count() == 0,
+                "Financial page still shows a draft notice")
+    if filename == "auto-dealers.html":
+        for href in ["clients.html#sector-6", "phantom-asr.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Autodealers page missing local route {href}")
+        require(page.locator(".demo").count() == 0,
+                "Autodealers still shows a draft notice")
+    if filename == "phantom-micro.html":
+        require(page.locator('img[src="assets/products/phantom-micro-hero.webp"]').count() == 1,
+                "MICRO product image missing")
+        require(page.locator('a[href="phantom-catalog.html"]').count() >= 1,
+                "MICRO missing catalog backlink")
+        require(page.locator(".micro-spec").count() == 1,
+                "MICRO technical specifications missing")
+    if filename == "phantom-boards.html":
+        for asset in ["phantom-ph-200.jpg", "phantom-ph-500.png", "phantom-ph-600.jpg"]:
+            require(page.locator(f'img[src="assets/products/{asset}"]').count() == 1,
+                    f"Individual Phantom board image missing: {asset}")
+        for href in ["support-phantom-2.html", "support-phantom-4.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Boards missing documentation route {href}")
+    if filename == "phantom-active.html":
+        for href in ["support-phantom-active.html#manuals",
+                     "support-phantom-active.html#integrations",
+                     "support-phantom-active.html#brochures", "training.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Phantom Active missing local route {href}")
+    if filename == "ip-telephony.html":
+        for href in ["phantom-active.html", "phantom-monitoring.html",
+                     "connection-schemes.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"IP telephony missing local route {href}")
+        require(page.locator('a[href^="https://mdis.ru/"]').count() == 0,
+                "IP telephony links to old MDIS site")
+    if filename == "phantom-catalog.html":
+        require(page.locator(".product-card .product-image img").count() == 5,
+                "Catalog must show five individual model images")
+        for href in ["phantom-micro.html", "phantom-pc-2.html",
+                     "phantom-pro-level-5.html", "phantom-pro-level-6.html",
+                     "phantom-ultra.html"]:
+            require(page.locator(f'.product-image[href="{href}"]').count() == 1,
+                    f"Catalog model card missing route {href}")
     if filename == "faq.html":
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f"#{anchor}").count() == 1, f"FAQ anchor missing: {anchor}")
@@ -296,6 +351,8 @@ def verify_original_assets():
 
 
 def main():
+    require(len(PAGES) == len(set(PAGES)),
+            "Duplicate HTML pages in browser QA matrix")
     check_local_links()
     verify_original_assets()
     handler = partial(QuietHandler, directory=str(ROOT))
