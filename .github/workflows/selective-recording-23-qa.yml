@@ -64,7 +64,7 @@ jobs:
                           assert page.locator(".solutions-switcher-neighbor--next").get_attribute("href") == "index.html"
                           assert page.locator('.table-scroll[tabindex="0"]').count() == 2
                           assert page.locator('meta[name="robots"]').get_attribute("content") == "noindex, nofollow"
-                          assert page.locator('a[href^="mailto:sales@mdis.ru"]').count() == 1
+                          assert page.locator('main a[href^="mailto:sales@mdis.ru"]').count() == 1, "Main CTA mailto count mismatch"
                           assert page.locator(".skip-nav").get_attribute("href") == "#page-content"
                           assert page.evaluate("getComputedStyle(document.documentElement).scrollBehavior") == "auto"
                           page.keyboard.press("Tab")
