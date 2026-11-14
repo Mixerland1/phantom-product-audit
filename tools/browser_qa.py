@@ -212,6 +212,12 @@ def verify_original_assets():
     require(manifest_path.is_file(), "Original asset manifest not present")
     entries = json.loads(manifest_path.read_text(encoding="utf-8"))
     require(len(entries) == 11, f"Expected 11 verified originals, got {len(entries)}")
+    pdfs = [e for e in entries if e['path'].endswith('.pdf')]
+    pngs = [e for e in entries if e['path'].endswith('.png')]
+    require(len(pdfs) == 5 and len(pngs) == 6,
+            f'Expected 5 award PDFs and 6 letter PNGs; got {len(pdfs)}, {len(pngs)}')
+    require(len({e['path'] for e in entries}) == 11,
+            'Duplicate original asset manifest paths')
     import hashlib
     for entry in entries:
         path = ROOT / entry["path"]
