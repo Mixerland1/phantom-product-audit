@@ -17,8 +17,7 @@
     a{color:inherit}button{font:inherit}.wrap{width:min(calc(100% - 48px),var(--max));margin-inline:auto}
     .skip{position:absolute;left:12px;top:-70px;padding:9px 14px;background:var(--paper);z-index:50}.skip:focus{top:10px}
     :focus-visible{outline:3px solid #e94962;outline-offset:4px}
-    .demo{background:var(--red-soft);border-bottom:1px solid #f3c4cc;color:#7d2533;text-align:center;padding:7px 18px;font-size:12px;font-weight:700}
-    .demo b{color:var(--red)}.header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+    .header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
     .hero{position:relative;overflow:hidden;padding:76px 0 66px;background:radial-gradient(circle at 83% 25%,#ddebf8 0,transparent 43%),linear-gradient(135deg,#fff,#f3f8fd 65%,#eaf2fa)}
     .hero-in{display:grid;grid-template-columns:minmax(0,1.07fr) minmax(0,.93fr);gap:52px;align-items:center}
     .hero h1{margin:0;font-size:clamp(38px,4.1vw,56px);font-weight:750;line-height:1.05;letter-spacing:-.035em}
@@ -32,7 +31,7 @@
     .console h2{margin:23px 0 19px;font-size:25px;line-height:1.2;font-weight:740;letter-spacing:-.025em}
     .console-flow{display:grid;gap:9px}.console-node{display:flex;align-items:center;gap:13px;padding:14px;border:1px solid var(--line);border-radius:9px;background:var(--paper)}
     .console-node b{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:50%;background:var(--blue);color:#244c6d;font-size:12px}
-    .console-node:nth-child(2) b{background:var(--green)}.console-node:nth-child(3) b{background:var(--yellow)}
+    .console-node:nth-child(3) b{background:var(--green)}.console-node:nth-child(5) b{background:var(--yellow)}
     .console-node span{font-size:14px;font-weight:650}.console-arrow{text-align:center;color:var(--red);font-size:17px;line-height:1}
     .hero-cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin-top:19px;padding:0 18px;border-radius:7px;background:var(--red);color:#fff;text-decoration:none;font-size:13px;font-weight:720}
     .section{padding:82px 0;scroll-margin-top:calc(var(--site-header-height,64px) + 28px)}.section.white{background:var(--paper)}
@@ -70,19 +69,18 @@
     html[data-theme=dark] .hero-points li{background:rgba(24,36,55,.80);border-color:var(--line)}
     html[data-theme=dark] .console-node{background:var(--paper)}
     html[data-theme=dark] .text-link,html[data-theme=dark] .product span{color:#ff8a9b}
-    html[data-theme=dark] .demo{background:#28151d;color:#f3b7c0;border-color:#572531}
     @media(max-width:950px){.hero-in,.architecture,.spec{grid-template-columns:1fr}.hero{padding:58px 0}.hero-points{grid-template-columns:repeat(3,minmax(0,1fr))}.facts,.cards-3,.projects{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:680px){.wrap{width:min(calc(100% - 32px),var(--max))}.hero-points,.facts,.cards-3,.projects,.places,.products,.spec-list{grid-template-columns:1fr}.places ul{grid-template-columns:1fr 1fr}.section{padding:60px 0}.console{padding:20px}.request{padding:28px 22px}.footer-in{grid-template-columns:1fr}.hero h1{font-size:clamp(34px,8vw,44px)}.hero-subtitle{font-size:20px}}
     @media(max-width:390px){.places ul{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.product{transition:none}.product:hover{transform:none}}
   </style>
   <script>(function(){try{var stored=localStorage.getItem('mdis-theme');var root=document.documentElement;if(stored==='dark'||stored==='light'){root.dataset.theme=stored}else if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches){root.dataset.theme='dark'}if(!stored&&window.matchMedia){var query=matchMedia('(prefers-color-scheme: dark)');var follow=function(event){try{if(!localStorage.getItem('mdis-theme'))root.dataset.theme=event.matches?'dark':'light'}catch(error){}};if(query.addEventListener)query.addEventListener('change',follow);else if(query.addListener)query.addListener(follow)}}catch(error){}})();</script>
 </head>
 <body>
   <a class="skip" href="#main">К&nbsp;содержанию</a>
-  <div class="demo"><b>Версия для&nbsp;согласования</b></div>
   <header class="header"></header>
   <main id="main">
-    <section class="hero hero--energy">
+    <section class="hero">
       <div class="wrap hero-in">
         <div>
           <h1 class="hero-page-title">Атомная энергетика</h1>
@@ -133,37 +131,37 @@
       <div class="section-head"><p class="eyebrow">Станция записи для&nbsp;атомных объектов</p>
         <h2>Станция записи – специализированный элемент системы документирования</h2>
         <p class="intro">Станция записи МЦКРС «Фантом» представляет собой аппаратно-программный комплекс, в&nbsp;котором ПО&nbsp;«ФАНТОМ» является неотъемлемой частью оборудования. Она разработана для&nbsp;документирования оперативных переговоров на&nbsp;атомных электростанциях и&nbsp;может использоваться как отдельный регистратор или&nbsp;как элемент более крупной системы.</p></div>
-      <div class="spec"><div><h3>Подключаемые линии и&nbsp;адаптеры</h3><p class="fineprint">Параметры Станции записи по&nbsp;опубликованной спецификации МДИС, не&nbsp;универсальные характеристики любой конфигурации Phantom.</p><a class="text-link" href="https://mdis.ru/catalog/product/stantsiya-zapisi/">Смотреть опубликованную спецификацию Станции записи ↗</a></div>
+      <div class="spec"><div><h3>Подключаемые линии и&nbsp;адаптеры</h3><p class="fineprint">Параметры относятся к&nbsp;Станции записи. Допустимое количество линий и&nbsp;состав оборудования зависят от&nbsp;выбранной конфигурации.</p><a class="text-link" href="stantsiya-zapisi.html">Характеристики Станции записи →</a></div>
         <ul class="spec-list"><li>До&nbsp;88&nbsp;аналоговых линий на&nbsp;единицу оборудования</li><li>До&nbsp;96&nbsp;цифровых абонентских линий, в&nbsp;том числе до&nbsp;48&nbsp;BRI</li><li>До&nbsp;8&nbsp;потоков E1</li><li>IP-каналы – в&nbsp;пределах вычислительной мощности выбранной компьютерной платформы</li><li>До&nbsp;11&nbsp;входных адаптеров на&nbsp;единицу оборудования с&nbsp;учётом ограничений по&nbsp;типам линий</li></ul>
       </div></div></section>
 
     <section class="section" id="documents"><div class="wrap">
       <div class="section-head"><p class="eyebrow">Отраслевые и&nbsp;нормативные основания</p><h2>Подтверждённые сведения о&nbsp;продукте и&nbsp;производителе</h2></div>
       <div class="cards-3">
-        <article class="card"><span class="badge-title">Реестр Минпромторга</span><h3>МЦКРС «Фантом» в&nbsp;реестре российской промышленной продукции</h3><p>Реестровый номер 10838442. Дата внесения – 21&nbsp;мая 2026&nbsp;года. Срок действия заключения указан до&nbsp;20&nbsp;мая 2029&nbsp;года.</p><a class="text-link" href="news.html#news-minprom">Материал МДИС ↗</a></article>
-        <article class="card"><span class="badge-title">Лицензия Ростехнадзора</span><h3>Лицензия на&nbsp;изготовление оборудования для&nbsp;ядерных установок</h3><p>На&nbsp;сайте МДИС опубликована лицензия Ростехнадзора №&nbsp;ЦО-12-115-13605 от&nbsp;7&nbsp;ноября 2023&nbsp;года на&nbsp;изготовление оборудования для&nbsp;ядерных установок. Указанный срок действия – до&nbsp;7&nbsp;ноября 2028&nbsp;года.</p><a class="text-link" href="certificates.html">Сертификаты и&nbsp;лицензии ↗</a></article>
-        <article class="card"><span class="badge-title">Технические условия</span><h3>Специализированная Станция записи</h3><p>Станция записи МЦКРС «Фантом» изготавливается в&nbsp;соответствии с&nbsp;техническими условиями МБВА.467660.004ТУ. Конкретный состав оборудования и&nbsp;проектные требования определяются для&nbsp;объекта отдельно.</p><a class="text-link" href="https://mdis.ru/catalog/product/stantsiya-zapisi/">Документация изделия ↗</a></article>
+        <article class="card"><span class="badge-title">Реестр Минпромторга</span><h3>МЦКРС «Фантом» в&nbsp;реестре российской промышленной продукции</h3><p>Реестровый номер 10838442. Дата внесения – 21&nbsp;мая 2026&nbsp;года. Срок действия заключения указан до&nbsp;20&nbsp;мая 2029&nbsp;года.</p><a class="text-link" href="news.html#news-minprom">Подробнее о&nbsp;реестровой записи →</a></article>
+        <article class="card"><span class="badge-title">Лицензия Ростехнадзора</span><h3>Лицензия на&nbsp;изготовление оборудования для&nbsp;ядерных установок</h3><p>Лицензия Ростехнадзора №&nbsp;ЦО-12-115-13605 от&nbsp;7&nbsp;ноября 2023&nbsp;года на&nbsp;изготовление оборудования для&nbsp;ядерных установок. Указанный срок действия – до&nbsp;7&nbsp;ноября 2028&nbsp;года.</p><a class="text-link" href="certificates.html#licenses">Лицензии Ростехнадзора →</a></article>
+        <article class="card"><span class="badge-title">Технические условия</span><h3>Специализированная Станция записи</h3><p>Станция записи МЦКРС «Фантом» изготавливается в&nbsp;соответствии с&nbsp;техническими условиями МБВА.467660.004ТУ. Конкретный состав оборудования и&nbsp;проектные требования определяются для&nbsp;объекта отдельно.</p><a class="text-link" href="stantsiya-zapisi.html">Характеристики изделия →</a></article>
       </div></div></section>
 
     <section class="section white" id="experience"><div class="wrap">
-      <div class="section-head"><p class="eyebrow">Опыт внедрений</p><h2>Опыт поставок для&nbsp;атомных электростанций</h2><p class="intro">Специализированные системы документирования оперативных переговоров на&nbsp;базе МЦКРС «Фантом» поставляются для&nbsp;атомной отрасли с&nbsp;2002&nbsp;года. В&nbsp;материалах МДИС указаны российские и&nbsp;зарубежные АЭС, на&nbsp;которых применялось или&nbsp;поставлялось оборудование комплекса.</p></div>
+      <div class="section-head"><p class="eyebrow">Опыт внедрений</p><h2>Опыт поставок для&nbsp;атомных электростанций</h2><p class="intro">Специализированные системы документирования оперативных переговоров на&nbsp;базе МЦКРС «Фантом» поставляются для&nbsp;атомной отрасли с&nbsp;2002&nbsp;года. Опыт включает поставки оборудования на&nbsp;российские и&nbsp;зарубежные АЭС. Перечень объектов не&nbsp;означает, что&nbsp;на&nbsp;каждом из&nbsp;них сегодня действует одна и&nbsp;та&nbsp;же конфигурация системы.</p></div>
       <div class="places">
         <div class="card"><h3>Россия</h3><ul><li>Балаковская АЭС</li><li>Ленинградская АЭС-2</li><li>Ростовская АЭС</li><li>Белоярская АЭС</li><li>Нововоронежская АЭС</li><li>Калининская АЭС</li><li>Курская АЭС / Курская АЭС-2</li></ul></div>
         <div class="card"><h3>Зарубежные проекты</h3><ul><li>АЭС «Куданкулам» – Индия</li><li>Тяньваньская АЭС – Китай</li><li>АЭС «Бушер» – Иран</li><li>АЭС «Аккую» – Турция</li><li>АЭС «Руппур» – Бангладеш</li><li>Белорусская АЭС – Беларусь</li></ul></div>
-      </div><p class="fineprint">Состав и&nbsp;период поставок различаются по&nbsp;объектам: от&nbsp;оборудования систем документирования до&nbsp;модернизации и&nbsp;комплектов ЗИП. <a href="https://mdis.ru/advantage/aes/">Подробнее об&nbsp;опыте МДИС ↗</a></p></div></section>
+      </div><p class="fineprint">Состав и&nbsp;период поставок различаются по&nbsp;объектам: от&nbsp;оборудования систем документирования до&nbsp;модернизации и&nbsp;комплектов ЗИП.</p></div></section>
 
     <section class="section" id="projects"><div class="wrap">
-      <div class="section-head"><p class="eyebrow">Публикации о&nbsp;проектах</p><h2>Примеры проектов из&nbsp;опубликованных материалов МДИС</h2></div>
+      <div class="section-head"><p class="eyebrow">Публикации о&nbsp;проектах</p><h2>Примеры проектов на&nbsp;атомных электростанциях</h2></div>
       <div class="projects">
-        <article class="project"><h3>Нововоронежская АЭС</h3><p>МДИС реализовала проект модернизации системы документальной записи переговоров. В&nbsp;опубликованной новости указано, что поставленное оборудование внесено в&nbsp;реестр Минпромторга и&nbsp;соответствует 3-му классу безопасности.</p><a class="text-link" href="https://mdis.ru/news/filial-ao-kontsern-rosenergoatom-novovoronezhskoy-atomnaya-stantsiya-/">Читать о&nbsp;проекте ↗</a></article>
-        <article class="project"><h3>Курская АЭС-2</h3><p>В&nbsp;мае 2023&nbsp;года МДИС сообщила о&nbsp;поставке комплекта оборудования МЦКРС «Фантом» для&nbsp;административного корпуса Курской АЭС-2, энергоблоков №&nbsp;1 и&nbsp;№&nbsp;2.</p><a class="text-link" href="https://mdis.ru/news/kurskaya-aes-2-energoblok-1-i-2-/">Читать о&nbsp;проекте ↗</a></article>
-        <article class="project"><h3>Ленинградская АЭС-2</h3><p>В&nbsp;материалах МДИС опубликована поставка Станции записи МЦКРС «Фантом» для&nbsp;системы записи оперативных переговоров пожарной части Ленинградской АЭС-2.</p><a class="text-link" href="https://mdis.ru/news/postavka-na-leningradskuyu-aes-2/">Читать о&nbsp;проекте ↗</a></article>
+        <article class="project"><h3>Нововоронежская АЭС</h3><p>МДИС реализовала проект модернизации системы документальной записи переговоров. Для&nbsp;поставленного по&nbsp;этому проекту оборудования заявлены включение в&nbsp;реестр Минпромторга и&nbsp;соответствие 3-му классу безопасности.</p></article>
+        <article class="project"><h3>Курская АЭС-2</h3><p>В&nbsp;мае 2023&nbsp;года МДИС поставила комплект оборудования МЦКРС «Фантом» для&nbsp;административного корпуса Курской АЭС-2, энергоблоков №&nbsp;1 и&nbsp;№&nbsp;2.</p></article>
+        <article class="project"><h3>Ленинградская АЭС-2</h3><p>МДИС поставила Станцию записи МЦКРС «Фантом» для&nbsp;системы записи оперативных переговоров пожарной части Ленинградской АЭС-2.</p></article>
       </div></div></section>
 
     <section class="section white" id="products"><div class="wrap">
       <div class="section-head"><p class="eyebrow">Продукты</p><h2>Продукты для&nbsp;построения решения</h2></div>
       <div class="products">
-        <a class="product" href="stantsiya-zapisi.html"><h3>Станция записи</h3><p>Специализированный аппаратно-программный комплекс для&nbsp;документирования оперативных переговоров на&nbsp;атомных электростанциях.</p><span>Спецификация МДИС ↗</span></a>
+        <a class="product" href="stantsiya-zapisi.html"><h3>Станция записи</h3><p>Специализированный аппаратно-программный комплекс для&nbsp;документирования оперативных переговоров на&nbsp;атомных электростанциях.</p><span>Характеристики изделия →</span></a>
         <a class="product" href="phantom-pro-level-6.html"><h3>Phantom Pro уровня&nbsp;6</h3><p>Промышленная система записи большой ёмкости для&nbsp;построения многоканальных конфигураций Phantom.</p><span>Посмотреть продукт →</span></a>
       </div></div></section>
 
@@ -174,7 +172,7 @@
       <p class="contact-note">Откроется почтовое приложение. Письмо потребуется отправить самостоятельно.</p>
     </div></section>
   </main>
-  <footer class="footer"><div class="wrap footer-in"><div><b>МДИС · Phantom</b><a href="phantom-home.html">Главная Phantom</a></div><div><b>Отдел продаж</b><a href="mailto:sales@mdis.ru">sales@mdis.ru</a></div><div><b>Поддержка</b><a href="mailto:support@mdis.ru">support@mdis.ru</a></div></div></footer>
+  <footer class="footer"></footer>
   <script src="assets/footer-next.js?v=20261114-integration-audits-v1"></script>
   <script src="assets/site-header.js?v=20261114-wave12-awards-articles-reviews-1"></script>
 </body>
