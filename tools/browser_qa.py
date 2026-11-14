@@ -257,7 +257,7 @@ def inspect_nav(page, filename: str, width: int):
             page.wait_for_function("""idx => {
                 const img=document.querySelectorAll('img.scheme-image')[idx];
                 return img.complete && img.naturalWidth===1448 && img.naturalHeight===1086;
-            }""", im_idx, timeout=15000)
+            }""", arg=im_idx, timeout=15000)
         page.locator('.jump a[href="#minicom"]').click()
         require(page.evaluate("location.hash") == "#minicom",
                 "In-page jump to MiniCom did not navigate")
