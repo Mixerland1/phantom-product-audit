@@ -16,7 +16,45 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["phantom-monitoring.html"]  # audit-only; revert before merge
+PAGES = [
+    "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
+    "phantom-active.html",
+    "certificates.html",
+    "requisites.html",
+    "services.html",
+    "faq.html",
+    "support.html",
+    "phantom-home.html",
+    "phantom-catalog.html",
+    "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
+    "auto-dealers.html",
+    "phantom-micro.html",
+    "phantom-boards.html",
+    "ip-telephony.html",
+    # Audited pages 13–18: one real Chromium case per width and theme.
+    "connection-schemes.html",
+    "personal-solutions.html",
+    "modernization.html",
+    "training.html",
+    "telephone-recording.html",
+    "dispatcher-recording.html",
+    "phantom-monitoring.html",  # audit-only; reverted after complete 4x2 Chromium regression
+]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
