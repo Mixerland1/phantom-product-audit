@@ -53,6 +53,12 @@ PAGES = [
     "training.html",
     "telephone-recording.html",
     "dispatcher-recording.html",
+    # Audited pages 19–23; support, financial, IP and telephone are already covered.
+    "pultex.html",
+    "phantom-cross.html",
+    "phantom-monitoring.html",
+    "phantom-asr.html",
+    "selective-recording.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -195,6 +201,31 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "pultex.html":
+        require(page.locator('a[href^="https://pultex.pro/wp-content/uploads/"]').count() == 4,
+                "PultEx must link four specific manufacturer documents")
+        require(page.locator('[role="row"]').count() >= 8,
+                "PultEx comparison rows need accessible semantics")
+    if filename == "phantom-cross.html":
+        require(page.locator('a[href="phantom-monitoring.html"]').filter(
+            has_text="Возможности модуля мониторинга").count() == 1,
+                "Cross monitoring link must describe the technical page, not a news item")
+        for href in ["phantom-asr.html", "support-phantom-cross.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Cross related page missing: {href}")
+    if filename == "phantom-monitoring.html":
+        require(page.locator("#snmp").count() == 1,
+                "Monitoring SNMP architecture anchor missing")
+        require(page.locator('a[href="support-phantom-cross.html"]').count() >= 1,
+                "Monitoring has no local documentation link")
+    if filename == "phantom-asr.html":
+        require(page.locator("ol.process > li.process-node").count() == 5,
+                "ASR process must preserve five ordered technical steps")
+    if filename == "selective-recording.html":
+        for href in ["phantom-active.html", "ip-telephony.html",
+                     "telephone-recording.html"]:
+            require(page.locator(f'a[href="{href}"]').count() >= 1,
+                    f"Selective recording missing local route: {href}")
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
@@ -446,6 +477,34 @@ def verify_original_assets():
     print("ORIGINAL ASSETS: 5 PDF and 6 PNG, signatures and SHA256 verified", flush=True)
 
 
+def inspect_mobile_footer_logos(page, width: int):
+    """Check visible logo artwork, not only its untransformed anchor layout."""
+    if width != 375:
+        return
+    boxes = page.evaluate("""() => {
+        const anchors = [...document.querySelectorAll(
+            '#site-footer .footer-logo-band .footer-logos > a'
+        )];
+        return anchors.map(a => {
+            const img = [...a.querySelectorAll('img')].find(i => {
+                const r = i.getBoundingClientRect();
+                return getComputedStyle(i).display !== 'none' && r.width > 0;
+            });
+            if (!img) return null;
+            const r = img.getBoundingClientRect();
+            return {left: r.left, right: r.right, top: r.top, bottom: r.bottom};
+        });
+    }""")
+    require(len(boxes) == 4 and all(box is not None for box in boxes),
+            "Four responsive brand logos should remain visible")
+    for i, rect in enumerate(boxes):
+        require(rect["left"] >= -1 and rect["right"] <= width + 1,
+                f"Mobile footer logo {i+1} clips outside viewport: {rect}")
+        if i:
+            require(rect["left"] >= boxes[i-1]["right"] - 1,
+                    f"Mobile footer logos {i} and {i+1} overlap")
+
+
 def main():
     require(len(PAGES) == len(set(PAGES)),
             "Duplicate HTML pages in browser QA matrix")
@@ -499,6 +558,7 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
+                                inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
