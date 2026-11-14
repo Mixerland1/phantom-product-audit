@@ -263,7 +263,7 @@ def inspect_nav(page, filename: str, width: int):
                 "Hero diagram does not have an accessible label")
         require(page.locator(".hero-visual .diagram-block").count() == 6,
                 "Hero diagram is incomplete")
-        require(page.locator(".kpi strong").inner_text().strip() == "67 объектов",
+        require(" ".join(page.locator(".kpi strong").inner_text().split()) == "67 объектов",
                 "67-site case missing")
         require("Phantom Active" in page.locator(".kpi").inner_text()
                 and "ООО «ССТ»" in page.locator(".kpi").inner_text(),
