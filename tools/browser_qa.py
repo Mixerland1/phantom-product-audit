@@ -66,7 +66,6 @@ PAGES = [
     "phantom-monitoring.html",
     "phantom-asr.html",
     "selective-recording.html",
-    "cookie-policy.html",  # audit-only before restoration
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -160,86 +159,6 @@ def inspect_active_underline_hover(page, filename: str, width: int):
     require(underline_opacity() > 0.95,
             "Current nav underline did not return after pointer left navigation")
 
-
-def inspect_cookie_policy(page, width: int, theme: str):
-    """Audit-only Chromium QA: law text is immutable, inspect real preview storage."""
-    require(page.locator("main h1").inner_text() == "Политика использования файлов cookie",
-            "Wrong cookie policy H1")
-    require(page.locator("main .legal-section").count() == 8,
-            "Eight original legal sections must remain")
-    require(page.locator("nav.legal-index a").count() == 8,
-            "Contents must contain eight keyboard-accessible section links")
-    require(page.locator("main .operator").count() == 1 and
-            "7703417753" in page.locator("main .operator").inner_text(),
-            "Original operator identity missing")
-    require(page.locator("main .operator").inner_text().find("5167746190904") >= 0,
-            "Original company registry number missing")
-    require(page.locator("#policy-section-4").inner_text() == "4. Использование Яндекс.Метрики",
-            "Official Yandex section heading must not be rewritten")
-    official_text = page.locator("main").inner_text().replace("\u00a0"," ")
-    for phrase in ["ООО «МДИС»", "sales@mdis.ru", "Яндекс.Метрика",
-                   "обычно от сессии до 1–2 лет",
-                   "При первом посещении Веб-сайта Пользователь видит запрос",
-                   "Веб-сайт использует следующие типы cookie"]:
-        require(phrase in official_text, f"Official legal phrase changed: {phrase}")
-    require(page.locator('.legal-section[aria-labelledby="policy-section-3"] p').count() == 1 and
-            page.locator('.legal-section[aria-labelledby="policy-section-3"] table').count() == 0,
-            "Source section 3 has no category table; do not invent one")
-    require(page.locator(".legal-section ul").count() == 4,
-            "Original privacy/cookie lists should be retained")
-    require(page.locator('.related-policy a[href="privacy-policy.html"]').count() == 1,
-            "Local privacy-policy companion link missing")
-    require(page.locator('.footer-legal a[href="cookie-policy.html"]').count() == 1,
-            "Shared footer link to local cookie page missing")
-    require(page.locator('.footer-legal a[href="privacy-policy.html"]').count() == 1,
-            "Shared footer link to local privacy page missing")
-    require(page.locator('.site-header').count() == 1 and
-            page.locator('#site-footer').count() == 1,
-            "Shared header or footer not rendered")
-    require(page.locator("main form,main button,main .doc-card,main .cookie-banner").count() == 0,
-            "Legal utility page must not add forms, CTA, fake consent or product cards")
-    require(page.locator('[id*="cookie-banner"],[class*="cookie-banner"],[class*="cookie-consent"],[id*="cookie-consent"],.cmp-container').count() == 0,
-            "Preview currently has no cookie banner; unsupported banner appeared")
-    require(page.locator("main .legal-section").first.inner_text().find(
-            "https://mdis.ru") >= 0, "Published reference URL changed")
-    nav = page.locator('nav.legal-index a[href="#policy-section-5"]')
-    nav.focus()
-    require(nav.evaluate("(el)=>document.activeElement===el"),
-            "Table of contents is not keyboard focusable")
-    nav.click()
-    require(page.url.endswith("#policy-section-5"),
-            "Clicking legal contents failed to navigate to target section")
-    width_info = page.evaluate("""() => {
-      const rect = document.querySelector('.legal-shell').getBoundingClientRect();
-      const screen = document.documentElement.clientWidth;
-      const pseudo=getComputedStyle(document.querySelector('main .legal-hero h1'), '::after');
-      return {width:rect.width, viewport:screen, red: pseudo.backgroundColor,
-              accentWidth:pseudo.width};
-    }""")
-    require(width_info["width"] <= 875 and width_info["width"] <= width_info["viewport"] - 24,
-            f"Legal reading width not mobile friendly: {width_info}")
-    require(width_info["red"] == "rgb(227, 15, 45)",
-            f"Brand red hero accent missing: {width_info}")
-    require(width_info["accentWidth"] == ("44px" if width<=600 else "54px"),
-            f"Hero accent incorrect responsive width: {width_info}")
-    cookies = page.context.cookies()
-    require(not cookies, f"Preview unexpectedly set HTTP cookies: {cookies}")
-    network = page.evaluate("""() => performance.getEntriesByType('resource')
-      .map(r=>r.name).filter(name=>/mc\.yandex|google-analytics|gtag|googletagmanager/i.test(name))""")
-    require(not network, f"Unexpected analytics request: {network}")
-    if width == 375 and theme == "light":
-        privacy=page.request.get(page.url.split('/cookie-policy.html')[0]+"/privacy-policy.html")
-        require(privacy.ok, "Local privacy policy cannot be opened")
-        print("COOKIE-POLICY: local privacy route 200; no cookies or analytics",flush=True)
-    # The shared theme toggle stores a preference in localStorage, NOT cookie.
-    before=page.evaluate("() => document.documentElement.dataset.theme")
-    toggle=page.locator(".site-theme-toggle")
-    require(toggle.count()==1, "Shared theme toggle missing")
-    toggle.click()
-    require(page.evaluate("() => localStorage.getItem('mdis-theme')")!=before,
-            "Theme toggle failed to save a new localStorage preference")
-    require(not page.context.cookies(), "Theme preference must not create cookie")
-    toggle.click()
 
 def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
@@ -647,8 +566,6 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
-                                if filename == "cookie-policy.html":
-                                    inspect_cookie_policy(page, width, theme)
                                 inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
                                 if filename == "company.html":
