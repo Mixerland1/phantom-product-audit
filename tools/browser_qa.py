@@ -42,6 +42,7 @@ PAGES = [
     "solutions.html",
     "phantom-catalog.html",
     "privacy-policy.html",
+    "cookie-policy.html",
     "atom-energy.html",
     "stantsiya-zapisi.html",
     "industrial.html",
@@ -576,6 +577,25 @@ def main():
                                             "All solutions link must open the local industry hub")
                                     require(page.locator("#industries").count() == 1,
                                             "Homepage industries section must remain available")
+                                if filename == "support-stantsiya-zapisi.html":
+                                    require(page.locator('main a[href="faq.html"]').count() >= 1,
+                                            "Station support FAQ link is missing")
+                                    require(page.locator('main a[href$=".pdf"]').count() == 2,
+                                            "Station support must expose two local PDF originals")
+                                if filename == "privacy-policy.html":
+                                    require(page.locator("article.policy-content section.policy-section").count() == 8,
+                                            "Privacy policy must retain eight legal sections")
+                                    require(page.locator("article.policy-content p.clause").count() == 22,
+                                            "Privacy policy must retain 22 legal clauses")
+                                    require(page.locator('article.policy-content a[href="cookie-policy.html"]').count() >= 2,
+                                            "Privacy policy must link locally to cookie policy")
+                                if filename == "cookie-policy.html":
+                                    require(page.locator("main section.legal-section").count() == 8,
+                                            "Cookie policy must retain eight legal sections")
+                                    require(page.locator('main nav.legal-index a[href^="#policy-section-"]').count() == 8,
+                                            "Cookie policy contents links must cover all eight sections")
+                                    require(page.locator('main a[href="privacy-policy.html"]').count() >= 1,
+                                            "Cookie policy must link locally to privacy policy")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
