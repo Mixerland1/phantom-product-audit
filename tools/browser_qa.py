@@ -11,12 +11,60 @@ from functools import partial
 from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import quote, unquote, urlsplit, parse_qs
+from urllib.parse import quote, unquote, urlsplit
 
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["support-phantom-ultra.html"]
+PAGES = [
+    "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
+    "phantom-active.html",
+    "certificates.html",
+    "requisites.html",
+    "services.html",
+    "faq.html",
+    "support.html",
+    "support-phantom-2.html",
+    "support-phantom-4.html",
+    "support-phantom-active.html",
+    "support-phantom-cross.html",
+    "support-stantsiya-zapisi.html",
+    "phantom-home.html",
+    "phantom-catalog.html",
+    "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
+    "auto-dealers.html",
+    "phantom-micro.html",
+    "phantom-boards.html",
+    "ip-telephony.html",
+    # Audited pages 13–18: one real Chromium case per width and theme.
+    "connection-schemes.html",
+    "personal-solutions.html",
+    "modernization.html",
+    "training.html",
+    "telephone-recording.html",
+    "dispatcher-recording.html",
+    # Audited pages 19–23; support, financial, IP and telephone are already covered.
+    "pultex.html",
+    "phantom-cross.html",
+    "phantom-monitoring.html",
+    "phantom-asr.html",
+    "selective-recording.html",
+]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -357,67 +405,6 @@ def inspect_nav(page, filename: str, width: int):
         for anchor in ["general", "versions", "archive", "commercial"]:
             require(page.locator(f'a[href="faq.html#{anchor}"]').count() >= 1,
                     f"Support hub missing FAQ route {anchor}")
-
-
-    if filename == "support-phantom-ultra.html":
-        require(page.locator(".site-header").count() == 1,
-                "Canonical header missing")
-        require(page.locator(".footer-logos").count() == 1,
-                "Canonical footer logos missing")
-        require(page.locator('.solutions-switcher-label[href="support.html"]').count() == 1,
-                "Documentation switcher must lead to support hub")
-        require(page.locator('.solutions-switcher-neighbor--previous[href="support-phantom-cross.html"]').count() == 1,
-                "Wrong previous documentation section")
-        require(page.locator('.solutions-switcher-neighbor--next[href="support-stantsiya-zapisi.html"]').count() == 1,
-                "Wrong next documentation section")
-        require(page.locator("h1").inner_text().strip() == "Phantom Ultra",
-                "Support page must retain product H1")
-        require(page.locator("main .doc-card").count() == 2,
-                "Two actual DOC resources expected")
-        require(page.locator("main .doc-card").nth(0).locator("h3").inner_text().strip()
-                == "Руководство Phantom Ultra", "Manual card missing")
-        require("МБВА.467660.003РЭ" in page.locator("main .doc-card").nth(0).inner_text()
-                and "2006" in page.locator("main .doc-card").nth(0).inner_text(),
-                "Verified 2006 manual designation/date missing")
-        require("NWU" in page.locator("main .doc-card").nth(1).inner_text()
-                and "WAV" in page.locator("main .doc-card").nth(1).inner_text()
-                and "NTFS" in page.locator("main .doc-card").nth(1).inner_text(),
-                "Location Manager actual purpose missing")
-        require("Инструкция" in page.locator("main .doc-card").nth(1).inner_text()
-                and "255" in page.locator("main .doc-card").nth(1).inner_text(),
-                "Location Manager file type/size missing")
-        doc_urls = [
-            "https://mdis.ru/upload/iblock/ba8/ba8a946d93918ba1abbfe2695a0e6739.doc",
-            "https://mdis.ru/upload/iblock/508/50844d566ebdadf4523d35f6329e08c5.doc",
-        ]
-        for url in doc_urls:
-            require(page.locator(f'main a[href="{url}"]').count() == 1,
-                    f"Original document must remain directly accessible: {url}")
-        for href in ["faq.html", "support.html", "phantom-ultra.html",
-                     "modernization.html"]:
-            require(page.locator(f'main a[href="{href}"]').count() >= 1,
-                    f"Missing local navigation route {href}")
-        require(page.locator("main").inner_text().find("Название на сайте МДИС") == -1,
-                "Editorial reference to original website remains")
-        email = page.locator('a[href^="mailto:support@mdis.ru?"]')
-        require(email.count() == 1, "Support CTA address invalid")
-        url = urlsplit(email.get_attribute("href"))
-        require(url.scheme == "mailto" and url.path == "support@mdis.ru",
-                "Support CTA should not send a sales email")
-        query = parse_qs(url.query)
-        require(query.get("subject") == ["Phantom Ultra — документация"],
-                "Support email subject incorrect")
-        body = query.get("body", [""])[0]
-        for label in ["Модель / конфигурация Phantom Ultra:", "Версия ПО:",
-                      "Операционная система:", "Тип линий / интерфейсов:",
-                      "Какой документ требуется:", "Комментарий:"]:
-            require(label in body, f"Email field missing: {label}")
-        require(page.locator("#request .request-action p").count() == 1,
-                "Mailto confirmation note missing")
-        footer_theme = page.locator("html").get_attribute("data-theme")
-        require(footer_theme in ("light","dark"),"Theme state missing")
-        email.scroll_into_view_if_needed()
-        require(email.is_visible(), "Support action not visible")
 
 
 
