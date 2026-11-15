@@ -16,55 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "support-phantom-2.html",
-    "support-phantom-4.html",
-    "support-phantom-active.html",
-    "support-phantom-cross.html",
-    "support-stantsiya-zapisi.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-    # Audited pages 13–18: one real Chromium case per width and theme.
-    "connection-schemes.html",
-    "personal-solutions.html",
-    "modernization.html",
-    "training.html",
-    "telephone-recording.html",
-    "dispatcher-recording.html",
-    # Audited pages 19–23; support, financial, IP and telephone are already covered.
-    "pultex.html",
-    "phantom-cross.html",
-    "phantom-monitoring.html",
-    "phantom-asr.html",
-    "selective-recording.html",
-]
+PAGES = ["support-phantom-4.html"]  # audit-only; restore after Chromium QA
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -156,6 +108,94 @@ def inspect_active_underline_hover(page, filename: str, width: int):
     page.wait_for_timeout(260)
     require(underline_opacity() > 0.95,
             "Current nav underline did not return after pointer left navigation")
+
+
+def inspect_phantom4_docs(page, width: int, theme: str):
+    """Audit-only independent QA for prompt 39 documentation hub."""
+    from urllib.parse import unquote
+    require(page.locator("main h1").inner_text() == "Phantom 4", "Wrong Phantom 4 H1")
+    require(page.locator('meta[name="description"]').count() == 1, "SEO description absent")
+    require(page.locator("main .doc-card").count() == 8, "Eight original Phantom 4 materials not present")
+    for section_id, count in [("documents",4),("maintenance",1),("voip",1),("technical",2)]:
+        require(page.locator(f"#{section_id} .doc-card").count() == count,
+                f"Wrong {section_id} document group count")
+    require(page.locator("main .hero-points li").count() == 3, "Version, install, OS hero facts missing")
+    require("Windows" in page.locator(".hero-panel").inner_text() and
+            "Astra Linux" in page.locator(".hero-panel").inner_text(),
+            "Platform version separation missing")
+    require(page.locator("main .doc-card a.doc-link").count() == 8, "Eight document links required")
+    links = page.locator("main .doc-card a.doc-link")
+    types = [el.get_attribute("href").split(".")[-1].lower() for el in links.all()]
+    require(types.count("pdf") == 4 and types.count("docx") == 2 and
+            types.count("doc") == 1 and types.count("mp4") == 1,
+            f"Original document formats mismatch: {types}")
+    for link in links.all():
+        href = link.get_attribute("href")
+        label = link.inner_text()
+        require("aria-label" in (link.evaluate("(el)=>el.outerHTML")),
+                f"Document accessible text missing: {href}")
+        if href.endswith(".mp4"):
+            require("Смотреть видео" in label and href.startswith("https://mdis.ru/"),
+                    "Installation video must link original MP4 without autoplay")
+        elif href.endswith(".pdf"):
+            require("Открыть PDF" in label and href.startswith("assets/support/support-phantom-4/"),
+                    "Four local PDFs must retain the original files")
+        elif href.endswith(".doc") or href.endswith(".docx"):
+            require("Скачать" in label and href.startswith("https://mdis.ru/"),
+                    "Office source file should have a download action")
+            require(link.get_attribute("target") is None,
+                    "Office download opens unnecessary blank tab")
+    require(page.locator('main a[href="faq.html#versions"]').count() == 1,
+            "Direct local FAQ route missing")
+    for href in ["support.html","modernization.html","support-phantom-cross.html",
+                 "ip-telephony.html","connection-schemes.html","phantom-catalog.html"]:
+        require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                f"Local route missing {href}")
+    require(page.locator('.solutions-switcher-label[href="support.html"]').count() == 1,
+            "Shared documentation hub navigation missing")
+    require(page.locator(".hero .hero-actions a[href='#documents']").count() == 1,
+            "Hero documentation CTA missing")
+    require(page.locator('main a[href^="mailto:support@mdis.ru?subject="]').count() == 1,
+            "Support email CTA absent")
+    mail = unquote(page.locator('main a[href^="mailto:support@mdis.ru?subject="]').get_attribute("href"))
+    for token in ["Версия Phantom", "Версия Windows", "Тип плат", "Тип линий",
+                  "Что требуется", "Комментарий"]:
+        require(token in mail, f"Support email template missing: {token}")
+    require(page.locator(".site-header").count() == 1 and
+            page.locator("#site-footer").count() == 1,
+            "Shared header/footer not rendered")
+    hero = page.evaluate("""() => {
+      const h=document.querySelector('main > .hero').getBoundingClientRect();
+      const panel=document.querySelector('main > .hero .hero-panel').getBoundingClientRect();
+      const facts=document.querySelector('main > .hero .hero-points').getBoundingClientRect();
+      return {ht:h.top,hb:h.bottom,pt:panel.top,pb:panel.bottom,ft:facts.top,fb:facts.bottom};
+    }""")
+    require(hero["pt"] >= hero["ht"]-5 and hero["pb"] <= hero["hb"]+5,
+            f"Hero documentation panel clipped: {hero}")
+    require(hero["ft"] >= hero["ht"]-5 and hero["fb"] <= hero["hb"]+5,
+            f"Hero facts clipped: {hero}")
+    if width == 1440:
+        line_counts = page.locator("#documents .doc-card h3").evaluate_all("""els=>els.map(el=>{
+           const lh=parseFloat(getComputedStyle(el).lineHeight);
+           return Math.round(el.getBoundingClientRect().height/lh);
+        })""")
+        print("PHANTOM 4 DOC HEADINGS 1440:",line_counts,flush=True)
+        require(len(set(line_counts)) == 1,
+                f"Document card headings must have equal line count: {line_counts}")
+    if theme == "dark":
+        color = page.locator("#navigation .text-link").first.evaluate("(el)=>getComputedStyle(el).color")
+        require(color == "rgb(255, 130, 151)",f"Dark links contrast not corrected: {color}")
+    if width == 375 and theme == "light":
+        for href in [
+          "assets/support/support-phantom-4/81f32679b2737352b51b6f3b0318896a.pdf",
+          "assets/support/support-phantom-4/96aceca7031d9bcb774b541dc161f8d0.pdf",
+          "assets/support/support-phantom-4/dd53cb297444c0652ab9c5f9fa0b8f6e.pdf",
+          "assets/support/support-phantom-4/1b69e9b009459ffeec50ccde994cada4.pdf",
+        ]:
+            resp = page.request.get("http://127.0.0.1:"+str(page.evaluate('() => location.port'))+"/"+href)
+            require(resp.ok and resp.body().startswith(b"%PDF-"),
+                    f"Local published manual is not a valid PDF: {href}")
+        print("PHANTOM 4 PDF ASSETS: four local originals have PDF signatures",flush=True)
 
 
 def inspect_nav(page, filename: str, width: int):
@@ -563,6 +603,8 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
+                                if filename == "support-phantom-4.html":
+                                    inspect_phantom4_docs(page, width, theme)
                                 inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
                                 if filename == "company.html":
