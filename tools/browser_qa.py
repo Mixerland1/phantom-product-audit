@@ -39,6 +39,7 @@ PAGES = [
     "support-phantom-ultra.html",
     "support-stantsiya-zapisi.html",
     "phantom-home.html",
+    "solutions.html",
     "phantom-catalog.html",
     "privacy-policy.html",
     "atom-energy.html",
@@ -568,6 +569,13 @@ def main():
                                 inspect_nav(page, filename, width)
                                 inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
+                                if filename == "phantom-home.html":
+                                    switcher = page.locator("a.solutions-switcher-label")
+                                    require(switcher.count() == 1, "Solutions hub link is missing or duplicated")
+                                    require(switcher.get_attribute("href") == "solutions.html",
+                                            "All solutions link must open the local industry hub")
+                                    require(page.locator("#industries").count() == 1,
+                                            "Homepage industries section must remain available")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
