@@ -1,0 +1,42 @@
+name: Localize original support PDFs
+
+on:
+  push:
+    branches:
+      - integration/historical-news-support-pdfs-20261115
+    paths:
+      - tools/localize_support_pdfs.py
+      - .github/workflows/localize-support-pdfs.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-support-pdfs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout integration branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download and checksum the 23 original PDFs
+        run: python tools/localize_support_pdfs.py
+      - name: Verify local PDF links and SHA-256
+        run: python tools/localize_support_pdfs.py --verify
+      - name: Commit copied PDFs and localized links to integration branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/support/ support-phantom-2.html support-phantom-4.html support-phantom-active.html support-phantom-cross.html support-stantsiya-zapisi.html
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Copy and checksum 23 original MDIS support PDFs"
+            git push origin HEAD:integration/historical-news-support-pdfs-20261115
+          fi
