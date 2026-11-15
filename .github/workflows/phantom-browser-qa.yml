@@ -8,7 +8,7 @@ on:
       - 'assets/**'
       - 'tools/browser_qa.py'
       - 'tools/final_migration_audit.py'
-      - 'tools/build_requisites_pdfs.py'
+      - 'tools/verify_requisites_pdfs.py'
       - '.github/workflows/phantom-browser-qa.yml'
   workflow_dispatch:
 
@@ -31,8 +31,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install playwright
           python -m playwright install --with-deps chromium
-      - name: Verify original JPG-based requisites PDF copies
-        run: python tools/build_requisites_pdfs.py --check
+      - name: Verify PDF-only requisites and original embedded JPEG hashes
+        run: python tools/verify_requisites_pdfs.py
       - name: Final migration audit (55 canonical pages, links, original assets)
         run: python tools/final_migration_audit.py
       - name: Original file checks and Chromium on all canonical pages at 4 widths and 2 themes
