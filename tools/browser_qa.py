@@ -206,6 +206,77 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "support-phantom-cross.html":
+        require(page.locator('main#main').count() == 1,
+                "Accessible main landmark missing")
+        require(page.locator('a.skip[href="#main"]').count() == 1,
+                "Skip to content link missing")
+        require(page.locator('header.site-header').count() == 1,
+                "Canonical shared header missing")
+        require(page.locator('header .site-brand-logo').count() == 1,
+                "Shared brand logo missing or duplicated")
+        require(page.locator('footer.footer .footer-logo-band').count() == 1,
+                "Canonical footer missing")
+        require(page.locator('.demo').count() == 0,
+                "Preview-only service banner on support page")
+        require(page.locator('main > .hero dl.meta dt').count() == 3,
+                "Three technical metadata fields required")
+        require(page.locator('main > .hero dl.meta dd').all_inner_texts() ==
+                ["5.5.2", "Astra Linux", "Техническая документация"],
+                "Incorrect document version/platform/type")
+        require(page.locator('#documents article.doc-card').count() == 3,
+                "There must be exactly three published manuals")
+        expected = [
+            ("install", "ufsw0yer6uaz8jok9f00wn0fwhmlg0ma.pdf", "6,47 МБ"),
+            ("user", "es1owdwzumimm0pyyhpau6bobufzrsg0.pdf", "19,91 МБ"),
+            ("admin", "2ftg6amvoal6g7xbxv9avi7hqpj0cb2f.pdf", "5,10 МБ")
+        ]
+        for doc_id, filename_part, display_size in expected:
+            doc = page.locator(f'#documents article.doc-card#{doc_id}')
+            require(doc.count() == 1, f"Missing manual card: {doc_id}")
+            require(doc.locator('.doc-version').inner_text().strip() ==
+                    "Phantom Cross 5.5.2", "Wrong manual version")
+            require(display_size in doc.locator('.doc-type').inner_text(),
+                    f"Incorrect actual PDF size for {doc_id}")
+            link = doc.locator('a.doc-open')
+            require(link.count() == 1 and
+                    link.get_attribute('href') ==
+                    f"assets/support/support-phantom-cross/{filename_part}",
+                    f"Wrong local PDF destination: {doc_id}")
+            require(link.get_attribute('target') == "_blank" and
+                    "noopener" in link.get_attribute('rel') and
+                    "noreferrer" in link.get_attribute('rel'),
+                    f"PDF external browsing semantics missing: {doc_id}")
+        for ref in ["#install", "#user", "#admin"]:
+            require(page.locator(f'#guide a[href="{ref}"]').count() == 1,
+                    f"Manual selection guide missing anchor: {ref}")
+        for target in ["support.html", "faq.html", "phantom-cross.html",
+                       "phantom-monitoring.html", "phantom-asr.html"]:
+            require(page.locator(f'#versions a[href="{target}"]').count() == 1,
+                    f"Support context link missing {target}")
+        require(page.locator('a[href^="mailto:support@mdis.ru?subject="]').count() == 1,
+                "Required configured support email CTA missing")
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+                "Old-site outbound reference remains in support page")
+        require(page.locator('.solutions-switcher-label[href="support.html"]').count() == 1,
+                "Shared support hub switcher missing")
+        require(page.locator('.solutions-switcher-neighbor--previous[href="support-phantom-active.html"]').count() == 1,
+                "Previous documentation navigation wrong")
+        require(page.locator('.solutions-switcher-neighbor--next[href="support-phantom-ultra.html"]').count() == 1,
+                "Next documentation navigation wrong")
+        require(page.evaluate("getComputedStyle(document.documentElement).scrollBehavior") == "auto",
+                "Reduced-motion preference not honored")
+        clipped = page.evaluate("""() => {
+            const hero=document.querySelector('main > .hero');
+            const box=hero.getBoundingClientRect();
+            return ['h1','.hero-subtitle','.lead','.hero-actions','dl.meta']
+                .filter(sel => {
+                    const el=hero.querySelector(sel);
+                    const r=el.getBoundingClientRect();
+                    return r.top < box.top - 3 || r.bottom > box.bottom + 3;
+                });
+        }""")
+        require(not clipped, f"Documentation hero elements cropped: {clipped}")
     if filename == "pultex.html":
         require(page.locator('a[href^="https://pultex.pro/wp-content/uploads/"]').count() == 4,
                 "PultEx must link four specific manufacturer documents")
@@ -482,6 +553,31 @@ def verify_original_assets():
     print("ORIGINAL ASSETS: 5 PDF and 6 PNG, signatures and SHA256 verified", flush=True)
 
 
+def verify_cross_manual_pdfs():
+    """Validate all three locally mirrored Phantom Cross 5.5.2 PDFs from manifest."""
+    path = ROOT / "assets/support/pdf-manifest.json"
+    require(path.is_file(), "Support PDF manifest missing")
+    entries = [e for e in json.loads(path.read_text(encoding="utf-8"))
+               if e["page"] == "support-phantom-cross.html"]
+    require(len(entries) == 3, f"Expected 3 Cross documents, found {len(entries)}")
+    expected = {
+        "ufsw0yer6uaz8jok9f00wn0fwhmlg0ma.pdf": 6467234,
+        "es1owdwzumimm0pyyhpau6bobufzrsg0.pdf": 19911881,
+        "2ftg6amvoal6g7xbxv9avi7hqpj0cb2f.pdf": 5100736
+    }
+    require({Path(e["path"]).name: e["bytes"] for e in entries} == expected,
+            "Cross manual names or actual sizes drifted")
+    for e in entries:
+        file = ROOT / e["path"]
+        require(file.is_file(), f"Missing Cross manual: {e['path']}")
+        content = file.read_bytes()
+        require(content.startswith(b"%PDF-"), f"Not a PDF file: {e['path']}")
+        require(len(content) == e["bytes"], f"Cross manual size mismatch: {e['path']}")
+        require(hashlib.sha256(content).hexdigest() == e["sha256"],
+                f"Cross manual SHA-256 differs from manifest: {e['path']}")
+    print("CROSS PDFS: 3/3 local manuals, signatures, bytes and SHA-256 verified", flush=True)
+
+
 def inspect_mobile_footer_logos(page, width: int):
     """Check visible logo artwork, not only its untransformed anchor layout."""
     if width != 375:
@@ -515,6 +611,7 @@ def main():
             "Duplicate HTML pages in browser QA matrix")
     check_local_links()
     verify_original_assets()
+    verify_cross_manual_pdfs()
     handler = partial(QuietHandler, directory=str(ROOT))
     server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
