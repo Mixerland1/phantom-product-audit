@@ -35,6 +35,7 @@ PAGES = [
     "support-phantom-4.html",
     "support-phantom-active.html",
     "support-phantom-cross.html",
+    "support-phantom-ultra.html",
     "support-stantsiya-zapisi.html",
     "phantom-home.html",
     "phantom-catalog.html",
