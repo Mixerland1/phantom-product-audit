@@ -550,6 +550,9 @@ def inspect_mobile_footer_logos(page, width: int):
 def main():
     require(len(PAGES) == len(set(PAGES)),
             "Duplicate HTML pages in browser QA matrix")
+    import subprocess, sys
+    subprocess.run([sys.executable, str(ROOT / "tools" / "localize_support_pdfs.py"), "--verify"],
+                   cwd=str(ROOT), check=True)
     check_local_links()
     verify_original_assets()
     handler = partial(QuietHandler, directory=str(ROOT))
