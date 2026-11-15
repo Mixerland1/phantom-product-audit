@@ -52,6 +52,10 @@ jobs:
                           response=page.goto(base+"faq.html",wait_until="networkidle",timeout=30000)
                           assert response.status==200, f"FAQ HTTP {response.status}"
                           page.wait_for_selector(".site-theme-toggle",timeout=10000)
+                          page.screenshot(path=str(OUT/f"header-initial-{width}-{theme}.png"),full_page=False)
+                          assert page.locator(".site-brand-logo").evaluate("(e)=>e.complete && e.naturalWidth>0"),"Logo not loaded"
+                          header_probe=page.evaluate("() => {const e=document.querySelector('.site-header');const r=e.getBoundingClientRect();const logo=document.querySelector('.site-brand-logo');return {scrollY,display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,opacity:getComputedStyle(e).opacity,rect:{x:r.x,y:r.y,width:r.width,height:r.height},logoWidth:logo.naturalWidth}}")
+                          print("HEADER PROBE",width,theme,header_probe,flush=True)
                           assert page.locator("html").get_attribute("data-theme")==theme, "Theme initial mismatch"
                           assert page.locator("main h1").count()==1
                           assert page.locator("main h1").inner_text()=="База вопросов"
@@ -107,6 +111,8 @@ jobs:
                           page.locator(".site-theme-toggle").click()
                           assert page.locator("html").get_attribute("data-theme")==theme,"Toggle did not restore"
                           assert not errors, f"Errors: {errors}"
+                          page.evaluate("window.scrollTo(0,0)")
+                          page.screenshot(path=str(OUT/f"header-final-{width}-{theme}.png"),full_page=False)
                           page.screenshot(path=str(OUT/f"faq-{width}-{theme}.png"),full_page=True)
                           results.append({"width":width,"theme":theme,"result":"PASS","expanded":3,"pageerrors":len(errors)})
                           print(f"PASS Chromium FAQ 36 {width}px {theme}",flush=True)
