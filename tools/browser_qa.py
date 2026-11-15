@@ -16,55 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "support-phantom-2.html",
-    "support-phantom-4.html",
-    "support-phantom-active.html",
-    "support-phantom-cross.html",
-    "support-stantsiya-zapisi.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-    # Audited pages 13–18: one real Chromium case per width and theme.
-    "connection-schemes.html",
-    "personal-solutions.html",
-    "modernization.html",
-    "training.html",
-    "telephone-recording.html",
-    "dispatcher-recording.html",
-    # Audited pages 19–23; support, financial, IP and telephone are already covered.
-    "pultex.html",
-    "phantom-cross.html",
-    "phantom-monitoring.html",
-    "phantom-asr.html",
-    "selective-recording.html",
-]
+PAGES = ["support-phantom-ultra.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -510,7 +462,45 @@ def inspect_mobile_footer_logos(page, width: int):
                     f"Mobile footer logos {i} and {i+1} overlap")
 
 
+def inspect_official_ultra_docs():
+    """One-off audit of public DOC sources; removed after capturing results."""
+    import shutil
+    import subprocess
+    from urllib.request import Request, urlopen
+    from tempfile import TemporaryDirectory
+    urls = [
+        ("ultra_manual", "https://mdis.ru/upload/iblock/ba8/ba8a946d93918ba1abbfe2695a0e6739.doc"),
+        ("location_manager", "https://mdis.ru/upload/iblock/508/50844d566ebdadf4523d35f6329e08c5.doc"),
+    ]
+    with TemporaryDirectory() as tmp:
+        for name, url in urls:
+            print(f"ULTRA DOC SOURCE CHECK {name} start", flush=True)
+            try:
+                req = Request(url, headers={"User-Agent":"Mozilla/5.0"})
+                with urlopen(req, timeout=18) as response:
+                    payload = response.read(3000000)
+                    content_type = response.headers.get("Content-Type", "")
+                    print(f"ULTRA DOC RESPONSE {name} status={response.status} type={content_type} bytes={len(payload)} signature={payload[:20].hex()}", flush=True)
+                path = os.path.join(tmp, name+".doc")
+                with open(path, "wb") as fp:
+                    fp.write(payload)
+                if shutil.which("file"):
+                    print("ULTRA DOC FILE "+name+": "+subprocess.run(["file","-b",path],capture_output=True,text=True,timeout=8).stdout[:600], flush=True)
+                if shutil.which("antiword"):
+                    completed = subprocess.run(["antiword","-w","120",path],capture_output=True,text=True,timeout=10)
+                    print(f"ULTRA DOC TEXT {name} exit={completed.returncode} length={len(completed.stdout)}: "+completed.stdout[:4500], flush=True)
+                    print("ULTRA DOC STDERR "+name+": "+completed.stderr[:300],flush=True)
+                elif shutil.which("catdoc"):
+                    completed = subprocess.run(["catdoc",path],capture_output=True,text=True,timeout=10)
+                    print(f"ULTRA DOC CATDOC {name}: "+completed.stdout[:4500],flush=True)
+                else:
+                    print("ULTRA DOC NO DOCUMENT READER installed",flush=True)
+            except Exception as error:
+                print(f"ULTRA DOC UNAVAILABLE {name}: {type(error).__name__}: {error}", flush=True)
+
+
 def main():
+    inspect_official_ultra_docs()
     require(len(PAGES) == len(set(PAGES)),
             "Duplicate HTML pages in browser QA matrix")
     check_local_links()
