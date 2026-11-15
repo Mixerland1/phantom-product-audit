@@ -1,0 +1,138 @@
+name: Phantom 2 prompt 40 temporary Chromium QA
+on:
+  pull_request:
+    branches: [main]
+    paths: ['support-phantom-2.html', '.github/workflows/phantom-2-40-temporary-qa.yml']
+permissions:
+  contents: read
+jobs:
+  phantom2-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Chromium Playwright
+        run: |
+          python -m pip install playwright
+          python -m playwright install --with-deps chromium
+      - name: Browser QA Phantom 2 support page
+        run: |
+          python - <<'PY'
+          import json,threading
+          from functools import partial
+          from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          class Quiet(SimpleHTTPRequestHandler):
+              def log_message(self,*args):pass
+          server=ThreadingHTTPServer(("127.0.0.1",0),partial(Quiet,directory=str(Path.cwd())))
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          url=f"http://127.0.0.1:{server.server_port}/support-phantom-2.html"
+          Path("qa-phantom2-artifacts").mkdir(exist_ok=True)
+          passed,failed=[],[]
+          try:
+            with sync_playwright() as pw:
+              browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
+              for width,height in [(375,812),(768,900),(1024,768),(1440,900)]:
+                for theme in ("light","dark"):
+                  context=browser.new_context(viewport={"width":width,"height":height},reduced_motion="reduce")
+                  context.add_init_script(f"localStorage.setItem('mdis-theme','{theme}')")
+                  page=context.new_page()
+                  errors=[]
+                  page.on("pageerror",lambda error:errors.append(str(error)))
+                  case=f"support-phantom-2.html {width}px {theme}"
+                  try:
+                    resp=page.goto(url,wait_until="load",timeout=30000)
+                    assert resp and resp.status==200,"HTTP status"
+                    assert page.locator("h1").count()==1 and page.locator("h1").inner_text()=="Phantom 2","H1"
+                    assert page.locator('meta[name="robots"]').get_attribute("content")=="noindex, nofollow","robots"
+                    assert page.locator("html").get_attribute("data-theme")==theme,"theme init"
+                    assert page.locator(".demo").count()==0,"preview banner remains"
+                    assert page.locator(".support-context").count()==0,"duplicate context bar"
+                    assert page.locator(".site-header").count()==1,"shared header"
+                    assert page.locator("#site-footer").count()==1,"shared footer"
+                    assert page.locator(".solutions-switcher").count()==1,"documentation switcher"
+                    assert page.locator('.solutions-switcher-label[href="support.html"]').count()==1,"support hub"
+                    assert page.locator('.solutions-switcher-neighbor--previous[href="faq.html"]').count()==1,"previous FAQ"
+                    assert page.locator('.solutions-switcher-neighbor--next[href="support-phantom-4.html"]').count()==1,"next Phantom 4"
+                    assert page.locator(".legacy-pill").inner_text()=="Архивная ветка","archive status"
+                    assert page.locator("#downloads article.document-card").count()==4,"installers count"
+                    assert page.locator("#manuals article.document-card").count()==6,"main manuals count"
+                    assert page.locator("#voip article.document-card").count()==1,"VoIP manual count"
+                    assert page.locator("#thresholds article.document-card").count()==4,"analog and digital docs count"
+                    assert page.locator("#pinout article.document-card").count()==2,"DB25 docs count"
+                    assert page.locator('a[href="faq.html"]').count()>=1,"FAQ missing"
+                    assert page.locator('a[href="support-phantom-4.html"]').count()>=1,"Phantom 4 docs missing"
+                    assert page.locator('a[href="support-phantom-cross.html"]').count()>=1,"Cross docs missing"
+                    assert page.locator('a[href="modernization.html"]').count()>=1,"modernization missing"
+                    assert page.locator('a[href="ip-telephony.html"]').count()>=1,"modern IP recording route missing"
+                    assert page.locator('a[href="connection-schemes.html"]').count()>=1,"pinout related route missing"
+                    assert page.locator('a[href="support.html"]').count()>=1,"support hub missing"
+                    for id,kind,version,architecture in [
+                      (0,"Install","2.3.0.2236","64-bit"),(1,"Install","2.3.0.2234","32-bit"),
+                      (2,"Upgrade","2.3.0.2236","64-bit"),(3,"Upgrade","2.3.0.2234","32-bit")
+                    ]:
+                      c=page.locator("#downloads article.document-card").nth(id)
+                      assert kind in c.locator("h3").inner_text() and version in c.locator("h3").inner_text(),"version card mismatch"
+                      assert architecture in c.locator(".document-attrs").inner_text(),"architecture mismatch"
+                      assert c.locator('a[href^="https://mdis.ru/upload/"]').count()==1,"installer source missing"
+                    for ext in ["PDF","DOCX","DOC"]:
+                      assert page.locator("#manuals .document-meta, #thresholds .document-meta, #pinout .document-meta").filter(has_text=ext).count()>=1,"document format "+ext+" missing"
+                    mail=page.locator('#request a[href^="mailto:support@mdis.ru?"]')
+                    assert mail.count()==1,"support CTA"
+                    parts=mail.evaluate("""e=>{let u=new URL(e.href);return {to:u.pathname,subject:u.searchParams.get('subject'),body:u.searchParams.get('body')}}""")
+                    assert parts["to"]=="support@mdis.ru","support recipient"
+                    assert "Phantom 2" in parts["subject"],"support subject"
+                    for label in ("Версия Phantom 2:","Архитектура ОС:","Тип плат:","Тип линий:","Что требуется:","Комментарий:"):
+                      assert label in parts["body"],"missing mailto "+label
+                    localMissing=page.evaluate("""async()=>{let urls=[...document.querySelectorAll('main a[href]')].map(a=>a.getAttribute('href')).filter(h=>h&&!h.startsWith('#')&&!h.startsWith('mailto:')&&!h.startsWith('tel:')&&!h.startsWith('https:'));let bad=[];for(let href of urls){let path=href.split('#')[0].split('?')[0];let resp=await fetch(path,{method:'HEAD'});if(!resp.ok)bad.push(href+' '+resp.status)}return bad}""")
+                    assert not localMissing,"missing local documents/pages "+str(localMissing)
+                    m=page.evaluate("""()=>{let h=document.querySelector('main>.hero');let a=h?.getBoundingClientRect(),b=h?.querySelector('.hero-in')?.getBoundingClientRect();return {vp:document.documentElement.clientWidth,html:document.documentElement.scrollWidth,body:document.body.scrollWidth,hero:a?{top:a.top,bottom:a.bottom,height:a.height}:null,inner:b?{top:b.top,bottom:b.bottom,height:b.height}:null}}""")
+                    assert m["html"]<=m["vp"]+2 and m["body"]<=m["vp"]+2,"horizontal overflow "+str(m)
+                    if width>=1200:
+                      assert m["inner"]["top"]>=m["hero"]["top"]-3 and m["inner"]["bottom"]<=m["hero"]["bottom"]+3,"clipped hero panel "+str(m)
+                    broken=page.evaluate("""()=>[...document.images].filter(i=>i.complete&&i.naturalWidth===0&&new URL(i.src).origin===location.origin).map(i=>i.getAttribute('src'))""")
+                    assert not broken,"broken images "+str(broken)
+                    link=page.locator('#next-steps a[href="faq.html"]')
+                    link.focus()
+                    assert link.evaluate("e=>getComputedStyle(e).outlineStyle")!="none","keyboard focus invisible"
+                    accent=page.locator("#manuals .doc-button").first.evaluate("e=>getComputedStyle(e).color")
+                    assert accent==("rgb(255, 143, 160)" if theme=="dark" else "rgb(184, 15, 41)"),"accent contrast token "+str(accent)
+                    toggle=page.locator(".site-theme-toggle")
+                    toggle.click()
+                    other="dark" if theme=="light" else "light"
+                    assert page.locator("html").get_attribute("data-theme")==other,"theme switch failed"
+                    assert page.evaluate("localStorage.getItem('mdis-theme')")==other,"theme persistence failed"
+                    toggle.click()
+                    assert page.locator("html").get_attribute("data-theme")==theme,"theme restore failed"
+                    if width<=1080:
+                      menu=page.locator(".site-mobile-menu")
+                      menu.locator(":scope > summary").click()
+                      assert menu.get_attribute("open") is not None,"mobile menu open"
+                      menu.locator(":scope > summary").click()
+                    assert not errors,"JS pageerrors "+str(errors)
+                    page.evaluate("window.scrollTo(0,0)")
+                    page.screenshot(path=f"qa-phantom2-artifacts/phantom2-{width}-{theme}.png",full_page=True)
+                    passed.append(case)
+                    print("PASS",case,"layout",m,flush=True)
+                  except Exception as exc:
+                    failed.append(case+": "+str(exc))
+                    print("FAIL",case,str(exc),flush=True)
+                    try:page.screenshot(path=f"qa-phantom2-artifacts/FAIL-phantom2-{width}-{theme}.png",full_page=True)
+                    except Exception:pass
+                  context.close()
+              browser.close()
+          finally:server.shutdown()
+          print(json.dumps({"passed":len(passed),"failed":len(failed),"errors":failed},ensure_ascii=False),flush=True)
+          if failed:raise SystemExit(1)
+          PY
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phantom2-40-qa
+          path: qa-phantom2-artifacts/
+          if-no-files-found: warn
