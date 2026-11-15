@@ -1,3 +1,4 @@
+# Final integration change review: original old catalog links are mapped to local hubs.
 #!/usr/bin/env python3
 """Read-only comprehensive prompt #46 audit of Phantom local migration.
 
