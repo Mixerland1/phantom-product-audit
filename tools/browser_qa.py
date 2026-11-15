@@ -132,9 +132,10 @@ def inspect_cookie_policy(page, width: int, theme: str):
                    "При первом посещении Веб-сайта Пользователь видит запрос",
                    "Веб-сайт использует следующие типы cookie"]:
         require(phrase in official_text, f"Official legal phrase changed: {phrase}")
-    require(page.locator("#policy-section-3 + p").count() == 0,
-            "Do not invent cookie-category categories based on missing official table")
-    require(page.locator(".legal-section ul").count() == 3,
+    require(page.locator('.legal-section[aria-labelledby="policy-section-3"] p').count() == 1 and
+            page.locator('.legal-section[aria-labelledby="policy-section-3"] table').count() == 0,
+            "Source section 3 has no category table; do not invent one")
+    require(page.locator(".legal-section ul").count() == 4,
             "Original privacy/cookie lists should be retained")
     require(page.locator('.related-policy a[href="privacy-policy.html"]').count() == 1,
             "Local privacy-policy companion link missing")
