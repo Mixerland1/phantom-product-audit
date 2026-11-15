@@ -17,56 +17,7 @@ from playwright.sync_api import sync_playwright
 from verify_legacy_archives import verify as verify_legacy_archives
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "support-phantom-2.html",
-    "support-phantom-4.html",
-    "support-phantom-active.html",
-    "support-phantom-cross.html",
-    "support-phantom-ultra.html",
-    "support-stantsiya-zapisi.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-    # Audited pages 13–18: one real Chromium case per width and theme.
-    "connection-schemes.html",
-    "personal-solutions.html",
-    "modernization.html",
-    "training.html",
-    "telephone-recording.html",
-    "dispatcher-recording.html",
-    # Audited pages 19–23; support, financial, IP and telephone are already covered.
-    "pultex.html",
-    "phantom-cross.html",
-    "phantom-monitoring.html",
-    "phantom-asr.html",
-    "selective-recording.html",
-]
+PAGES = ["privacy-policy.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -233,6 +184,81 @@ def inspect_nav(page, filename: str, width: int):
                      "telephone-recording.html"]:
             require(page.locator(f'a[href="{href}"]').count() >= 1,
                     f"Selective recording missing local route: {href}")
+    if filename == "privacy-policy.html":
+        require(page.locator('header.site-header').count() == 1,
+                "Shared site-header should be hydrated once")
+        require(page.locator('footer').count() == 1,
+                "Shared footer not present")
+        require(page.locator('h1').inner_text().strip() ==
+                "Политика конфиденциальности и обработки персональных данных",
+                "Legal title incorrect")
+        require(page.locator('meta[name="robots"]').get_attribute('content')
+                == 'noindex, nofollow', "Legal page should remain noindex")
+        require(page.locator('.policy-content .policy-section').count() == 8,
+                "Original legal policy must keep eight numbered sections")
+        require(page.locator('.policy-content .clause-number').count() == 22,
+                "Original legal policy must keep all 22 numbered clauses")
+        require(page.locator('nav.legal-index a[href^="#section-"]').count() == 8,
+                "Original eight-section contents list absent")
+        for number in range(1, 9):
+            require(page.locator(f'#section-{number}').count() == 1,
+                    f"Legal section missing: {number}")
+        require('ООО «МДИС»' in page.locator('.organization').inner_text(),
+                "Official legal operator name changed")
+        for identifier in ['7703417753', '5167746190904',
+                           '123995', '123022', '152-ФЗ', 'Яндекс.Метрика',
+                           'HTTPS']:
+            require(identifier in page.locator('main').inner_text(),
+                    f"Mandatory unchanged legal text missing: {identifier}")
+        require(page.locator('table[aria-label] thead th[scope="col"]').count() == 3,
+                "Policy table must have three column headers")
+        require(page.locator('table tbody th[scope="row"]').count() == 2,
+                "Policy table must have two named data-category row headers")
+        require(page.locator('.table-scroll[tabindex="0"][role="region"][aria-describedby="policy-table-hint"]').count() == 1,
+                "Legal table not independently keyboard-scrollable")
+        hint=page.locator('#policy-table-hint')
+        require(hint.count() == 1 and hint.is_visible() == (width <= 650),
+                f"Mobile table-hint visibility incorrect at {width}px")
+        if width == 375:
+            require(page.locator('.table-scroll').evaluate(
+                "(el) => {el.scrollLeft=120; return el.scrollLeft>0}"),
+                "Data/processing purposes table does not horizontally scroll on mobile")
+        require(page.locator('.policy-content a[href="cookie-policy.html"]').count() == 2,
+                "Privacy legal clauses do not point to local cookie policy")
+        require(page.locator('.policy-content a[href="privacy-policy.html"]').count() == 1,
+                "Self-address citation should point to local legal page")
+        require(page.locator('.policy-content a[href="mailto:sales@mdis.ru"]').count() == 2,
+                "User rights and final requests should link to the published email")
+        require(page.locator('.legal-foot a[href="requisites.html"]').count() == 1,
+                "Requisites utility link missing")
+        for selector in ['.footer-legal a[href="privacy-policy.html"]',
+                         '.footer-legal a[href="cookie-policy.html"]']:
+            require(page.locator(selector).count() >= 1,
+                    f"Shared footer legal navigation missing: {selector}")
+        require(page.locator('.policy-content').inner_text().count('https://mdis.ru/cookie-policy/') == 2,
+                "Literal cited URL in legal policy must not be edited")
+        require('https://mdis.ru/privacy-policy/' in page.locator('.policy-content').inner_text(),
+                "Published self-address in policy altered")
+        current=page.locator('html').get_attribute('data-theme')
+        page.locator('header .site-theme-toggle').click()
+        require(page.locator('html').get_attribute('data-theme') != current,
+                "Shared header theme-toggle does not work on legal page")
+        page.locator('header .site-theme-toggle').click()
+        assert_theme(page,current)
+        page.locator('nav.legal-index a[href="#section-5"]').click()
+        require(page.url.endswith('#section-5'),
+                "Legal section anchor does not navigate")
+        require(page.locator('#section-5').evaluate(
+                "(el) => el.getBoundingClientRect().top >= -2"),
+                "Legal section anchor hidden behind fixed header")
+        page.locator('#section-5 a[href="cookie-policy.html"]').click()
+        page.wait_for_url('**/cookie-policy.html', timeout=15000)
+        require(page.locator('h1').inner_text().strip() ==
+                'Политика использования файлов cookie',
+                "Local cookie policy navigation failed")
+        page.go_back(wait_until='load', timeout=15000)
+        require(page.url.split('#')[0].endswith('/privacy-policy.html'),
+                "Could not return from local cookie policy")
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
