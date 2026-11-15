@@ -40,6 +40,7 @@ PAGES = [
     "support-stantsiya-zapisi.html",
     "phantom-home.html",
     "phantom-catalog.html",
+    "solutions.html",
     "privacy-policy.html",
     "atom-energy.html",
     "stantsiya-zapisi.html",
@@ -208,6 +209,81 @@ def inspect_nav(page, filename: str, width: int):
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
             group.locator("summary").click()
+    if filename == "solutions.html":
+        require(page.locator("main#main").count() == 1,
+                "Accessible main landmark missing")
+        require(page.locator('a.skip[href="#main"]').count() == 1,
+                "Skip-to-main link missing")
+        require(page.locator("header.site-header").count() == 1,
+                "Shared header missing or duplicated")
+        require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
+                "Canonical shared footer logo missing")
+        require(page.locator('header a[href="solutions.html"]').count() >= 1,
+                "Shared menu does not link to local solutions hub")
+        require(page.locator('main > .hero h1').inner_text().strip() == "Решения",
+                "Solutions page must have one H1 'Решения'")
+        require(page.locator('main > .hero .hero-visual[role="group"]').count() == 1,
+                "Decision process visual has no accessible grouping")
+        require(page.locator('main > .hero .visual-step').count() == 4,
+                "Decision process should show four steps")
+        require(page.locator('#industries > .wrap > .industry-grid article.industry-card').count() == 8,
+                "Eight official industry cards required")
+        expected = [
+            ("Атомная энергетика", "atom-energy.html"),
+            ("Коммерческие предприятия", "commercial.html"),
+            ("Промышленные предприятия", "industrial.html"),
+            ("Автосалоны", "auto-dealers.html"),
+            ("Госструктуры", "government.html"),
+            ("Финансовые организации", "financial.html"),
+            ("Электроэнергетика", "electroenergetika.html"),
+            ("Авиация и транспорт", "aviation-transport.html")
+        ]
+        for index, (title, href) in enumerate(expected):
+            card = page.locator('#industries article.industry-card').nth(index)
+            require(card.locator('h3').inner_text().strip() == title,
+                    f"Industry card {index+1} title/order is incorrect")
+            link = card.locator('a.card-main-link')
+            require(link.count() == 1 and link.get_attribute('href') == href,
+                    f"Industry card {title} does not link to {href}")
+            require(title in link.get_attribute('aria-label'),
+                    f"Industry link {title} is not distinguishable")
+        require(page.locator('#industries article.industry-card').count() == 8,
+                "Service/product card should not appear as ninth industry")
+        require(page.locator('a.card-secondary').count() == 6,
+                "Related links must remain available")
+        require(page.locator('a.card-secondary span[aria-hidden="true"]').all_inner_texts() ==
+                ["→"]*6, "Local secondary links are incorrectly marked external")
+        require(page.locator('#selection .flow-item').count() == 4,
+                "Four-step configuration selector missing")
+        require(page.locator('#scenarios .scenario-card').count() == 4,
+                "Recording scenario cards missing")
+        for href in ["telephone-recording.html","ip-telephony.html",
+                     "dispatcher-recording.html","selective-recording.html",
+                     "personal-solutions.html","phantom-catalog.html"]:
+            require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                    f"Missing local related scenario route {href}")
+        require(page.locator('main a[href^="https://mdis.ru/"]').count() == 0,
+                "Old MDIS site link remains in official new page")
+        require(page.locator('a[href^="mailto:sales@mdis.ru?subject="]').count() == 1,
+                "Presales mailto CTA missing")
+        email = unquote(page.locator('#request a.button').get_attribute('href'))
+        for field in ["Компания:", "Отрасль:", "Типы линий:",
+                      "Количество каналов:", "Интеграции:", "Комментарий:"]:
+            require(field in email, f"Presales mailto omitted {field}")
+        require("Подбор решения Phantom" in email, "Email subject is wrong")
+        require(not page.locator(".demo").count(), "Draft site approval banner remains")
+        clip = page.evaluate("""() => {
+            const hero=document.querySelector('main > .hero'), h=hero.getBoundingClientRect();
+            return [...hero.querySelectorAll('h1,.hero-subtitle,.lead,.hero-actions,.hero-visual')]
+                .filter(el => {
+                    const b=el.getBoundingClientRect();
+                    return b.top < h.top-3 || b.bottom > h.bottom+3;
+                }).map(el=>el.className||el.tagName);
+        }""")
+        require(not clip, f"Solutions hero content clipped: {clip}")
+        page.emulate_media(reduced_motion="reduce")
+        require(page.evaluate("getComputedStyle(document.documentElement).scrollBehavior") == "auto",
+                "Reduced-motion setting not respected")
     if filename == "pultex.html":
         require(page.locator('a[href^="https://pultex.pro/wp-content/uploads/"]').count() == 4,
                 "PultEx must link four specific manufacturer documents")
