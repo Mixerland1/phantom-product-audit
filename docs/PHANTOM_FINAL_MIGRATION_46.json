@@ -1,0 +1,283 @@
+{
+  "base_sha": "1b02a502777878c077d4dbe2f80080ce6bd67d1b",
+  "source_prompt": "prompts/46_Финальная_интеграция_и_проверка_миграции.md",
+  "root_html_files": 59,
+  "canonical_root_html_files": 55,
+  "numbered_legacy_html": [
+    "06_Phantom_Pro_уровень_5.html",
+    "07_Phantom_Pro_уровень_6.html",
+    "08_Phantom_PC_2.html",
+    "09_Фантом_Ультра.html"
+  ],
+  "expected_pages": 44,
+  "missing_expected": [],
+  "unwanted_duplicate_pages": [],
+  "html_references_checked": 1603,
+  "external_total": 69,
+  "external_categories": {
+    "original_document_or_download": 25,
+    "other_external": 29,
+    "old_site_page_needs_review": 7,
+    "legal_text_or_original": 2,
+    "official_website_brand": 3,
+    "external_Granulex": 1,
+    "pending_video_Rutube": 2
+  },
+  "mdis_links_total": 39,
+  "mdis_links": [
+    {
+      "page": "attestation-fsk-ees.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/fe0/fe011e81cdc173b24a19d89d5808a880.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/fe0/fe011e81cdc173b24a19d89d5808a880.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/5d9/5d9f32868d72f539b126def834e9286e.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/41b/41bdcc4c357f3b4ccb472abb37f743ca.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/b54/8rbgykiga4ymrd938tx04asvy6hcs0qy.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/b9f/b9ff3efe9e2e586ee2a742af52320d48.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/47b/47b8d56e6cd2d49a307bd71a24a58ba1.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/3cc/3cc9a8dd1831a74bfc5f86e8761306df.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/f71/frml4uarwusvxblrgjqjw94yyd5xqppo.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/99e/99ea840402b07382543d836c3952e4c0.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/a39/a39e6ca9f46f2d8b70fa67f1df0c30e0.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/582/58200aacefd24962b3cdade4dfd621a0.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/bfc/bfc30a88e75d6246b82c462189c2a899.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/592/59268aa0052ed61e5cc370b940282a69.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "certificates.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/985/985df4129f4bd2aecfb091594987dfad.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "cookie-policy.html",
+      "tag": "a",
+      "url": "https://mdis.ru",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "cookie-policy.html",
+      "tag": "a",
+      "url": "https://mdis.ru/privacy-policy/",
+      "category": "legal_text_or_original"
+    },
+    {
+      "page": "cookie-policy.html",
+      "tag": "a",
+      "url": "https://mdis.ru/cookie-policy/",
+      "category": "legal_text_or_original"
+    },
+    {
+      "page": "electroenergetika.html",
+      "tag": "img",
+      "url": "https://mdis.ru/upload/iblock/e03/e033c0ae319b78d5617fa6076a344676.jpg",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "electroenergetika.html",
+      "tag": "img",
+      "url": "https://mdis.ru/upload/iblock/863/863c87f713cab3bad757c7bec1082323.jpg",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "electroenergetika.html",
+      "tag": "img",
+      "url": "https://mdis.ru/upload/iblock/e04/e04b384d30f99fe7f550cbf89fbd8fe3.jpg",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "electroenergetika.html",
+      "tag": "a",
+      "url": "https://mdis.ru/",
+      "category": "official_website_brand"
+    },
+    {
+      "page": "electroenergetika.html",
+      "tag": "a",
+      "url": "https://mdis.ru/catalog/",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "electroenergetika.html",
+      "tag": "a",
+      "url": "https://mdis.ru/contacts/",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "index.html",
+      "tag": "a",
+      "url": "https://mdis.ru/",
+      "category": "official_website_brand"
+    },
+    {
+      "page": "index.html",
+      "tag": "a",
+      "url": "https://mdis.ru/catalog/",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "index.html",
+      "tag": "a",
+      "url": "https://mdis.ru/contacts/",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "phantom-cross.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/b1e/es1owdwzumimm0pyyhpau6bobufzrsg0.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "phantom-cross.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/088/2ftg6amvoal6g7xbxv9avi7hqpj0cb2f.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "phantom-cross.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/26b/ufsw0yer6uaz8jok9f00wn0fwhmlg0ma.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "phantom-cross.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/088/2ftg6amvoal6g7xbxv9avi7hqpj0cb2f.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "phantom-cross.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/b1e/es1owdwzumimm0pyyhpau6bobufzrsg0.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "phantom-home.html",
+      "tag": "a",
+      "url": "https://mdis.ru/catalog/ods-pulteks/",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "privacy-policy.html",
+      "tag": "a",
+      "url": "https://mdis.ru/",
+      "category": "official_website_brand"
+    },
+    {
+      "page": "privacy-policy.html",
+      "tag": "a",
+      "url": "https://mdis.ru",
+      "category": "old_site_page_needs_review"
+    },
+    {
+      "page": "stantsiya-zapisi.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/121/121a28e02cca2793939aeb056afc52d2.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "stantsiya-zapisi.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/f8a/f8a736248c9b0f7792bc2cf144021f2c.pdf",
+      "category": "original_document_or_download"
+    },
+    {
+      "page": "support-phantom-2.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/698/698df4b84c9601a56bd472681149a94c.mp4",
+      "category": "pending_video_Rutube"
+    },
+    {
+      "page": "support-phantom-4.html",
+      "tag": "a",
+      "url": "https://mdis.ru/upload/iblock/c92/c92d52d725a8b52f6388e629b0c1d53e.mp4",
+      "category": "pending_video_Rutube"
+    }
+  ],
+  "asset_manifests": [
+    {
+      "path": "assets/support/pdf-manifest.json",
+      "count": 23,
+      "bytes": 64398150
+    },
+    {
+      "path": "assets/support/word-manifest.json",
+      "count": 17,
+      "bytes": 20450683
+    },
+    {
+      "path": "assets/support/legacy-media-manifest.json",
+      "count": 4,
+      "bytes": 70526521
+    }
+  ],
+  "findings": [],
+  "error_count": 0,
+  "review_count": 0
+}
