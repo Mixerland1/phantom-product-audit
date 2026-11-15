@@ -486,6 +486,14 @@ def inspect_official_ultra_docs():
                     fp.write(payload)
                 if shutil.which("file"):
                     print("ULTRA DOC FILE "+name+": "+subprocess.run(["file","-b",path],capture_output=True,text=True,timeout=8).stdout[:600], flush=True)
+                if not shutil.which("antiword") and shutil.which("apt-get") and shutil.which("sudo"):
+                    for command in (["sudo","apt-get","update","-qq"],["sudo","apt-get","install","-y","-qq","antiword"]):
+                        try:
+                            result = subprocess.run(command,capture_output=True,text=True,timeout=55)
+                            print(f"ULTRA DOC READER INSTALL {command[-1]} exit={result.returncode} "+result.stderr[-250:],flush=True)
+                        except Exception as exc:
+                            print("ULTRA DOC READER INSTALL FAILED "+str(exc),flush=True)
+                            break
                 if shutil.which("antiword"):
                     completed = subprocess.run(["antiword","-w","120",path],capture_output=True,text=True,timeout=10)
                     print(f"ULTRA DOC TEXT {name} exit={completed.returncode} length={len(completed.stdout)}: "+completed.stdout[:4500], flush=True)
