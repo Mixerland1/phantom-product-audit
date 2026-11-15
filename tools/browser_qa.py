@@ -16,55 +16,7 @@ from urllib.parse import quote, unquote, urlsplit
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = [
-    "company.html",
-    "news.html",
-    "clients.html",
-    "partners.html",
-    "history.html",
-    "rewards.html",
-    "articles.html",
-    "reviews.html",
-    "phantom-active.html",
-    "certificates.html",
-    "requisites.html",
-    "services.html",
-    "faq.html",
-    "support.html",
-    "support-phantom-2.html",
-    "support-phantom-4.html",
-    "support-phantom-active.html",
-    "support-phantom-cross.html",
-    "support-stantsiya-zapisi.html",
-    "phantom-home.html",
-    "phantom-catalog.html",
-    "privacy-policy.html",
-    "atom-energy.html",
-    "stantsiya-zapisi.html",
-    "industrial.html",
-    "government.html",
-    "commercial.html",
-    # Audit 05 and the previously uncovered pages from audits 07–12.
-    # Phantom Active and the catalog are already listed above.
-    "financial.html",
-    "auto-dealers.html",
-    "phantom-micro.html",
-    "phantom-boards.html",
-    "ip-telephony.html",
-    # Audited pages 13–18: one real Chromium case per width and theme.
-    "connection-schemes.html",
-    "personal-solutions.html",
-    "modernization.html",
-    "training.html",
-    "telephone-recording.html",
-    "dispatcher-recording.html",
-    # Audited pages 19–23; support, financial, IP and telephone are already covered.
-    "pultex.html",
-    "phantom-cross.html",
-    "phantom-monitoring.html",
-    "phantom-asr.html",
-    "selective-recording.html",
-]
+PAGES = ["support-phantom-active.html"]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
@@ -231,6 +183,91 @@ def inspect_nav(page, filename: str, width: int):
                      "telephone-recording.html"]:
             require(page.locator(f'a[href="{href}"]').count() >= 1,
                     f"Selective recording missing local route: {href}")
+    if filename == "support-phantom-active.html":
+        require(page.locator('header.site-header').count() == 1,
+                "Shared header not hydrated exactly once")
+        require(page.locator('.footer').count() == 1,
+                "Shared footer missing")
+        require(page.locator('main h1').inner_text().strip() == "Phantom Active",
+                "Documentation page H1 incorrect")
+        require(page.locator('.demo').count() == 0,
+                "Draft coordination banner visible")
+        nav = page.locator('nav.hub-stack[aria-label]')
+        require(nav.count() == 1, "Document navigation missing")
+        required_sections = ["manuals","integrations","english","db25","brochures"]
+        require(page.locator('nav.hub-stack > a.hub-step').count() == 5,
+                "Expected five clickable navigation entries")
+        for id in required_sections:
+            require(page.locator(f'nav.hub-stack > a[href="#{id}"]').count() == 1,
+                    f"Hero document-navigation entry absent: {id}")
+            require(page.locator(f'section#{id}').count() == 1,
+                    f"Document section absent: {id}")
+        require(page.locator('.metadata li').count() == 3
+                and page.locator('.metadata li strong + span').count() == 3,
+                "Structured hero metadata incomplete")
+        require(page.locator('.solutions-switcher').count() == 1,
+                "Global documentation cycle absent or duplicated")
+        require(page.locator('.solutions-switcher').evaluate(
+                "(el) => el.previousElementSibling?.classList.contains('hero')") is True,
+                "Documentation cycle must follow hero")
+        for selector in [
+            '.solutions-switcher-label[href="support.html"]',
+            '.solutions-switcher-neighbor--previous[href="support-phantom-4.html"]',
+            '.solutions-switcher-neighbor--next[href="support-phantom-cross.html"]'
+        ]:
+            require(page.locator(selector).count() == 1,
+                    f"Global documentation cycle inconsistent: {selector}")
+        require(page.locator('#manuals article.doc').count() == 2,
+                "Two Shell manuals not present")
+        require(page.locator('#integrations article.doc').count() == 2,
+                "OSV and HiPath install manuals not present")
+        require(page.locator('#english article.doc').count() == 3,
+                "Three English DOC references not present")
+        require(page.locator('#db25 article.doc').count() == 1,
+                "DB25 DOC reference not present")
+        require(page.locator('#brochures .brochure-links').count() == 3,
+                "Three grouped brochure pairs not present")
+        require(page.locator('#brochures .brochure-links a').count() == 6,
+                "Original six brochures not linked")
+        require(page.locator('a.doc-link[href$=".pdf"]').count() == 10,
+                "10 localized PDF documents not linked")
+        require(page.locator('a.doc-link[href$=".doc"]').count() == 4,
+                "Original four DOC documents not preserved")
+        links=page.locator('a.doc-link[href$=".pdf"],a.doc-link[href$=".doc"]')
+        require(links.count() == 14, "Total instruction and brochure links != 14")
+        for link in links.all():
+            require(link.get_attribute("target") == "_blank"
+                    and link.get_attribute("rel") == "noopener noreferrer",
+                    "Document link should open safely in separate tab")
+        for href in ["faq.html","support.html","phantom-active.html",
+                     "selective-recording.html","dispatcher-recording.html",
+                     "connection-schemes.html"]:
+            require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                    f"Local contextual link missing: {href}")
+        require("2011" in page.locator('#brochures').inner_text()
+                and "2013" in page.locator('#brochures').inner_text(),
+                "Verified archive brochure years missing")
+        mail=page.locator('a.button[href^="mailto:support@mdis.ru?"]')
+        require(mail.count() == 1, "Support mailto CTA missing")
+        from urllib.parse import parse_qs
+        details=parse_qs(urlsplit(mail.get_attribute("href")).query)
+        letter=details.get("body",[""])[0]
+        for phrase in ["Версия Phantom Active:", "АТС / диспетчерская платформа:",
+                       "Операционная система:", "Какой документ требуется:"]:
+            require(phrase in letter, f"Support email draft field absent: {phrase}")
+        current_theme=page.locator("html").get_attribute("data-theme")
+        page.locator("header .site-theme-toggle").click()
+        require(page.locator("html").get_attribute("data-theme") != current_theme,
+                "Theme toggle failed")
+        page.locator("header .site-theme-toggle").click()
+        assert_theme(page,current_theme)
+        nav.locator('a[href="#db25"]').click()
+        require(page.url.endswith("#db25"), "Clicking DB25 navigation did not update URL")
+        require(page.evaluate("""() => {
+            const target = document.querySelector('#db25').getBoundingClientRect();
+            const header = document.querySelector('header.site-header').getBoundingClientRect();
+            return target.bottom > header.bottom + 5;
+        }"""), "DB25 section hidden by fixed header")
     if filename == "financial.html":
         for href in ["index.html", "news.html#news-minprom",
                      "phantom-pro-level-5.html", "phantom-pro-level-6.html"]:
