@@ -1,0 +1,37 @@
+name: Halt and remove obsolete video hosting
+on:
+  push:
+    branches:
+      - integration/legacy-assets-equivalence-20261115
+    paths:
+      - .github/workflows/halt-legacy-video-upload.yml
+  workflow_dispatch:
+permissions:
+  actions: write
+  contents: write
+jobs:
+  cancel:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: Mixerland1/phantom-product-audit
+    steps:
+      - name: Cancel previously requested video upload workflow
+        shell: bash
+        run: |
+          gh api -X POST repos/${GH_REPO}/actions/runs/43715571446/cancel || true
+          for i in $(seq 1 45); do
+            status=$(gh api repos/${GH_REPO}/actions/runs/43715571446 --jq '.status' || echo pending)
+            echo "Original importer: $status"
+            if [ "$status" = "completed" ]; then break; fi
+            sleep 3
+          done
+      - name: Delete obsolete GitHub video release if published
+        shell: bash
+        run: |
+          if gh release view phantom-support-media-20261115 --repo "${GH_REPO}" >/dev/null 2>&1; then
+            gh release delete phantom-support-media-20261115 --repo "${GH_REPO}" --cleanup-tag --yes
+            echo "Removed original videos from GitHub Releases"
+          else
+            echo "No video release present"
+          fi
