@@ -30,10 +30,10 @@ def verify():
         if p.stat().st_size!=row["bytes"] or h.hexdigest()!=row["sha256"]:
             raise AssertionError(f"Archive checksum mismatch: {p}")
         if p.suffix==".zip":
-            if not head.startswith(b"PK\\x03\\x04"):raise AssertionError(f"Bad ZIP header {p}")
+            if not head.startswith(b"PK\x03\x04"):raise AssertionError(f"Bad ZIP header {p}")
             with zipfile.ZipFile(p) as z:
                 if z.testzip() is not None: raise AssertionError(f"Invalid ZIP member {p}")
-        elif not head.startswith(b"Rar!\\x1a\\x07"):
+        elif not head.startswith(b"Rar!\x1a\x07"):
             raise AssertionError(f"Bad RAR header {p}")
         html=(ROOT/row["page"]).read_text(encoding="utf-8")
         if row["source"] in html or f'href="{row["target"]}"' not in html:
