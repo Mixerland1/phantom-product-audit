@@ -1,0 +1,135 @@
+name: Station 42 isolated Chromium + PDF QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'support-stantsiya-zapisi.html'
+      - '.github/workflows/station-42-targeted-qa.yml'
+permissions:
+  contents: read
+jobs:
+  targeted:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Playwright and PDF extractor
+        run: |
+          python -m pip install playwright pypdf
+          python -m playwright install --with-deps chromium
+      - name: Check two local PDF files and Chromium 8 combinations
+        run: |
+          python - <<'PY'
+          import os, json, hashlib, shutil, threading, re
+          from pathlib import Path
+          from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
+          from pypdf import PdfReader
+          from playwright.sync_api import sync_playwright
+          
+          ROOT=Path(os.environ["GITHUB_WORKSPACE"])
+          os.chdir(ROOT)
+          OUT=ROOT/"qa-artifacts"/"station-42"
+          OUT.mkdir(parents=True,exist_ok=True)
+          docs=OUT/"pdf";docs.mkdir(exist_ok=True)
+          document_paths=[
+              "assets/support/support-stantsiya-zapisi/121a28e02cca2793939aeb056afc52d2.pdf",
+              "assets/support/support-stantsiya-zapisi/f8a736248c9b0f7792bc2cf144021f2c.pdf"
+          ]
+          pdfinfo=[]
+          for p in document_paths:
+              data=(ROOT/p).read_bytes()
+              assert data.startswith(b"%PDF-"), f"{p} not a PDF"
+              assert len(data)>100000
+              reader=PdfReader(str(ROOT/p))
+              intro="\n".join((page.extract_text(extraction_mode="layout") or "") for page in reader.pages[:4])
+              record=dict(path=p,bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),pages=len(reader.pages),first_pages_text=intro[:8000])
+              print("PDF INSPECTION",json.dumps(record,ensure_ascii=False),flush=True)
+              pdfinfo.append(record)
+              shutil.copy2(ROOT/p,docs/Path(p).name)
+          (OUT/"pdf-info.json").write_text(json.dumps(pdfinfo,ensure_ascii=False,indent=2))
+          class QuietHandler(SimpleHTTPRequestHandler):
+              def log_message(self,*args):pass
+          server=ThreadingHTTPServer(("127.0.0.1",0),QuietHandler)
+          threading.Thread(target=server.serve_forever,daemon=True).start()
+          base=f"http://127.0.0.1:{server.server_address[1]}/"
+          results=[]
+          try:
+              with sync_playwright() as pw:
+                  browser=pw.chromium.launch(headless=True,args=["--no-sandbox"])
+                  for width,height in [(375,812),(768,900),(1024,768),(1440,900)]:
+                      for theme in ["light","dark"]:
+                          context=browser.new_context(viewport={"width":width,"height":height},reduced_motion="reduce")
+                          context.add_init_script(f"localStorage.setItem('mdis-theme','{theme}')")
+                          page=context.new_page()
+                          errors=[]
+                          page.on("pageerror",lambda exc:errors.append(str(exc)))
+                          page.on("response",lambda resp:errors.append(f"HTTP {resp.status} {resp.url}") if resp.status>=400 and resp.url.startswith(base) else None)
+                          r=page.goto(base+"support-stantsiya-zapisi.html",wait_until="networkidle",timeout=30000)
+                          assert r.status==200,f"HTTP {r.status}"
+                          page.wait_for_selector(".site-theme-toggle",timeout=10000)
+                          assert page.locator("html").get_attribute("data-theme")==theme
+                          assert page.locator("main h1").count()==1
+                          assert page.locator("main h1").inner_text()=="Станция записи"
+                          assert page.locator("main h2").count()>=3
+                          assert page.locator('meta[name="robots"]').get_attribute("content")=="noindex, nofollow"
+                          assert page.locator(".demo").count()==0, "Staging banner still present"
+                          assert page.locator(".site-header").count()==1
+                          assert page.locator(".site-brand-logo").evaluate("(e)=>e.complete && e.naturalWidth>0"), "Header logo broken"
+                          assert page.locator(".footer-next").count()==1
+                          assert page.locator(".solutions-switcher").count()==1, "Documentation nav missing"
+                          assert page.locator('.solutions-switcher-label[href="support.html"]').count()==1
+                          assert page.locator('.solutions-switcher-neighbor--previous[href="support-phantom-ultra.html"]').count()==1
+                          assert page.locator('.solutions-switcher-neighbor--next[href="faq.html"]').count()==1
+                          assert page.locator("main article.document-card").count()==2
+                          assert page.locator(".doc-format").all_inner_texts()==["PDF","PDF"]
+                          for i,p in enumerate(document_paths):
+                              link=page.locator(f'main article.document-card a[href="{p}"]')
+                              assert link.count()==1, f"PDF link missing {p}"
+                              assert link.get_attribute("target")=="_blank",f"PDF target missing {p}"
+                              assert "noopener" in link.get_attribute("rel"),f"PDF rel missing {p}"
+                              doc_resp=page.request.get(base+p)
+                              assert doc_resp.status==200, f"Document unavailable: {p}"
+                              payload=doc_resp.body()
+                              assert payload.startswith(b"%PDF-") and len(payload)>100000, "Bad document bytes"
+                              assert hashlib.sha256(payload).hexdigest()==pdfinfo[i]["sha256"], "Transferred PDF differs"
+                          for route in ["stantsiya-zapisi.html","support.html","faq.html","atom-energy.html","dispatcher-recording.html"]:
+                              assert page.locator(f'main a[href="{route}"]').count()>=1,f"Local link absent: {route}"
+                          assert page.locator('a[href^="mailto:support@mdis.ru?subject="]').count()==1
+                          assert "Станция записи" in page.locator(".request h2").evaluate("(e)=>e.parentElement.innerText") or page.locator(".request h2").inner_text()=="Нужна другая редакция?"
+                          assert page.evaluate("getComputedStyle(document.documentElement).scrollBehavior")=="auto", "Reduced motion not honored"
+                          page.keyboard.press("Tab")
+                          assert page.evaluate("document.activeElement.classList.contains('skip')"),"Skip link not first"
+                          assert page.locator(".skip").bounding_box()["y"]>=0,"Skip link hidden when focused"
+                          page.locator(".skip").press("Enter")
+                          assert page.evaluate("location.hash")=="#main","Skip link did not navigate"
+                          assert page.evaluate("document.activeElement.id")=="main","Main content not focused"
+                          if theme=="dark":
+                              assert page.locator(".eyebrow").first.evaluate("(e)=>getComputedStyle(e).color")=="rgb(255, 113, 132)","Dark contrast"
+                          page.locator(".site-theme-toggle").click()
+                          opposite="dark" if theme=="light" else "light"
+                          assert page.locator("html").get_attribute("data-theme")==opposite
+                          page.locator(".site-theme-toggle").click()
+                          assert page.locator("html").get_attribute("data-theme")==theme
+                          assert page.evaluate("Math.max(document.documentElement.scrollWidth, document.body.scrollWidth)<=window.innerWidth+1"),"Horizontal overflow"
+                          assert not errors,f"JS/HTTP errors: {errors}"
+                          page.evaluate("scrollTo(0,0)")
+                          page.screenshot(path=str(OUT/f"hero-{width}-{theme}.png"),full_page=False)
+                          page.screenshot(path=str(OUT/f"full-{width}-{theme}.png"),full_page=True)
+                          print(f"PASS Chromium Station42 {width}px {theme}",flush=True)
+                          results.append({"width":width,"theme":theme,"status":"PASS"})
+                          context.close()
+                  browser.close()
+          finally:
+              server.shutdown()
+              (OUT/"results.json").write_text(json.dumps(results,indent=2))
+          
+          PY
+      - name: Upload QA results and unchanged source PDFs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: station-42-audit
+          path: qa-artifacts/station-42/
