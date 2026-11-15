@@ -11,7 +11,7 @@ from functools import partial
 from html.parser import HTMLParser
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import quote, unquote, urlsplit, parse_qs
 
 from playwright.sync_api import sync_playwright
 
@@ -359,6 +359,67 @@ def inspect_nav(page, filename: str, width: int):
                     f"Support hub missing FAQ route {anchor}")
 
 
+    if filename == "support-phantom-ultra.html":
+        require(page.locator(".site-header").count() == 1,
+                "Canonical header missing")
+        require(page.locator(".footer-logos").count() == 1,
+                "Canonical footer logos missing")
+        require(page.locator('.solutions-switcher-label[href="support.html"]').count() == 1,
+                "Documentation switcher must lead to support hub")
+        require(page.locator('.solutions-switcher-neighbor--previous[href="support-phantom-cross.html"]').count() == 1,
+                "Wrong previous documentation section")
+        require(page.locator('.solutions-switcher-neighbor--next[href="support-stantsiya-zapisi.html"]').count() == 1,
+                "Wrong next documentation section")
+        require(page.locator("h1").inner_text().strip() == "Phantom Ultra",
+                "Support page must retain product H1")
+        require(page.locator("main .doc-card").count() == 2,
+                "Two actual DOC resources expected")
+        require(page.locator("main .doc-card").nth(0).locator("h3").inner_text().strip()
+                == "Руководство Phantom Ultra", "Manual card missing")
+        require("МБВА.467660.003РЭ" in page.locator("main .doc-card").nth(0).inner_text()
+                and "2006" in page.locator("main .doc-card").nth(0).inner_text(),
+                "Verified 2006 manual designation/date missing")
+        require("NWU" in page.locator("main .doc-card").nth(1).inner_text()
+                and "WAV" in page.locator("main .doc-card").nth(1).inner_text()
+                and "NTFS" in page.locator("main .doc-card").nth(1).inner_text(),
+                "Location Manager actual purpose missing")
+        require("Инструкция" in page.locator("main .doc-card").nth(1).inner_text()
+                and "255" in page.locator("main .doc-card").nth(1).inner_text(),
+                "Location Manager file type/size missing")
+        doc_urls = [
+            "https://mdis.ru/upload/iblock/ba8/ba8a946d93918ba1abbfe2695a0e6739.doc",
+            "https://mdis.ru/upload/iblock/508/50844d566ebdadf4523d35f6329e08c5.doc",
+        ]
+        for url in doc_urls:
+            require(page.locator(f'main a[href="{url}"]').count() == 1,
+                    f"Original document must remain directly accessible: {url}")
+        for href in ["faq.html", "support.html", "phantom-ultra.html",
+                     "modernization.html"]:
+            require(page.locator(f'main a[href="{href}"]').count() >= 1,
+                    f"Missing local navigation route {href}")
+        require(page.locator("main").inner_text().find("Название на сайте МДИС") == -1,
+                "Editorial reference to original website remains")
+        email = page.locator('a[href^="mailto:support@mdis.ru?"]')
+        require(email.count() == 1, "Support CTA address invalid")
+        url = urlsplit(email.get_attribute("href"))
+        require(url.scheme == "mailto" and url.path == "support@mdis.ru",
+                "Support CTA should not send a sales email")
+        query = parse_qs(url.query)
+        require(query.get("subject") == ["Phantom Ultra — документация"],
+                "Support email subject incorrect")
+        body = query.get("body", [""])[0]
+        for label in ["Модель / конфигурация Phantom Ultra:", "Версия ПО:",
+                      "Операционная система:", "Тип линий / интерфейсов:",
+                      "Какой документ требуется:", "Комментарий:"]:
+            require(label in body, f"Email field missing: {label}")
+        require(page.locator("#request .request-action p").count() == 1,
+                "Mailto confirmation note missing")
+        footer_theme = page.locator("html").get_attribute("data-theme")
+        require(footer_theme in ("light","dark"),"Theme state missing")
+        email.scroll_into_view_if_needed()
+        require(email.is_visible(), "Support action not visible")
+
+
 
 class LinkParser(HTMLParser):
     def __init__(self):
@@ -462,53 +523,7 @@ def inspect_mobile_footer_logos(page, width: int):
                     f"Mobile footer logos {i} and {i+1} overlap")
 
 
-def inspect_official_ultra_docs():
-    """One-off audit of public DOC sources; removed after capturing results."""
-    import shutil
-    import subprocess
-    from urllib.request import Request, urlopen
-    from tempfile import TemporaryDirectory
-    urls = [
-        ("ultra_manual", "https://mdis.ru/upload/iblock/ba8/ba8a946d93918ba1abbfe2695a0e6739.doc"),
-        ("location_manager", "https://mdis.ru/upload/iblock/508/50844d566ebdadf4523d35f6329e08c5.doc"),
-    ]
-    with TemporaryDirectory() as tmp:
-        for name, url in urls:
-            print(f"ULTRA DOC SOURCE CHECK {name} start", flush=True)
-            try:
-                req = Request(url, headers={"User-Agent":"Mozilla/5.0"})
-                with urlopen(req, timeout=18) as response:
-                    payload = response.read(3000000)
-                    content_type = response.headers.get("Content-Type", "")
-                    print(f"ULTRA DOC RESPONSE {name} status={response.status} type={content_type} bytes={len(payload)} signature={payload[:20].hex()}", flush=True)
-                path = os.path.join(tmp, name+".doc")
-                with open(path, "wb") as fp:
-                    fp.write(payload)
-                if shutil.which("file"):
-                    print("ULTRA DOC FILE "+name+": "+subprocess.run(["file","-b",path],capture_output=True,text=True,timeout=8).stdout[:600], flush=True)
-                if not shutil.which("antiword") and shutil.which("apt-get") and shutil.which("sudo"):
-                    for command in (["sudo","apt-get","update","-qq"],["sudo","apt-get","install","-y","-qq","antiword"]):
-                        try:
-                            result = subprocess.run(command,capture_output=True,text=True,timeout=55)
-                            print(f"ULTRA DOC READER INSTALL {command[-1]} exit={result.returncode} "+result.stderr[-250:],flush=True)
-                        except Exception as exc:
-                            print("ULTRA DOC READER INSTALL FAILED "+str(exc),flush=True)
-                            break
-                if shutil.which("antiword"):
-                    completed = subprocess.run(["antiword","-w","120",path],capture_output=True,text=True,timeout=10)
-                    print(f"ULTRA DOC TEXT {name} exit={completed.returncode} length={len(completed.stdout)}: "+completed.stdout[:4500], flush=True)
-                    print("ULTRA DOC STDERR "+name+": "+completed.stderr[:300],flush=True)
-                elif shutil.which("catdoc"):
-                    completed = subprocess.run(["catdoc",path],capture_output=True,text=True,timeout=10)
-                    print(f"ULTRA DOC CATDOC {name}: "+completed.stdout[:4500],flush=True)
-                else:
-                    print("ULTRA DOC NO DOCUMENT READER installed",flush=True)
-            except Exception as error:
-                print(f"ULTRA DOC UNAVAILABLE {name}: {type(error).__name__}: {error}", flush=True)
-
-
 def main():
-    inspect_official_ultra_docs()
     require(len(PAGES) == len(set(PAGES)),
             "Duplicate HTML pages in browser QA matrix")
     check_local_links()
