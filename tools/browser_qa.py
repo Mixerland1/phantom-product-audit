@@ -17,7 +17,57 @@ from playwright.sync_api import sync_playwright
 from verify_legacy_archives import verify as verify_legacy_archives
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGES = ["cookie-policy.html"]  # audit-only, restore to main after QA
+PAGES = [
+    "company.html",
+    "news.html",
+    "clients.html",
+    "partners.html",
+    "history.html",
+    "rewards.html",
+    "articles.html",
+    "reviews.html",
+    "phantom-active.html",
+    "certificates.html",
+    "requisites.html",
+    "services.html",
+    "faq.html",
+    "support.html",
+    "support-phantom-2.html",
+    "support-phantom-4.html",
+    "support-phantom-active.html",
+    "support-phantom-cross.html",
+    "support-phantom-ultra.html",
+    "support-stantsiya-zapisi.html",
+    "phantom-home.html",
+    "phantom-catalog.html",
+    "privacy-policy.html",
+    "atom-energy.html",
+    "stantsiya-zapisi.html",
+    "industrial.html",
+    "government.html",
+    "commercial.html",
+    # Audit 05 and the previously uncovered pages from audits 07–12.
+    # Phantom Active and the catalog are already listed above.
+    "financial.html",
+    "auto-dealers.html",
+    "phantom-micro.html",
+    "phantom-boards.html",
+    "ip-telephony.html",
+    # Audited pages 13–18: one real Chromium case per width and theme.
+    "connection-schemes.html",
+    "personal-solutions.html",
+    "modernization.html",
+    "training.html",
+    "telephone-recording.html",
+    "dispatcher-recording.html",
+    # Audited pages 19–23; support, financial, IP and telephone are already covered.
+    "pultex.html",
+    "phantom-cross.html",
+    "phantom-monitoring.html",
+    "phantom-asr.html",
+    "selective-recording.html",
+    "cookie-policy.html",  # audit-only before restoration
+]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
 SHOTS = ROOT / "qa-artifacts"
