@@ -68,6 +68,16 @@ PAGES = [
     "phantom-monitoring.html",
     "phantom-asr.html",
     "selective-recording.html",
+    # Final prompt 46: full canonical site, including original CRM and model pages.
+    "attestation-fsk-ees.html",
+    "aviation-transport.html",
+    "aviaton.html",
+    "electroenergetika.html",
+    "index.html",
+    "phantom-pc-2.html",
+    "phantom-pro-level-5.html",
+    "phantom-pro-level-6.html",
+    "phantom-ultra.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]

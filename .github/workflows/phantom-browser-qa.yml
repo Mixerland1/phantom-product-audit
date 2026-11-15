@@ -7,6 +7,7 @@ on:
       - '**/*.html'
       - 'assets/**'
       - 'tools/browser_qa.py'
+      - 'tools/final_migration_audit.py'
       - '.github/workflows/phantom-browser-qa.yml'
   workflow_dispatch:
 
@@ -29,12 +30,16 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install playwright
           python -m playwright install --with-deps chromium
-      - name: Verify imported PDFs/PNGs, audit links and test 17 pages at 4 widths in 2 themes
+      - name: Final migration audit (55 canonical pages, links, original assets)
+        run: python tools/final_migration_audit.py
+      - name: Original file checks and Chromium on all canonical pages at 4 widths and 2 themes
         run: python tools/browser_qa.py
       - name: Upload QA report and failure screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: phantom-browser-qa
-          path: qa-artifacts/
+          path: |
+            qa-artifacts/
+            docs/PHANTOM_FINAL_MIGRATION_46.json
           if-no-files-found: warn
