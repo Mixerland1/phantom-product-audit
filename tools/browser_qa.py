@@ -14,6 +14,7 @@ from pathlib import Path
 from urllib.parse import quote, unquote, urlsplit
 
 from playwright.sync_api import sync_playwright
+from verify_legacy_archives import verify as verify_legacy_archives
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = [
@@ -516,6 +517,7 @@ def main():
             "Duplicate HTML pages in browser QA matrix")
     check_local_links()
     verify_original_assets()
+    verify_legacy_archives()
     handler = partial(QuietHandler, directory=str(ROOT))
     server = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
