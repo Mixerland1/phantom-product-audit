@@ -71,11 +71,12 @@ def get(item: dict, temporary_dir: Path):
     else:
         out = temporary_dir / Path(item["path"]).name
         subprocess.run(
-            ["curl", "--fail", "--location", "--silent", "--show-error",
-             "--retry", "2", "--connect-timeout", "15", "--max-time", "95",
+            ["curl", "--fail", "--location", "--silent", "--show-error", "--http1.1",
+             "--retry", "3", "--retry-all-errors", "--retry-delay", "2",
+             "--connect-timeout", "10", "--max-time", "75",
              "--max-filesize", str(MAX_BYTES), "--user-agent", "Mozilla/5.0",
              "--output", str(out), item["source"]],
-            check=True, timeout=320
+            check=True, timeout=330
         )
         data = out.read_bytes()
     return item, data, validated(data, item["path"])
@@ -101,7 +102,7 @@ def migrate():
     data_by_path = {}
     metadata_by_path = {}
     with tempfile.TemporaryDirectory(prefix="phantom-word-") as temp:
-        with ThreadPoolExecutor(max_workers=5) as pool:
+        with ThreadPoolExecutor(max_workers=3) as pool:
             futures = [pool.submit(get, row, Path(temp)) for row in rows]
             for future in as_completed(futures):
                 row, data, meta = future.result()
