@@ -381,30 +381,27 @@ def inspect_nav(page, filename: str, width: int):
                 "Partners missing company hub")
     if filename == "requisites.html":
         downloads = [
-            # Faithful single-page PDF copies of the source JPG scans.
             ("assets/requisites/mdis-ooo-mdis.pdf", "Реквизиты_ООО_МДИС.pdf",
-             "04372497b5ba585312f6c5fbd8433dad80c2e5494131d92cdc09c16e09d0e7c0", "open-link"),
+             "04372497b5ba585312f6c5fbd8433dad80c2e5494131d92cdc09c16e09d0e7c0"),
             ("assets/requisites/mdis-information-systems.pdf",
              "Реквизиты_ООО_МД_Информационные_Системы.pdf",
-             "23d3a51ea49eb88e823d171a4d6ba9eecc1a11441b7c9a0e90a998fac3addd62", "open-link"),
-            # Original JPG scans stay available byte-for-byte.
-            ("assets/requisites/mdis-ooo-mdis.jpg", "Реквизиты_ООО_МДИС.jpg",
-             "fdb14b28ea84c6fc255bf830b7d060e9f7f59e5c198c69600948c05f120eb85b", "original-link"),
-            ("assets/requisites/mdis-information-systems.jpg",
-             "Реквизиты_ООО_МД_Информационные_Системы.jpg",
-             "7bb1b5742079d0090245eb0264eba4560fb5c792efbf9c9b15c20f6873dd2615", "original-link"),
+             "23d3a51ea49eb88e823d171a4d6ba9eecc1a11441b7c9a0e90a998fac3addd62"),
         ]
-        for href, name, checksum, css_class in downloads:
-            link = page.locator(f'.doc-card a.{css_class}[href="{href}"][download="{name}"]')
-            require(link.count() == 1, f"Local requisites download missing: {href}")
+        require(page.locator('.doc-card a.open-link[href$=".pdf"]').count() == 2,
+                "Expected exactly two PDF requisites downloads")
+        require(page.locator('main a[href$=".jpg"], main a[href$=".jpeg"]').count() == 0,
+                "JPG requisites downloads must not be shown")
+        for href, name, checksum in downloads:
+            link = page.locator(f'.doc-card a.open-link[href="{href}"][download="{name}"]')
+            require(link.count() == 1, f"Local requisites PDF download missing: {href}")
             if width == 375:
                 with page.expect_download(timeout=15000) as download_event:
                     link.click()
                 saved = download_event.value
                 require(saved.suggested_filename == name,
-                        f"Unexpected download filename: {saved.suggested_filename}")
+                        f"Unexpected PDF filename: {saved.suggested_filename}")
                 actual = hashlib.sha256(Path(saved.path()).read_bytes()).hexdigest()
-                require(actual == checksum, f"Downloaded requisites checksum mismatch: {href}")
+                require(actual == checksum, f"Requisites PDF checksum mismatch: {href}")
     if filename == "rewards.html":
         require(page.locator(".rewards-nav").count() == 0, "Obsolete rewards nav remains")
         require(page.locator('a[href^="assets/awards/"][type="application/pdf"]').count() == 5,
