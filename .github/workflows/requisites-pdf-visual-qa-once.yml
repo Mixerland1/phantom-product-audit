@@ -1,0 +1,44 @@
+name: Requisites PDF visual render QA (one-time)
+on:
+  push:
+    branches: [integrator/requisites-pdf-and-seo-measurement-20261115]
+    paths:
+      - '.github/workflows/requisites-pdf-visual-qa-once.yml'
+permissions:
+  contents: read
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PDF renderer
+        run: python -m pip install pypdfium2 Pillow
+      - name: Render both PDF pages and check they are nonblank
+        run: |
+          python tools/build_requisites_pdfs.py --check
+          python - <<'PY'
+          from pathlib import Path
+          import pypdfium2 as pdfium
+          from PIL import ImageStat
+          out=Path('qa-artifacts/requisites')
+          out.mkdir(parents=True,exist_ok=True)
+          for f in (Path('assets/requisites/mdis-ooo-mdis.pdf'),Path('assets/requisites/mdis-information-systems.pdf')):
+              doc=pdfium.PdfDocument(str(f))
+              assert len(doc)==1, (f,len(doc))
+              page=doc[0]
+              im=page.render(scale=1.5).to_pil().convert('RGB')
+              assert im.width > 700 and im.height > 700, (f,im.size)
+              assert any(s>3 for s in ImageStat.Stat(im).stddev), (f,"unexpected blank render")
+              dest=out/(f.stem+'.png')
+              im.save(dest,optimize=True)
+              print('RENDERED',f,im.size,dest,flush=True)
+          PY
+      - name: Upload PDF page preview for manual inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: requisites-pdf-preview
+          path: qa-artifacts/requisites/*.png
