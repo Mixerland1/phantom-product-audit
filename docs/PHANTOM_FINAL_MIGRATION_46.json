@@ -13,9 +13,9 @@
   "missing_expected": [],
   "unwanted_duplicate_pages": [],
   "html_references_checked": 1603,
-  "external_total": 66,
+  "external_total": 56,
   "external_categories": {
-    "original_document_or_download": 25,
+    "original_document_or_download": 15,
     "other_external": 29,
     "old_site_page_needs_review": 4,
     "legal_text_or_original": 2,
@@ -23,7 +23,7 @@
     "external_Granulex": 1,
     "pending_video_Rutube": 2
   },
-  "mdis_links_total": 36,
+  "mdis_links_total": 26,
   "mdis_links": [
     {
       "page": "attestation-fsk-ees.html",
@@ -135,24 +135,6 @@
     },
     {
       "page": "electroenergetika.html",
-      "tag": "img",
-      "url": "https://mdis.ru/upload/iblock/e03/e033c0ae319b78d5617fa6076a344676.jpg",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "electroenergetika.html",
-      "tag": "img",
-      "url": "https://mdis.ru/upload/iblock/863/863c87f713cab3bad757c7bec1082323.jpg",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "electroenergetika.html",
-      "tag": "img",
-      "url": "https://mdis.ru/upload/iblock/e04/e04b384d30f99fe7f550cbf89fbd8fe3.jpg",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "electroenergetika.html",
       "tag": "a",
       "url": "https://mdis.ru/",
       "category": "official_website_brand"
@@ -174,36 +156,6 @@
       "tag": "a",
       "url": "https://mdis.ru/contacts/",
       "category": "old_site_page_needs_review"
-    },
-    {
-      "page": "phantom-cross.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/b1e/es1owdwzumimm0pyyhpau6bobufzrsg0.pdf",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "phantom-cross.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/088/2ftg6amvoal6g7xbxv9avi7hqpj0cb2f.pdf",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "phantom-cross.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/26b/ufsw0yer6uaz8jok9f00wn0fwhmlg0ma.pdf",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "phantom-cross.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/088/2ftg6amvoal6g7xbxv9avi7hqpj0cb2f.pdf",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "phantom-cross.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/b1e/es1owdwzumimm0pyyhpau6bobufzrsg0.pdf",
-      "category": "original_document_or_download"
     },
     {
       "page": "privacy-policy.html",
@@ -216,18 +168,6 @@
       "tag": "a",
       "url": "https://mdis.ru",
       "category": "old_site_page_needs_review"
-    },
-    {
-      "page": "stantsiya-zapisi.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/121/121a28e02cca2793939aeb056afc52d2.pdf",
-      "category": "original_document_or_download"
-    },
-    {
-      "page": "stantsiya-zapisi.html",
-      "tag": "a",
-      "url": "https://mdis.ru/upload/iblock/f8a/f8a736248c9b0f7792bc2cf144021f2c.pdf",
-      "category": "original_document_or_download"
     },
     {
       "page": "support-phantom-2.html",
