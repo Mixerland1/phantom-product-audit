@@ -437,6 +437,8 @@ def inspect_nav(page, filename: str, width: int):
         require(iframe.get_attribute('src').startswith(
                 "https://www.openstreetmap.org/export/embed.html"),
                 "Office map source missing on page load")
+        require(iframe.get_attribute('loading') == 'eager',
+                "Office map should load immediately without user action")
         require(page.locator('#show-office-map').count() == 0,
                 "Office map must not require a click to appear")
         require(page.locator('.dept-list > li').count() == 3,
@@ -470,6 +472,9 @@ def inspect_nav(page, filename: str, width: int):
                 f"Company navigation tape does not stick below menu: {metrics}")
         page.evaluate("window.scrollTo({top: 0, behavior: 'instant'})")
         page.wait_for_timeout(100)
+        mobile_menu = page.locator(".site-mobile-menu")
+        if mobile_menu.get_attribute("open") is not None:
+            mobile_menu.locator(":scope > summary").click()
         page.screenshot(path=str(SHOTS / f"contacts-final-{width}-{page.locator('html').get_attribute('data-theme')}.png"),
                         full_page=True, timeout=15000)
         if width == 375 and page.locator('html').get_attribute('data-theme') == 'light':
