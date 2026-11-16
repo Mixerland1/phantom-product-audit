@@ -29,10 +29,15 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .btn:hover{background:#bf1029;border-color:#bf1029}
 .btn--outline{background:transparent;color:var(--ink);border-color:#aebed0}
 .btn--outline:hover{background:var(--soft);border-color:var(--ink)}
-.hero-phone{display:block;padding:28px 30px;border:1px solid var(--line);border-radius:16px;background:var(--paper);box-shadow:0 18px 44px #193b5c0c;min-width:0}
+.hero-phone{position:relative;isolation:isolate;display:grid;grid-template-columns:100px minmax(0,1fr);align-items:center;gap:28px;min-width:0;padding:34px 36px;border:1px solid #e6edf5;border-radius:24px;background:linear-gradient(145deg,#fff 0%,#fff 72%,#e7f3ff 100%);box-shadow:0 18px 42px #193b5c19;overflow:hidden}
+.hero-phone:before,.hero-phone:after{content:"";position:absolute;z-index:-1;pointer-events:none;border-radius:50%;border:24px solid #d7eaff75;width:260px;height:260px;right:-180px;bottom:-200px}
+.hero-phone:after{right:-205px;bottom:-220px;border-color:#cee3fa65}
+.hero-phone-icon{display:grid;place-items:center;width:86px;height:86px;border-right:0;border-radius:20px;color:#1c517e;background:linear-gradient(135deg,#f8fbff,#d9eafe);box-shadow:inset 0 1px 0 #ffffffc4}
+.hero-phone-icon svg{width:52px;height:52px}
+.hero-phone-content{display:flex;min-width:0;flex-direction:column;justify-content:center;padding-left:30px;border-left:1px solid #cbdbec}
 
-.hero-phone small{display:block;color:var(--muted);font-size:13px;font-weight:650}
-.hero-phone strong{display:block;margin:8px 0;font-size:clamp(22px,2.5vw,33px);font-weight:750;letter-spacing:-.025em;white-space:normal}
+.hero-phone small{display:block;color:#4d6d8a;font-size:clamp(14px,1.5vw,18px);font-weight:650;line-height:1.35}
+.hero-phone strong{display:block;margin:12px 0 0;font-size:clamp(24px,2.85vw,40px);font-weight:780;line-height:1.15;letter-spacing:-.035em;color:#163958;white-space:nowrap}
 
 .section{padding:65px 0}
 .section--white{background:var(--paper)}
@@ -82,9 +87,11 @@ html[data-theme=dark] .map-frame{background:#1b3449 url('assets/map2.0b139232.pn
 
 
 
-@media(max-width:900px){.hero-layout,.office-layout{grid-template-columns:minmax(0,1fr)}.hero-phone{max-width:590px}.map-frame{min-height:320px}.map-frame iframe{height:320px}.dept-list{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.wrap{width:calc(100% - 32px)}.hero{padding:48px 0 54px}.section{padding:44px 0}.contact-grid,.dept-list{grid-template-columns:1fr}.contact-card,.office-panel{padding:22px}.hero-phone{padding:23px}.hero-phone strong{font-size:clamp(22px,6.4vw,29px)}.btn{width:100%}.hero-actions{gap:9px}.office-actions .btn{width:100%}.map-frame{min-height:300px}.map-frame iframe{height:300px}}
+@media(max-width:900px){.hero-layout,.office-layout{grid-template-columns:minmax(0,1fr)}.hero-phone{max-width:650px}.map-frame{min-height:320px}.map-frame iframe{height:320px}.dept-list{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.wrap{width:calc(100% - 32px)}.hero{padding:48px 0 54px}.section{padding:44px 0}.contact-grid,.dept-list{grid-template-columns:1fr}.contact-card,.office-panel{padding:22px}.hero-phone{grid-template-columns:55px minmax(0,1fr);gap:12px;padding:22px 18px;border-radius:18px}.hero-phone-icon{width:52px;height:52px;border-radius:13px}.hero-phone-icon svg{width:32px;height:32px}.hero-phone-content{padding-left:13px}.hero-phone small{font-size:12px}.hero-phone strong{font-size:clamp(19px,5.1vw,27px);white-space:normal}.btn{width:100%}.hero-actions{gap:9px}.office-actions .btn{width:100%}.map-frame{min-height:300px}.map-frame iframe{height:300px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media(min-width:601px) and (max-width:1170px){.hero-phone{grid-template-columns:62px minmax(0,1fr);gap:15px;padding:25px 22px}.hero-phone-icon{width:62px;height:62px}.hero-phone-icon svg{width:38px;height:38px}.hero-phone-content{padding-left:15px}.hero-phone strong{font-size:clamp(20px,2.65vw,29px)}}
+html[data-theme=dark] .hero-phone{border-color:#4d6480;background:linear-gradient(145deg,#eaf4fd,#d8e8f9)}
 </style>
 </head>
 <body>
@@ -101,9 +108,9 @@ html[data-theme=dark] .map-frame{background:#1b3449 url('assets/map2.0b139232.pn
         <a class="btn btn--outline" href="mailto:sales@mdis.ru">Написать в&nbsp;отдел продаж</a>
       </div>
     </div>
-    <div class="hero-phone">
-      <small>Единый многоканальный номер</small>
-      <strong>+7 (495) 783-33-79</strong>
+    <div class="hero-phone" aria-label="Единый многоканальный номер: +7 (495) 783-33-79">
+      <span class="hero-phone-icon" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" focusable="false"><path d="M12.5 7.5c-1.8-.5-3.4.1-4.5 1.8L5.7 13c-1 1.7-.7 4.7.9 8.8 3.5 8.9 10.8 16.3 19.7 19.7 4.1 1.6 7.1 1.9 8.8.9l3.7-2.3c1.7-1.1 2.3-2.7 1.8-4.5l-1.2-4c-.4-1.3-1.2-2-2.5-2.3l-5.6-1.1-3.6 3.5c-5.2-2.5-8.4-5.7-10.9-10.9l3.5-3.6-1.1-5.6c-.3-1.3-1-2.1-2.3-2.5l-4.4-1.4Z" fill="currentColor"/><path d="M29 7c6.6 1 11 5.4 12 12M28 14c3.2.5 5.5 2.8 6 6" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg></span>
+      <span class="hero-phone-content"><small>Единый многоканальный номер</small><strong>+7 (495) 783-33-79</strong></span>
     </div>
   </div>
 </section>
