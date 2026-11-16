@@ -48,6 +48,7 @@
     {path:'clients.html',name:'Наши клиенты'},
     {path:'certificates.html',name:'Сертификаты и лицензии'},
     {path:'requisites.html',name:'Реквизиты'},
+    {path:'contacts.html',name:'Контакты'},
     {path:'partners.html',name:'Партнёры'},
     {path:'rewards.html',name:'Награды'},
     {path:'history.html',name:'История МДИС'}
@@ -187,7 +188,7 @@
     <div class="footer-contact-zone">
       <div class="footer-map" aria-hidden="true"><img src="assets/map2.0b139232.png" alt=""><div class="footer-pin"><i></i><i></i><i></i><b></b></div></div>
       <div class="wrap footer-in footer-next">
-      <div class="footer-details"><b>ООО «МДИС»</b><address>123022, Россия, г. Москва, ул. 1905 года, д. 7, стр. 1</address><a class="footer-general-phone" href="tel:+74957833379">+7 (495) 783-33-79</a></div>
+      <div class="footer-details"><b>ООО «МДИС»</b><address>123022, Россия, г. Москва, ул. 1905 года, д. 7, стр. 1</address><a class="footer-directions-link" href="contacts.html">Контакты и&nbsp;схема проезда</a><a class="footer-general-phone" href="tel:+74957833379">+7 (495) 783-33-79</a></div>
       <div class="footer-channel"><b>Отдел продаж</b><a href="mailto:sales@mdis.ru">sales@mdis.ru</a></div>
       <div class="footer-channel footer-support"><b>Техническая поддержка</b><a href="mailto:support@mdis.ru">support@mdis.ru</a><span class="footer-legal"><a href="privacy-policy.html">Конфиденциальность</a><a href="cookie-policy.html">Cookie</a></span></div>
       </div>
