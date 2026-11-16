@@ -177,9 +177,8 @@ def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
     require(page.locator(".site-header").count() == 1, "Shared header missing")
     require(page.locator(".footer").count() >= 1, "Footer missing")
-    require(page.locator('.site-call-link[href="tel:+74957833379"]').count() == 1,
-            "Persistent one-tap call link is missing")
-    require(page.locator('.site-call-link').is_visible(), "Quick call action is not visible")
+    require(page.locator('.site-call-link').count() == 0,
+            "One-tap phone control must not appear in the site header")
     require(page.locator('.footer-directions-link[href="contacts.html"]').count() == 1,
             "Footer office address lacks direct Contacts route")
     require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
@@ -407,42 +406,83 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "contacts.html":
         require(page.locator('.site-nav > a[href="contacts.html"][aria-current="page"]').count() == 1,
                 "Contacts current-page navigation state is missing")
-        require(page.locator('main a[href="tel:+74957833379"]').count() >= 3,
-                "Contacts page lacks accessible one-tap telephone links")
-        require(page.locator('main a[href="mailto:sales@mdis.ru"]').count() >= 2,
+        require(page.locator('main a[href="tel:+74957833379"]').count() == 0,
+                "Contact phone should be displayed as text, not trigger a call")
+        require(page.locator('.hero-phone').count() == 1 and
+                "+7 (495) 783-33-79" in page.locator('.hero-phone').inner_text(),
+                "Plain telephone number missing from contact hero")
+        require(page.locator('.hero-actions a[href="mailto:support@mdis.ru"]').count() == 1,
+                "Support email CTA missing from contact hero")
+        require(page.locator('.hero-actions a[href="mailto:sales@mdis.ru"]').count() == 1,
+                "Sales email CTA missing from contact hero")
+        require(page.locator('main a[href="mailto:sales@mdis.ru"]').count() == 2,
                 "Contacts page lacks sales email")
-        require(page.locator('main a[href="mailto:support@mdis.ru"]').count() == 1,
+        require(page.locator('main a[href="mailto:support@mdis.ru"]').count() == 2,
                 "Contacts page lacks technical support email")
+        require(page.locator('.contact-card').count() == 2,
+                "Two contact departments must be present")
+        require(page.locator('.contact-card a[href="requisites.html"]').count() == 1,
+                "Sales requisites link missing")
+        require(page.locator('.contact-card a[href="support.html"]').count() == 1,
+                "Support documentation link missing")
+        require(page.locator('.cross-links').count() == 0,
+                "Extra links should not appear under extension numbers")
         require(page.locator('main address').count() == 1, "Office address not semantic")
         require("123022" in page.locator('main address').inner_text(),
                 "Contact address must use verified index 123022")
         require(page.locator('a[href="https://yandex.com/maps/org/mdis/1055025379/"]').count() == 1,
                 "Verified Yandex route link is missing")
-        require(page.locator('#office-map iframe').count() == 0,
-                "External map must not load before visitor consent")
-        require(page.locator('#show-office-map').count() == 1,
-                "Opt-in interactive map control missing")
+        iframe = page.locator('#office-map iframe')
+        require(iframe.count() == 1, "Office map iframe must be present on page load")
+        require(iframe.get_attribute('src').startswith(
+                "https://www.openstreetmap.org/export/embed.html"),
+                "Office map source missing on page load")
+        require(iframe.get_attribute('loading') == 'eager',
+                "Office map should load immediately without user action")
+        require(page.locator('#show-office-map').count() == 0,
+                "Office map must not require a click to appear")
         require(page.locator('.dept-list > li').count() == 3,
                 "Development, production and quality direct extensions missing")
+        require("783-33-79" in page.locator('#departments .section-lead').inner_text(),
+                "Departments lack main telephone number")
+        if width > 600:
+            boxes = [page.locator('.contact-card').nth(i).bounding_box() for i in range(2)]
+            require(boxes[0] is not None and boxes[1] is not None,
+                    "Contact card bounding boxes unavailable")
+            require(abs(boxes[0]['height'] - boxes[1]['height']) <= 2,
+                    f"Unequal department cards: {boxes}")
+        nav = page.locator('nav.solutions-switcher[aria-label="Переход между разделами компании"]')
+        require(nav.count() == 1, "Contacts company navigation tape missing")
+        require(nav.locator('.solutions-switcher-neighbor--previous[href="requisites.html"]').count() == 1,
+                "Contacts previous navigation must lead to requisites")
+        require(nav.locator('.solutions-switcher-neighbor--next[href="partners.html"]').count() == 1,
+                "Contacts next navigation must lead to partners")
+        page.evaluate("window.scrollTo({top: document.body.scrollHeight * 0.65, behavior: 'instant'})")
+        page.wait_for_timeout(100)
+        metrics = nav.evaluate("""el => ({
+            position: getComputedStyle(el).position,
+            top: el.getBoundingClientRect().top,
+            expected: parseFloat(getComputedStyle(document.documentElement)
+                .getPropertyValue('--site-header-height')) || 64,
+            headerBottom: document.querySelector('.site-header').getBoundingClientRect().bottom
+        })""")
+        require(metrics['position'] == 'sticky',
+                f"Company navigation tape is not sticky: {metrics}")
+        require(abs(metrics['top'] - metrics['headerBottom']) <= 3,
+                f"Company navigation tape does not stick below menu: {metrics}")
+        page.evaluate("window.scrollTo({top: 0, behavior: 'instant'})")
+        page.wait_for_timeout(100)
         mobile_menu = page.locator(".site-mobile-menu")
         if mobile_menu.get_attribute("open") is not None:
             mobile_menu.locator(":scope > summary").click()
-        page.screenshot(path=str(SHOTS / f"contacts-{width}-{page.locator('html').get_attribute('data-theme')}.png"),
+        page.screenshot(path=str(SHOTS / f"contacts-final-{width}-{page.locator('html').get_attribute('data-theme')}.png"),
                         full_page=True, timeout=15000)
-        if width == 375:
-            mobile_menu.locator(":scope > summary").click()
-            page.screenshot(path=str(SHOTS / f"contacts-menu-375-{page.locator('html').get_attribute('data-theme')}.png"),
-                            timeout=15000)
-            mobile_menu.locator(":scope > summary").click()
-        if width == 375:
-            page.route("https://www.openstreetmap.org/**",
-                       lambda route: route.fulfill(status=200, content_type="text/html", body="<html>Map QA</html>"))
-            page.locator("#show-office-map").click()
-            iframe = page.locator('#office-map iframe')
-            require(iframe.count() == 1, "Visitor map opt-in did not mount a map")
-            require(iframe.get_attribute("src").startswith(
-                    "https://www.openstreetmap.org/export/embed.html"),
-                    "Map consent must load the local office coordinates")
+        if width == 375 and page.locator('html').get_attribute('data-theme') == 'light':
+            page.locator('nav.solutions-switcher .solutions-switcher-control').last.click()
+            page.wait_for_url("**/partners.html", timeout=15000)
+            page.go_back(wait_until="domcontentloaded", timeout=15000)
+            require(page.url.endswith("/contacts.html"),
+                    "Contacts next company arrow did not return correctly")
     if filename == "requisites.html":
         downloads = [
             ("assets/requisites/mdis-ooo-mdis.pdf", "Реквизиты_ООО_МДИС.pdf",
