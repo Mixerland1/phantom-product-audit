@@ -1,0 +1,47 @@
+name: One-time Contacts asset cache refresh
+on:
+  push:
+    branches:
+      - integrator/contacts-ux-sticky-20261117
+    paths:
+      - '.github/workflows/contacts-cache-refresh-once.yml'
+permissions:
+  contents: write
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Bust stale menu and sticky tape scripts across canonical pages
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          count=0
+          version='20261117-contacts-ux-v2'
+          for path in sorted(Path('.').glob('*.html')):
+              if re.match(r'^0[6-9]_',path.name):
+                  continue
+              s=path.read_text(encoding='utf-8-sig')
+              result,n=re.subn(r'(assets/(?:site-header|footer-next)\.js)(?:\?v=[^"\x27<>]*)?(?=["\x27])',r'\g<1>?v='+version,s)
+              if n:
+                  if result!=s:
+                      path.write_text(result,encoding='utf-8')
+                      count+=1
+                  assert version in result,path
+          assert count>=50,f'Expected broad cache refresh, changed only {count} pages'
+          print('CONTACTS_CACHE_REFRESH_PASS',count,'canonical page script refs upgraded',flush=True)
+          Path('.github/workflows/contacts-cache-refresh-once.yml').unlink()
+          PY
+      - name: Commit and push the refreshed pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.html' .github/workflows/contacts-cache-refresh-once.yml
+          git commit -m "Refresh navigation and sticky tape cache keys across all pages"
+          git fetch origin integrator/contacts-ux-sticky-20261117
+          git rebase origin/integrator/contacts-ux-sticky-20261117
+          git push origin HEAD:integrator/contacts-ux-sticky-20261117
