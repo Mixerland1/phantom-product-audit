@@ -29,6 +29,7 @@ PAGES = [
     "phantom-active.html",
     "certificates.html",
     "requisites.html",
+    "contacts.html",
     "services.html",
     "faq.html",
     "support.html",
@@ -176,9 +177,18 @@ def inspect_nav(page, filename: str, width: int):
     """Exercise real shared header disclosures and their local routes."""
     require(page.locator(".site-header").count() == 1, "Shared header missing")
     require(page.locator(".footer").count() >= 1, "Footer missing")
+    require(page.locator('.site-call-link[href="tel:+74957833379"]').count() == 1,
+            "Persistent one-tap call link is missing")
+    require(page.locator('.site-call-link').is_visible(), "Quick call action is not visible")
+    require(page.locator('.footer-directions-link[href="contacts.html"]').count() == 1,
+            "Footer office address lacks direct Contacts route")
     require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
             "MDIS footer logo must link to local company page")
     if width > 1080:
+        require(page.locator('.site-nav > a[href="contacts.html"]').count() == 1,
+                "Contacts must be a visible top-level desktop menu link")
+        require(page.locator('.site-nav > a[href="contacts.html"]').is_visible(),
+                "Desktop Contacts link is hidden")
         groups = page.locator(".site-nav details.site-menu")
         labels = [group.locator("summary").inner_text().strip() for group in groups.all()]
         require(labels == ["Решения", "Продукты", "Услуги", "Поддержка", "Компания"],
@@ -196,6 +206,9 @@ def inspect_nav(page, filename: str, width: int):
             if expected == "services.html":
                 item = group.locator('.site-menu-all[href="services.html"]')
             require(item.count() == 1 and item.is_visible(), f"{label} missing local route {expected}")
+            if label == "Компания":
+                require(group.locator('a[href="contacts.html"]').count() == 1,
+                        "Company desktop dropdown has no Contacts link")
             box = group.locator(".site-menu-panel").bounding_box()
             if box:
                 require(box["x"] >= -3 and box["x"] + box["width"] <= width + 3,
@@ -205,6 +218,10 @@ def inspect_nav(page, filename: str, width: int):
         mobile = page.locator(".site-mobile-menu")
         mobile.locator(":scope > summary").click()
         require(mobile.get_attribute("open") is not None, "Mobile menu did not open")
+        require(mobile.locator('nav.site-mobile-popover > a[href="contacts.html"]').count() == 1,
+                "Mobile Contacts direct link missing")
+        require(mobile.locator('nav.site-mobile-popover > a[href="contacts.html"]').is_visible(),
+                "Mobile Contacts direct link is hidden")
         groups = mobile.locator("details.site-mobile-group")
         labels = [group.locator("summary").inner_text().strip() for group in groups.all()]
         require(labels == ["Решения", "Продукты", "Услуги", "Поддержка", "Компания"],
@@ -219,6 +236,9 @@ def inspect_nav(page, filename: str, width: int):
             require(group.get_attribute("open") is not None, f"Mobile {label} did not open")
             require(group.locator(f'a[href="{route}"]').count() >= 1,
                     f"Mobile {label} missing {route}")
+            if label == "Компания":
+                require(group.locator('a[href="contacts.html"]').count() == 1,
+                        "Company mobile dropdown has no Contacts link")
             group.locator("summary").click()
     if filename == "pultex.html":
         require(page.locator('a[href^="https://pultex.pro/wp-content/uploads/"]').count() == 4,
@@ -379,6 +399,45 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "partners.html":
         require(page.locator('a[href="company.html"]').count() >= 1,
                 "Partners missing company hub")
+    if filename == "contacts.html":
+        require(page.locator('.site-nav > a[href="contacts.html"][aria-current="page"]').count() == 1,
+                "Contacts current-page navigation state is missing")
+        require(page.locator('main a[href="tel:+74957833379"]').count() >= 3,
+                "Contacts page lacks accessible one-tap telephone links")
+        require(page.locator('main a[href="mailto:sales@mdis.ru"]').count() >= 2,
+                "Contacts page lacks sales email")
+        require(page.locator('main a[href="mailto:support@mdis.ru"]').count() == 1,
+                "Contacts page lacks technical support email")
+        require(page.locator('main address').count() == 1, "Office address not semantic")
+        require("123022" in page.locator('main address').inner_text(),
+                "Contact address must use verified index 123022")
+        require(page.locator('a[href="https://yandex.com/maps/org/mdis/1055025379/"]').count() == 1,
+                "Verified Yandex route link is missing")
+        require(page.locator('#office-map iframe').count() == 0,
+                "External map must not load before visitor consent")
+        require(page.locator('#show-office-map').count() == 1,
+                "Opt-in interactive map control missing")
+        require(page.locator('.dept-list > li').count() == 3,
+                "Development, production and quality direct extensions missing")
+        mobile_menu = page.locator(".site-mobile-menu")
+        if mobile_menu.get_attribute("open") is not None:
+            mobile_menu.locator(":scope > summary").click()
+        page.screenshot(path=str(SHOTS / f"contacts-{width}-{page.locator('html').get_attribute('data-theme')}.png"),
+                        full_page=True, timeout=15000)
+        if width == 375:
+            mobile_menu.locator(":scope > summary").click()
+            page.screenshot(path=str(SHOTS / f"contacts-menu-375-{page.locator('html').get_attribute('data-theme')}.png"),
+                            timeout=15000)
+            mobile_menu.locator(":scope > summary").click()
+        if width == 375:
+            page.route("https://www.openstreetmap.org/**",
+                       lambda route: route.fulfill(status=200, content_type="text/html", body="<html>Map QA</html>"))
+            page.locator("#show-office-map").click()
+            iframe = page.locator('#office-map iframe')
+            require(iframe.count() == 1, "Visitor map opt-in did not mount a map")
+            require(iframe.get_attribute("src").startswith(
+                    "https://www.openstreetmap.org/export/embed.html"),
+                    "Map consent must load the local office coordinates")
     if filename == "requisites.html":
         downloads = [
             ("assets/requisites/mdis-ooo-mdis.pdf", "Реквизиты_ООО_МДИС.pdf",
