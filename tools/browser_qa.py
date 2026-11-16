@@ -455,8 +455,8 @@ def inspect_nav(page, filename: str, width: int):
                 "Contacts previous navigation must lead to requisites")
         require(nav.locator('.solutions-switcher-neighbor--next[href="partners.html"]').count() == 1,
                 "Contacts next navigation must lead to partners")
-        page.evaluate("window.scrollTo(0, document.body.scrollHeight * 0.65)")
-        page.wait_for_timeout(180)
+        page.evaluate("window.scrollTo({top: document.body.scrollHeight * 0.65, behavior: 'instant'})")
+        page.wait_for_timeout(100)
         metrics = nav.evaluate("""el => ({
             position: getComputedStyle(el).position,
             top: el.getBoundingClientRect().top,
@@ -468,8 +468,16 @@ def inspect_nav(page, filename: str, width: int):
                 f"Company navigation tape is not sticky: {metrics}")
         require(abs(metrics['top'] - metrics['headerBottom']) <= 3,
                 f"Company navigation tape does not stick below menu: {metrics}")
-        page.evaluate("window.scrollTo(0, 0)")
+        page.evaluate("window.scrollTo({top: 0, behavior: 'instant'})")
         page.wait_for_timeout(100)
+        page.screenshot(path=str(SHOTS / f"contacts-final-{width}-{page.locator('html').get_attribute('data-theme')}.png"),
+                        full_page=True, timeout=15000)
+        if width == 375 and page.locator('html').get_attribute('data-theme') == 'light':
+            page.locator('nav.solutions-switcher .solutions-switcher-control').last.click()
+            page.wait_for_url("**/partners.html", timeout=15000)
+            page.go_back(wait_until="domcontentloaded", timeout=15000)
+            require(page.url.endswith("/contacts.html"),
+                    "Contacts next company arrow did not return correctly")
     if filename == "requisites.html":
         downloads = [
             ("assets/requisites/mdis-ooo-mdis.pdf", "Реквизиты_ООО_МДИС.pdf",
