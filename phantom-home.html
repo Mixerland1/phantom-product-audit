@@ -225,6 +225,11 @@
     @media(max-width:560px){html{scroll-padding-top:calc(var(--site-header-height,58px) + 70px)}}
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
   .product-image .phantom-ultra-cutout{display:block;width:100%;height:147px;overflow:visible;filter:drop-shadow(0 12px 14px rgba(20,47,69,.13))}
+  /* Product card optical sizing: keep each model's natural proportions. */
+  .product-image img[src*="phantom-pro-level-5-cutout"]{transform:scale(1.08)}
+  .product-image img[src*="phantom-pc-2-cutout"]{transform:scale(1.10)}
+  .product-image img[src*="phantom-pro-level-6-20261117"]{transform:scale(.88)}
+  .product-image img.phantom-ultra-cutout{transform:scale(.88)}
 </style>
   <script>
     (function(){
