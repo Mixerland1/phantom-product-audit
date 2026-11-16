@@ -320,8 +320,13 @@ def inspect_nav(page, filename: str, width: int):
                     f"Missing original connection scheme section: {anchor}")
         for img in ["ip-principle.webp", "tricom-gip.webp",
                     "minicom-dx500.webp", "protocols-sip-h323.webp"]:
-            require(page.locator(f'img[src="assets/schemes/{img}"]').count() == 1,
+            src = f"assets/schemes/{img}"
+            if img == "protocols-sip-h323.webp":
+                src += "?v=20261116-lan123"
+            require(page.locator(f'img[src="{src}"]').count() == 1,
                     f"Connection scheme image missing: {img}")
+            require(page.locator(f'a.scheme-fullsize[href="{src}"]').count() == 1,
+                    f"Full-size connection scheme URL is stale: {img}")
         require(page.locator("a[href^='https://mdis.ru/']").count() == 0,
                 "Connection schemes link to legacy site")
     if filename in {"personal-solutions.html", "modernization.html", "training.html"}:
