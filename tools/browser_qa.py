@@ -419,6 +419,8 @@ def inspect_nav(page, filename: str, width: int):
                 "Opt-in interactive map control missing")
         require(page.locator('.dept-list > li').count() == 3,
                 "Development, production and quality direct extensions missing")
+        page.screenshot(path=str(SHOTS / f"contacts-{width}-{page.locator('html').get_attribute('data-theme')}.png"),
+                        full_page=True, timeout=15000)
         if width == 375:
             page.route("https://www.openstreetmap.org/**",
                        lambda route: route.fulfill(status=200, content_type="text/html", body="<html>Map QA</html>"))
