@@ -1,0 +1,22 @@
+name: Temporary Phantom Pro 6 source export
+
+on:
+  push:
+    branches:
+      - fix/contacts-ultra-pro6-20261117
+    paths:
+      - .github/workflows/phantom-pro6-source-export.yml
+
+permissions:
+  contents: read
+
+jobs:
+  export-image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phantom-pro6-original-image
+          path: assets/products/phantom-pro-level-6-cutout.png
+          if-no-files-found: error
