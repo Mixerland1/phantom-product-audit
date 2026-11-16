@@ -22,6 +22,11 @@
 html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#182437;--line:#334257;--red-soft:#2a1720;--blue:#1a405d}html[data-theme=dark] .hero{background:radial-gradient(ellipse at 90% 10%,#223a56,transparent 38%),linear-gradient(120deg,#122036,#101928)}html[data-theme=dark] .eyebrow,html[data-theme=dark] .product-card .tag,html[data-theme=dark] .task i,html[data-theme=dark] .task:hover,html[data-theme=dark] .task:focus-visible,html[data-theme=dark] .pill-link:hover,html[data-theme=dark] .pill-link:focus-visible{color:#ff7184}html[data-theme=dark] .hero-subtitle{color:#c4d2e4}html[data-theme=dark] .hero-points li{background:#182437;border-color:var(--line)}
 @media(max-width:1024px){.products,.tasks,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:768px){.hero{padding:55px 0}.section{padding:59px 0}.hero-points,.grid-2{grid-template-columns:1fr}}@media(max-width:560px){.wrap{width:min(calc(100% - 32px),var(--max))}.products,.tasks,.grid-3,.steps{grid-template-columns:1fr}.hero h1:after{width:44px}.product-card h3,.small-card h3,.step h3{min-height:0}.request{padding:23px}.compare th,.compare td{padding:13px}}@media(max-width:850px){.table-hint{display:block}}
 .product-image .phantom-ultra-cutout{display:block;width:100%;height:100%;padding:8px;overflow:visible;filter:drop-shadow(0 6px 8px #142d4419)}
+/* Harmonize product thumbnails with the same visual scale as the industry cards. */
+.product-image img[src*="phantom-pro-level-5-cutout"]{transform:scale(1.08)}
+.product-image img[src*="phantom-pc-2-cutout"]{transform:scale(1.10)}
+.product-image img[src*="phantom-pro-level-6-20261117"]{transform:scale(.88)}
+.product-image img.phantom-ultra-cutout{transform:scale(.88)}
 </style>
 </head>
 <body>
