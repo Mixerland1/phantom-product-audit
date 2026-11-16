@@ -1,22 +1,47 @@
-name: Temporary Phantom Pro 6 source export
-
+name: Retouch original Phantom Pro 6 image
 on:
   push:
-    branches:
-      - fix/contacts-ultra-pro6-20261117
-    paths:
-      - .github/workflows/phantom-pro6-source-export.yml
-
+    branches: [fix/contacts-ultra-pro6-20261117]
+    paths: ['.github/workflows/phantom-pro6-source-export.yml']
 permissions:
-  contents: read
-
+  contents: write
 jobs:
-  export-image:
+  retouch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/upload-artifact@v4
         with:
-          name: phantom-pro6-original-image
-          path: assets/products/phantom-pro-level-6-cutout.png
-          if-no-files-found: error
+          persist-credentials: true
+      - name: Pillow
+        run: python -m pip install Pillow
+      - name: Replace optical drive with blank panel cloned from original photo
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from PIL import Image
+          target = Path('assets/products/phantom-pro-level-6-cutout.png')
+          original = Image.open(target).convert('RGBA')
+          assert original.size == (1756, 896), original.size
+          x0, x1, src_y0, src_y1, dest_y = 995, 1390, 367, 482, 251
+          patch = original.crop((x0, src_y0, x1, src_y1))
+          mask = Image.new('L', patch.size, 255)
+          px = mask.load()
+          width, height = patch.size
+          for y in range(height):
+              for x in range(width):
+                  feather = min(1, x / 3, (width - 1 - x) / 4, y / 2, (height - 1 - y) / 2)
+                  px[x, y] = int(255 * max(0, feather))
+          edited = original.copy()
+          edited.paste(patch, (x0, dest_y), mask)
+          edited.save(target, optimize=True)
+          assert Image.open(target).size == original.size
+          print(f'Updated {target}')
+          PY
+      - name: Commit retouched original and remove temporary workflow
+        run: |
+          git config user.name "Phantom Site QA"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -- .github/workflows/phantom-pro6-source-export.yml
+          git add assets/products/phantom-pro-level-6-cutout.png
+          git commit -m "Replace Phantom Pro Level 6 optical drive with matching blank panel"
+          git push origin HEAD:fix/contacts-ultra-pro6-20261117
