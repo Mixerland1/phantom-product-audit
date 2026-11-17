@@ -723,32 +723,35 @@ def main():
                                 if filename == "migration-progress.html":
                                     rows = page.locator("tr.page-row")
                                     require(rows.count() == 60, "Migration registry must list 60 source HTML files")
-                                    require(page.locator("tr.page-row[data-verified='true']").count() == 1,
-                                            "Only the Phantom homepage should be marked verified")
-                                    require(page.locator('tr.page-row[data-verified="true"] .page-file').inner_text() == "phantom-home.html",
-                                            "Verified marker is assigned to the wrong page")
-                                    require(page.locator('tr.page-row[data-verified="true"] .check.verified').count() == 1,
-                                            "Verified page must have a visible checkmark")
+                                    require(page.locator('tr.page-row[data-legacy="false"]').count() == 56,
+                                            "Migration registry must list 56 canonical pages")
                                     page_numbers = page.locator("tr.page-row .page-number").all_text_contents()
                                     require(page_numbers == [f"{i:02d}" for i in range(1, 61)],
                                             "Registry page numbers must run consecutively from 01 to 60")
                                     require(page.locator(".group-index").count() == 0,
                                             "Section headings should not display ordinal numbers")
-                                    require(page.locator(".group-row th[colspan='8']").count() == 8,
-                                            "Category headings must span all eight table columns")
-                                    require(page.locator('tr.page-row[data-legacy="false"]').count() == 56,
-                                            "Migration registry must list 56 canonical pages")
-                                    require(page.locator('tr.page-row[data-edited="true"]').count() == 2,
-                                            "Editorial flags must be set only on two agreed pages")
+                                    require(page.locator(".group-row th[colspan='7']").count() == 8,
+                                            "Category headings must span seven table columns")
+                                    header_titles = page.locator(".registry thead th").all_text_contents()
+                                    require(header_titles[-2:] == ["Перенесена", "Готова"] and len(header_titles) == 7,
+                                            "Registry must have Перенесена and Готова without extra status columns")
+                                    ready_rows = page.locator('tr.page-row[data-ready="true"]')
+                                    require(ready_rows.count() == 3,
+                                            "Only three agreed pages must be ready")
+                                    ready_files = ready_rows.locator(".page-file").all_text_contents()
+                                    require(set(ready_files) == {"phantom-home.html", "contacts.html", "electroenergetika.html"},
+                                            "Ready flags must match the homepage, Contacts and Electricity")
+                                    require(ready_rows.locator(".check.ready").count() == 3,
+                                            "Each ready page must have a visible checkmark")
                                     require(page.locator('a.link.stage[href^="https://relay.mixerland.ru:8443/mdis-preview/"]').count() == 56,
                                             "All 56 canonical rows must link to the correct AEZA preview path")
                                     page.locator("#page-search").fill("контакты")
                                     require(page.locator("tr.page-row:visible").count() == 1,
                                             "Registry text search does not isolate Contacts")
                                     page.locator("#page-search").fill("")
-                                    page.locator('button[data-filter="edited"]').click()
-                                    require(page.locator("tr.page-row:visible").count() == 2,
-                                            "Edited filter must show only two pages")
+                                    page.locator('button[data-filter="ready"]').click()
+                                    require(page.locator("tr.page-row:visible").count() == 3,
+                                            "Ready filter must show three pages")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
