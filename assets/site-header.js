@@ -151,7 +151,8 @@
   const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Системы записи Phantom',productFooterLinks)}${mobileMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,paths.company,'О компании')}${contactLink}`;
 
   header.className='header site-header';
-  header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav>${devProgressButton}<button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}${devProgressMobile}</nav></details></div>`;
+  const brandLogoPath=document.documentElement.dataset.theme==='dark'?'assets/logos/phantom.svg':'assets/logos/phantom-black.svg';
+  header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="${brandLogoPath}" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav>${devProgressButton}<button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}${devProgressMobile}</nav></details></div>`;
 
   const currentPath=decodeURIComponent(location.pathname).replace(/\/+$/,'');
   const isCurrent=item=>{try{const url=new URL(item.href,location.href);return url.origin===location.origin&&decodeURIComponent(url.pathname).replace(/\/+$/,'')===currentPath}catch(error){return false}};
@@ -174,6 +175,8 @@
   const themeToggle=header.querySelector('.site-theme-toggle');
   const renderTheme=()=>{
     const dark=document.documentElement.dataset.theme==='dark';
+    const logo=header.querySelector('.site-brand-logo');
+    if(logo)logo.setAttribute('src',dark?'assets/logos/phantom.svg':'assets/logos/phantom-black.svg');
     themeToggle.innerHTML=dark
       ?'<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
       :'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
@@ -251,7 +254,6 @@
     @media(min-width:1081px) and (max-width:1360px){.site-header .site-dev-label{max-width:65px;white-space:normal;line-height:1.05}.site-header .site-nav{gap:12px}}
     @media(max-width:1080px){.site-header .site-dev-label{font-size:11px}.site-header .site-dev-progress{margin-left:auto}}
     @media(max-width:560px){.site-header .site-dev-progress{padding:5px 7px;gap:5px}.site-header .site-dev-tag{font-size:8px}.site-header .site-dev-label{max-width:65px;white-space:normal;font-size:10px;line-height:1.1}}
-    html[data-theme="dark"] .site-header .site-brand-logo{filter:invert(1) brightness(2)}
     @media(max-width:1080px){
       :root{--site-header-height:60px}
       .site-header .site-brand-logo{width:104px}
