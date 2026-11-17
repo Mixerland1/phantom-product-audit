@@ -412,8 +412,8 @@ def inspect_nav(page, filename: str, width: int):
     if filename == "contacts.html":
         require(page.locator('.site-nav > a[href="contacts.html"][aria-current="page"]').count() == 1,
                 "Contacts current-page navigation state is missing")
-        require(page.locator('main a[href="tel:+74957833379"]').count() == 0,
-                "Contact phone should be displayed as text, not trigger a call")
+        require(page.locator('.hero-phone a[href="tel:+74957833379"]').count() == 0,
+                "Contact hero phone should be displayed as text, not trigger a call")
         require(page.locator('.hero-phone').count() == 1 and
                 "+7 (495) 783-33-79" in page.locator('.hero-phone').inner_text(),
                 "Plain telephone number missing from contact hero")
@@ -421,8 +421,8 @@ def inspect_nav(page, filename: str, width: int):
                 "Support email CTA missing from contact hero")
         require(page.locator('.hero-actions a[href="mailto:sales@mdis.ru"]').count() == 1,
                 "Sales email CTA missing from contact hero")
-        require(page.locator('main a[href="mailto:sales@mdis.ru"]').count() == 2,
-                "Contacts page lacks sales email")
+        require(page.locator('main a[href="mailto:sales@mdis.ru"]').count() == 3,
+                "Contacts page must expose sales email in cards and common consultation")
         require(page.locator('main a[href="mailto:support@mdis.ru"]').count() == 2,
                 "Contacts page lacks technical support email")
         require(page.locator('.contact-card').count() == 2,
@@ -694,6 +694,16 @@ def main():
                                 inspect_nav(page, filename, width)
                                 inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
+                                if filename == "phantom-home.html":
+                                    require(page.locator('.contact-area #contact-form').count() == 1,
+                                            "Homepage must retain its original engineer consultation form")
+                                else:
+                                    require(page.locator('main > section.site-consultation').count() == 1,
+                                            "Every page must end with one shared engineer consultation section")
+                                    require(page.locator('main > section.site-consultation').is_visible(),
+                                            "Shared engineer consultation is hidden")
+                                    require(page.locator('#site-consultation-form').count() == 1,
+                                            "Shared engineer consultation form is missing")
                                 if filename == "phantom-home.html":
                                     switcher = page.locator("a.solutions-switcher-label")
                                     require(switcher.count() == 1, "Solutions hub link is missing or duplicated")
