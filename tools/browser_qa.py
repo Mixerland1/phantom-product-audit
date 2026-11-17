@@ -723,6 +723,13 @@ def main():
                                 if filename == "migration-progress.html":
                                     rows = page.locator("tr.page-row")
                                     require(rows.count() == 60, "Migration registry must list 60 source HTML files")
+                                    page_numbers = page.locator("tr.page-row .page-number").all_text_contents()
+                                    require(page_numbers == [f"{i:02d}" for i in range(1, 61)],
+                                            "Registry page numbers must run consecutively from 01 to 60")
+                                    require(page.locator(".group-index").count() == 0,
+                                            "Section headings should not display ordinal numbers")
+                                    require(page.locator(".group-row th[colspan='7']").count() == 8,
+                                            "Category headings must span all seven table columns")
                                     require(page.locator('tr.page-row[data-legacy="false"]').count() == 56,
                                             "Migration registry must list 56 canonical pages")
                                     require(page.locator('tr.page-row[data-edited="true"]').count() == 2,
