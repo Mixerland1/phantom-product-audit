@@ -284,7 +284,7 @@ def inspect_nav(page, filename: str, width: int):
         require(page.locator(".demo").count() == 0,
                 "Autodealers still shows a draft notice")
     if filename == "phantom-micro.html":
-        require(page.locator('img[src="assets/products/phantom-micro-hero.webp"]').count() == 1,
+        require(page.locator('img.micro-product-image[src="assets/products/phantom-micro-cutout-20261117.svg"]').count() == 1,
                 "MICRO product image missing")
         require(page.locator('a[href="phantom-catalog.html"]').count() >= 1,
                 "MICRO missing catalog backlink")
