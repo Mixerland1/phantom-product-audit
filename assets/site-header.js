@@ -82,15 +82,28 @@
     {label:'Запись диспетчерских переговоров',href:paths.dispatcher},
     {label:'Запись IP-телефонии',href:paths.ipTelephony},
     {label:'Селективная запись',href:paths.selective},
+    {label:'Системы записи Phantom',href:paths.catalog},
     {label:'Интеграция Фантом и\u00a0CRM',href:paths.crm},
-    {label:'ОДС PultEx',href:paths.pultex},
     {label:'Схемы подключения МЦКРС «Фантом»',href:paths.schemes},
-    {label:'Phantom Cross 5.5',href:paths.cross},
-    {label:'Granulex',href:'https://granulex.ru/'}
+    {label:'Phantom Cross 5.5',href:paths.cross}
+  ];
+  const productFooterLinks=[
+    {label:'Granulex',href:'https://granulex.ru/'},
+    {label:'PultEx',href:paths.pultex}
   ];
   const cards=list=>list.map(item=>`<a class="site-menu-card" href="${item.href}">${item.label}<b aria-hidden="true">↗</b></a>`).join('');
-  const desktopMenu=(label,list,allHref,allLabel,edge=false)=>`<details class="site-menu${edge?' site-menu--edge':''}"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div><a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a></section></details>`;
-  const mobileMenu=(label,list,allHref,allLabel)=>`<details class="site-mobile-group"><summary>${label}<i aria-hidden="true"></i></summary><div>${cards(list)}<a class="site-mobile-all" href="${allHref}">${allLabel}</a></div></details>`;
+  const desktopMenu=(label,list,allHref,allLabel,edge=false,footerLinks=null)=>{
+    const footer=footerLinks
+      ?`<div class="site-menu-footer">${footerLinks.map(item=>`<a class="site-menu-all" href="${item.href}">${item.label}<b aria-hidden="true">→</b></a>`).join('')}</div>`
+      :`<a class="site-menu-all" href="${allHref}">${allLabel}<b aria-hidden="true">→</b></a>`;
+    return `<details class="site-menu${edge?' site-menu--edge':''}"><summary>${label}<i aria-hidden="true"></i></summary><section class="site-menu-panel"><div class="site-menu-list">${cards(list)}</div>${footer}</section></details>`;
+  };
+  const mobileMenu=(label,list,allHref,allLabel,footerLinks=null)=>{
+    const footer=footerLinks
+      ?`<div class="site-mobile-footer">${footerLinks.map(item=>`<a class="site-mobile-all" href="${item.href}">${item.label}</a>`).join('')}</div>`
+      :`<a class="site-mobile-all" href="${allHref}">${allLabel}</a>`;
+    return `<details class="site-mobile-group"><summary>${label}<i aria-hidden="true"></i></summary><div>${cards(list)}${footer}</div></details>`;
+  };
   const services=[
     {label:'Персональные решения',href:paths.personal},
     {label:'Комплексная модернизация',href:paths.modernization},
@@ -134,8 +147,8 @@
   // Articles stay under the existing News menu, with no separate top-level tab.
   const newsLink=`<a href="${paths.news}"${isNewsPage?' aria-current="page"':(isArticlesPage?' data-section-current="true"':'')}>Новости</a>`;
   const contactLink=`<a href="${paths.contacts}"${isContactsPage?' aria-current="page"':''}>Контакты</a>`;
-  const desktopNav=`${desktopMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Системы записи Phantom')}${desktopMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,paths.company,'О компании',true)}${contactLink}`;
-  const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Системы записи Phantom')}${mobileMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,paths.company,'О компании')}${contactLink}`;
+  const desktopNav=`${desktopMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${desktopMenu('Продукты',products,paths.catalog,'Системы записи Phantom',false,productFooterLinks)}${desktopMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${desktopMenu('Поддержка',supportItems,paths.support,'Вся поддержка',true)}${desktopMenu('Компания',companyItems,paths.company,'О компании',true)}${contactLink}`;
+  const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Системы записи Phantom',productFooterLinks)}${mobileMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,paths.company,'О компании')}${contactLink}`;
 
   header.className='header site-header';
   header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav>${devProgressButton}<button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}${devProgressMobile}</nav></details></div>`;
@@ -148,7 +161,7 @@
   const isSolutionsHub=/\/solutions\.html$/.test(currentPath);
   const isCompanyLegalPage=/\/(?:privacy-policy|cookie-policy|company|clients|certificates|requisites|partners|rewards|history|reviews)\.html$/.test(currentPath);
   const isServicesHub=/\/services\.html$/.test(currentPath);
-  const currentGroup=isCompanyLegalPage?4:(isSupportPage?3:(isTechnicalSubpage?1:((isServicesHub||services.some(isCurrent))?2:((isSolutionsHub||solutions.some(isCurrent))?0:(products.some(isCurrent)?1:-1)))));
+  const currentGroup=isCompanyLegalPage?4:(isSupportPage?3:(isTechnicalSubpage?1:((isServicesHub||services.some(isCurrent))?2:((isSolutionsHub||solutions.some(isCurrent))?0:((products.some(isCurrent)||productFooterLinks.some(isCurrent))?1:-1)))));
   if(currentGroup>=0){
     const desktopGroups=header.querySelectorAll('.site-menu');
     const mobileGroups=header.querySelectorAll('.site-mobile-group');
@@ -224,6 +237,9 @@
     .site-header .site-menu-card:hover,.site-header .site-menu-card:focus-visible{border-color:var(--line);background:var(--soft);color:var(--red);outline:none}
     .site-header .site-menu-all{display:flex;align-items:center;justify-content:space-between;margin-top:9px;padding:10px 3px 0;border-top:1px solid var(--line);color:var(--ink);font-size:11.5px;font-weight:700;text-decoration:none}
     .site-header .site-menu-all b{color:var(--red);font-size:15px}.site-header .site-menu-all:hover,.site-header .site-menu-all:focus-visible{color:var(--red);outline:none}
+    .site-header .site-menu-footer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+    .site-header .site-menu-footer .site-menu-all{margin:0;padding:9px 10px;border:0;border-radius:7px;background:var(--soft);font-size:12px}
+    .site-header .site-menu-footer .site-menu-all:hover,.site-header .site-menu-footer .site-menu-all:focus-visible{background:color-mix(in srgb,var(--red) 7%,var(--soft));outline:2px solid var(--red);outline-offset:1px}
                 .site-header .site-theme-toggle{flex:0 0 auto;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);cursor:pointer;transition:background .18s,border-color .18s,color .18s}
     .site-header .site-theme-toggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .site-header .site-theme-toggle:hover,.site-header .site-theme-toggle:focus-visible{border-color:var(--ink);background:var(--soft);outline:none}
@@ -243,6 +259,9 @@
       .site-header .site-mobile-popover{position:absolute;top:44px;right:0;display:grid;min-width:min(336px,calc(100vw - 32px));max-height:calc(100vh - var(--site-header-height) - 12px);max-height:calc(100dvh - var(--site-header-height) - 12px);overflow-y:auto;overscroll-behavior:contain;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--paper);box-shadow:0 18px 42px #12203624}.site-header .site-mobile-popover>a{display:block;padding:10px 11px;border-radius:6px;color:var(--ink);font-size:13px;font-weight:600;text-decoration:none}.site-header .site-mobile-popover>a:hover,.site-header .site-mobile-popover>a:focus-visible{background:var(--soft);color:var(--red);outline:none}
       .site-header .site-mobile-group{border-bottom:1px solid var(--line)}.site-header .site-mobile-group:last-of-type{border-bottom:0}.site-header .site-mobile-group summary{display:flex;align-items:center;justify-content:space-between;padding:10px 11px;color:var(--ink);font-size:13px;font-weight:650;cursor:pointer;list-style:none}.site-header .site-mobile-group--current>summary{color:var(--red)}.site-header .site-mobile-group summary::-webkit-details-marker{display:none}.site-header .site-mobile-group summary:before,.site-header .site-mobile-group summary:after{content:none!important}.site-header .site-mobile-group summary i{width:6px;height:6px;border-right:1.4px solid currentColor;border-bottom:1.4px solid currentColor;transform:translateY(-2px) rotate(45deg)}.site-header .site-mobile-group[open] summary i{transform:translateY(2px) rotate(225deg)}
       .site-header .site-mobile-group>div{display:grid;gap:3px;padding:0 5px 8px}.site-header .site-mobile-group .site-menu-card{min-height:0;padding:8px 26px 8px 8px;font-size:12.5px}.site-header .site-mobile-group .site-menu-card b{right:8px}.site-header .site-mobile-all{padding:8px;color:var(--red);font-size:11.5px;font-weight:700;text-decoration:none}
+      .site-header .site-mobile-footer{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:6px;padding-top:8px;border-top:1px solid var(--line)}
+      .site-header .site-mobile-footer .site-mobile-all{display:block;padding:10px 8px;border-radius:6px;background:var(--soft);color:var(--ink);text-align:center}
+      .site-header .site-mobile-footer .site-mobile-all:hover,.site-header .site-mobile-footer .site-mobile-all:focus-visible{color:var(--red);outline:2px solid var(--red);outline-offset:1px}
     }
     @media(max-width:560px){:root{--site-header-height:58px}.site-header .site-header-in{gap:8px}.site-header .site-brand-logo{width:98px}.site-header .site-theme-toggle,.site-header .site-mobile-menu>summary{width:34px;height:34px}.site-header .site-theme-toggle svg{width:16px;height:16px}.site-header .site-mobile-popover{top:42px;right:-4px}}
   `;
