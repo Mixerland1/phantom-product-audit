@@ -123,6 +123,11 @@
     {label:'Политика конфиденциальности',href:paths.privacy},
     {label:'Политика cookie',href:paths.cookie}
   ];
+  // Internal progress control: preview hosts only, never public mdis.ru.
+  const showDevProgress=location.protocol==='file:'||/^(?:localhost|127\\.0\\.0\\.1|relay\\.mixerland\\.ru|review\\.212-113-106-157\\.sslip\\.io)$/i.test(location.hostname);
+  const devProgressHref=page('../публикация/предпросмотр_руководство/migration-progress.html','migration-progress.html','migration-progress.html');
+  const devProgressButton=showDevProgress?'<a class="site-dev-progress" href="'+devProgressHref+'" aria-label="Прогресс переноса сайта"><span class="site-dev-tag">DEV</span><span class="site-dev-label">Прогресс переноса</span></a>':'';
+  const devProgressMobile=showDevProgress?'<a class="site-dev-mobile-link" href="'+devProgressHref+'">● DEV · Прогресс переноса сайта</a>':'';
   const isContactsPage=/\/contacts\.html$/.test(pathname);
   const isNewsPage=/\/news\.html$/.test(pathname);
   const isArticlesPage=/\/articles\.html$/.test(pathname);
@@ -133,7 +138,7 @@
   const mobileNav=`${mobileMenu('Решения',solutions,paths.solutions,'Все решения Phantom')}${mobileMenu('Продукты',products,paths.catalog,'Все продукты Phantom')}${mobileMenu('Услуги',services,paths.services,'Все услуги МДИС')}${newsLink}${mobileMenu('Поддержка',supportItems,paths.support,'Вся поддержка')}${mobileMenu('Компания',companyItems,paths.company,'О компании')}${contactLink}`;
 
   header.className='header site-header';
-  header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav><button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}</nav></details></div>`;
+  header.innerHTML=`<div class="wrap header-in site-header-in"><a class="brand site-brand" href="${paths.home}" aria-label="Phantom — главная"><img class="site-brand-logo" src="assets/logos/phantom-black.svg" alt="Phantom"></a><nav class="nav site-nav" aria-label="Основная навигация">${desktopNav}</nav>${devProgressButton}<button class="site-theme-toggle" id="theme-toggle" type="button" aria-label="Переключить цветовую тему"></button><details class="mobile-menu site-mobile-menu"><summary aria-label="Открыть меню"></summary><nav class="site-mobile-popover" aria-label="Основная навигация">${mobileNav}${devProgressMobile}</nav></details></div>`;
 
   const currentPath=decodeURIComponent(location.pathname).replace(/\/+$/,'');
   const isCurrent=item=>{try{const url=new URL(item.href,location.href);return url.origin===location.origin&&decodeURIComponent(url.pathname).replace(/\/+$/,'')===currentPath}catch(error){return false}};
@@ -222,7 +227,14 @@
                 .site-header .site-theme-toggle{flex:0 0 auto;display:grid;place-items:center;width:36px;height:36px;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;color:var(--ink);cursor:pointer;transition:background .18s,border-color .18s,color .18s}
     .site-header .site-theme-toggle svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
     .site-header .site-theme-toggle:hover,.site-header .site-theme-toggle:focus-visible{border-color:var(--ink);background:var(--soft);outline:none}
+    .site-header .site-dev-progress{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:5px 10px;border:1px solid #cc1637;border-radius:9px;background:linear-gradient(120deg,#f12247,#bf1232);color:#fff;font-size:11.5px;font-weight:790;line-height:1.15;text-decoration:none;white-space:nowrap;box-shadow:0 4px 11px #db154029;transition:transform .18s,box-shadow .18s}
+    .site-header .site-dev-progress:hover,.site-header .site-dev-progress:focus-visible{color:#fff;transform:translateY(-1px);box-shadow:0 8px 20px #db154047;outline:2px solid #fb718b;outline-offset:2px}
+    .site-header .site-dev-tag{padding:3px 5px;border:1px solid #ffffff88;border-radius:4px;font-size:9px;font-weight:900;letter-spacing:.07em}
+    .site-header .site-dev-mobile-link{display:block;padding:12px;border-radius:8px;background:#db1839;color:#fff!important;font-size:13px;font-weight:800;text-decoration:none}
     .site-header .site-mobile-menu{display:none!important}
+    @media(min-width:1081px) and (max-width:1360px){.site-header .site-dev-label{max-width:65px;white-space:normal;line-height:1.05}.site-header .site-nav{gap:12px}}
+    @media(max-width:1080px){.site-header .site-dev-label{font-size:11px}.site-header .site-dev-progress{margin-left:auto}}
+    @media(max-width:560px){.site-header .site-dev-progress{padding:5px 7px;gap:5px}.site-header .site-dev-tag{font-size:8px}.site-header .site-dev-label{max-width:65px;white-space:normal;font-size:10px;line-height:1.1}}
     html[data-theme="dark"] .site-header .site-brand-logo{filter:invert(1) brightness(2)}
     @media(max-width:1080px){
       :root{--site-header-height:60px}
