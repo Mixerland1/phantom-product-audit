@@ -720,6 +720,29 @@ def main():
                                         catch { return false; }
                                     }""")
                                     require(image_ok, "Solutions hero background asset is missing or cannot be decoded")
+                                if filename == "services.html":
+                                    hero_bg = page.locator('main > .hero').evaluate(
+                                        "(el) => getComputedStyle(el).backgroundImage")
+                                    require("solutions-hero-waves-20261117-v3.webp" in hero_bg,
+                                            f"Services background must match Solutions: {hero_bg}")
+                                    require(page.locator('#decision h2').inner_text() == "От задачи – к решению",
+                                            "Services slogan unexpectedly changed")
+                                    cards = page.locator('#prepare .prepare-list > li')
+                                    require(cards.count() == 7, "Services preparation list must contain seven items")
+                                    require(page.locator('#prepare .prepare-list > li.prepare-wide').count() == 1,
+                                            "Services preparation list needs exactly one spanning item")
+                                    widths = page.locator('#prepare .prepare-list').evaluate("""(el) => ({
+                                        first: el.children[0].getBoundingClientRect().width,
+                                        wide: el.children[4].getBoundingClientRect().width
+                                    })""")
+                                    if width > 560:
+                                        require(widths["wide"] > widths["first"] * 1.8,
+                                                f"Preparation spanning item must fill two columns: {widths}")
+                                    else:
+                                        require(abs(widths["wide"] - widths["first"]) < 3,
+                                                f"Mobile preparation items must fill one column: {widths}")
+                                    require(page.locator('#prepare .section-note').count() == 0,
+                                            "Redundant preparation note unexpectedly returned")
                                 if filename == "phantom-home.html":
                                     require(page.locator('.contact-area #contact-form').count() == 1,
                                             "Homepage must retain its original engineer consultation form")
