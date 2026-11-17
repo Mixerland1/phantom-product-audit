@@ -19,6 +19,7 @@ html[data-theme="dark"]{--ink:#e7eef6;--muted:#b7c7d8;--canvas:#101d2e;--paper:#
 @media(max-width:740px){.wrap{width:min(calc(100% - 28px),var(--max))}.hero{padding:42px 0 36px}.metrics{gap:9px}.metric{padding:15px 12px}.metric span{font-size:11px}.content{padding-top:20px}.controls{align-items:stretch}.filters{width:100%}.filter{flex:1}.table-wrap{margin:0 -2px}.note{font-size:12px}}
 @media(max-width:410px){.metrics{grid-template-columns:repeat(2,1fr)}.metric:last-child{grid-column:1/-1}.hero-actions a{font-size:12px}}
 </style>
+<link rel="stylesheet" href="assets/site-consultation.css?v=20261117-unified-v1">
 </head>
 <body>
 <a class="skip" href="#main">К содержимому</a>
@@ -77,5 +78,6 @@ html[data-theme="dark"]{--ink:#e7eef6;--muted:#b7c7d8;--canvas:#101d2e;--paper:#
   for(const button of buttons)button.addEventListener('click',function(){selected=button.dataset.filter;update()});
 })();
 </script>
+<script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>

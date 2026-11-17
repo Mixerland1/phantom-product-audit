@@ -1,0 +1,30 @@
+/* Shared consultation block. Visual geometry follows the Phantom homepage. */
+.site-consultation{padding:85px 0 96px;background:linear-gradient(114deg,#e7f3fd,#f7fbff 65%,#fff5f7);color:#20334d;font:400 16px/1.6 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.site-consultation *{box-sizing:border-box}
+.site-consultation .sc-wrap{width:min(calc(100% - 48px),1180px);margin-inline:auto}
+.site-consultation .sc-panel{display:grid;grid-template-columns:.97fr 1.03fr;gap:55px;padding:44px 48px;border:1px solid #cddfec;border-radius:20px;background:rgba(255,255,255,.85);box-shadow:0 16px 40px rgba(32,77,109,.07)}
+.site-consultation .sc-eyebrow{margin:0 0 12px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:750;color:#e30f2d}
+.site-consultation h2{margin:0 0 18px;font-size:clamp(27px,3vw,39px);line-height:1.2;letter-spacing:-.025em;font-weight:750;color:inherit}
+.site-consultation .sc-text{margin:0;color:#586f87;font-size:15px}
+.site-consultation .sc-links{display:grid;gap:9px;margin-top:31px}
+.site-consultation .sc-links a{width:max-content;max-width:100%;color:#275c85;font-weight:730;text-decoration:none;overflow-wrap:anywhere}
+.site-consultation .sc-links a:hover{text-decoration:underline}
+.site-consultation .sc-form{display:grid;grid-template-columns:1fr 1fr;gap:13px;align-content:start}
+.site-consultation .sc-field{display:grid;gap:6px;font-size:12px;font-weight:670;color:#496580}
+.site-consultation .sc-field-wide,.site-consultation .sc-note,.site-consultation .sc-form button{grid-column:1/-1}
+.site-consultation .sc-field input,.site-consultation .sc-field textarea{box-sizing:border-box;width:100%;min-width:0;margin:0;padding:12px 13px;border:1px solid #c9d7e6;border-radius:7px;background:#fff;color:#1e3651;font:400 14px/1.5 Inter,Arial,sans-serif}
+.site-consultation .sc-field textarea{min-height:97px;resize:vertical}
+.site-consultation .sc-field input:focus,.site-consultation .sc-field textarea:focus{border-color:#5b96be;outline:2px solid #5b96be44}
+.site-consultation .sc-form button{min-height:44px;padding:10px 15px;border:0;border-radius:7px;background:#e30f2d;color:#fff;font-size:13px;font-weight:760;line-height:1.4;cursor:pointer}
+.site-consultation .sc-form button:hover{background:#bd1028}
+.site-consultation .sc-note{margin:0;color:#77889b;font-size:11px;line-height:1.45}
+.site-consultation :is(a,button,input,textarea):focus-visible{outline:3px solid #e30f2d;outline-offset:3px}
+.site-consultation .sc-anchor{display:block;height:0;scroll-margin-top:85px}
+html[data-theme="dark"] .site-consultation{background:linear-gradient(125deg,#14283f,#241d30);color:#edf4fc}
+html[data-theme="dark"] .site-consultation .sc-panel{background:#15253a;border-color:#334860}
+html[data-theme="dark"] .site-consultation .sc-text{color:#b1c1d1}
+html[data-theme="dark"] .site-consultation .sc-links a{color:#a4d0ec}
+html[data-theme="dark"] .site-consultation .sc-field{color:#edf4fc}
+html[data-theme="dark"] .site-consultation .sc-note{color:#b1c1d1}
+@media(max-width:970px){.site-consultation .sc-panel{gap:30px;padding:36px}}
+@media(max-width:640px){.site-consultation{padding:62px 0}.site-consultation .sc-wrap{width:calc(100% - 32px)}.site-consultation .sc-panel,.site-consultation .sc-form{grid-template-columns:1fr}.site-consultation .sc-panel{padding:25px;gap:24px}.site-consultation .sc-field-wide,.site-consultation .sc-note,.site-consultation .sc-form button{grid-column:auto}}
