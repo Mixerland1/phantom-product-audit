@@ -71,6 +71,7 @@
     {path:'support-stantsiya-zapisi.html',name:'Документация станции записи'}
   ];
   const solutionPages=[
+    {path:'solutions.html',name:'Все решения'},
     {path:'atom-energy.html',name:'Атомная энергетика'},
     {path:'commercial.html',name:'Коммерческие предприятия'},
     {path:'industrial.html',name:'Промышленные предприятия'},
@@ -106,6 +107,10 @@
       if(isService&&serviceIndex>0){
         const detailPages=servicePages.slice(1);
         return detailPages[(serviceIndex-1+offset+detailPages.length)%detailPages.length];
+      }
+      if(isSolution&&solutionIndex>0){
+        const detailPages=solutionPages.slice(1);
+        return detailPages[(solutionIndex-1+offset+detailPages.length)%detailPages.length];
       }
       return pages[(currentIndex+offset+pages.length)%pages.length];
     };
