@@ -729,18 +729,28 @@ def main():
                                             "Services slogan unexpectedly changed")
                                     cards = page.locator('#prepare .prepare-list > li')
                                     require(cards.count() == 7, "Services preparation list must contain seven items")
-                                    require(page.locator('#prepare .prepare-list > li.prepare-wide').count() == 1,
-                                            "Services preparation list needs exactly one spanning item")
-                                    widths = page.locator('#prepare .prepare-list').evaluate("""(el) => ({
-                                        first: el.children[0].getBoundingClientRect().width,
-                                        wide: el.children[4].getBoundingClientRect().width
-                                    })""")
+                                    layout = page.locator('#prepare .prepare-list').evaluate("""(el) =>
+                                        [...el.children].map((node) => {
+                                            const box = node.getBoundingClientRect();
+                                            return {x: box.x, y: box.y, width: box.width};
+                                        })""")
+                                    near = lambda a, b: abs(a - b) < 3
                                     if width > 560:
-                                        require(widths["wide"] > widths["first"] * 1.8,
-                                                f"Preparation spanning item must fill two columns: {widths}")
+                                        require(all(near(layout[i]["y"], layout[0]["y"]) for i in (1, 2))
+                                                and near(layout[3]["y"], layout[4]["y"])
+                                                and near(layout[5]["y"], layout[6]["y"])
+                                                and layout[0]["y"] < layout[3]["y"] < layout[5]["y"],
+                                                f"Preparation grid must have 3 + 2 + 2 cards: {layout}")
+                                        require(all(near(layout[i]["width"], layout[0]["width"]) for i in (1, 2)),
+                                                f"Top row must have three equally short cards: {layout}")
+                                        require(layout[4]["width"] > layout[3]["width"]
+                                                and layout[5]["width"] > layout[6]["width"]
+                                                and not near(layout[3]["width"], layout[0]["width"]),
+                                                f"Preparation row joints must be staggered: {layout}")
                                     else:
-                                        require(abs(widths["wide"] - widths["first"]) < 3,
-                                                f"Mobile preparation items must fill one column: {widths}")
+                                        require(all(near(layout[i]["width"], layout[0]["width"]) for i in range(1, 7))
+                                                and all(layout[i]["y"] < layout[i+1]["y"] for i in range(6)),
+                                                f"Mobile preparation cards must form one column: {layout}")
                                     require(page.locator('#prepare .section-note').count() == 0,
                                             "Redundant preparation note unexpectedly returned")
                                 if filename == "phantom-home.html":
