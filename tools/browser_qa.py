@@ -695,6 +695,17 @@ def main():
                                 inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
                                 if filename == "solutions.html":
+                                    hub_nav = page.locator('nav.solutions-switcher[aria-label="Переход между решениями"]')
+                                    require(hub_nav.count() == 1,
+                                            "Solutions hub must have one navigation strip immediately after hero")
+                                    require(hub_nav.locator('a.solutions-switcher-label[href="solutions.html"]').count() == 1,
+                                            "Solutions hub navigation center must link to solutions.html")
+                                    require(hub_nav.locator('a.solutions-switcher-neighbor--previous[href="aviation-transport.html"]').count() == 1,
+                                            "Solutions hub previous neighbour must be Aviation and Transport")
+                                    require(hub_nav.locator('a.solutions-switcher-neighbor--next[href="atom-energy.html"]').count() == 1,
+                                            "Solutions hub next neighbour must be Atomic Energy")
+                                    require(hub_nav.evaluate("(el) => el.previousElementSibling?.matches('section.hero')"),
+                                            "Solutions hub navigation must follow the first-screen hero")
                                     hero_bg = page.locator('main > .hero').evaluate(
                                         "(el) => getComputedStyle(el).backgroundImage")
                                     require("solutions-hero-waves-20261117-v3.webp" in hero_bg,
