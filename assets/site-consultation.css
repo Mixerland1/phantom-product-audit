@@ -26,5 +26,23 @@ html[data-theme="dark"] .site-consultation .sc-text{color:#b1c1d1}
 html[data-theme="dark"] .site-consultation .sc-links a{color:#a4d0ec}
 html[data-theme="dark"] .site-consultation .sc-field{color:#edf4fc}
 html[data-theme="dark"] .site-consultation .sc-note{color:#b1c1d1}
+html[data-theme="dark"] .site-consultation .sc-field input,
+html[data-theme="dark"] .site-consultation .sc-field textarea{
+  background:#26394f;
+  border-color:#4a6075;
+  color:#f0f5fa;
+  caret-color:#f0f5fa;
+  color-scheme:dark;
+}
+html[data-theme="dark"] .site-consultation .sc-field input::placeholder,
+html[data-theme="dark"] .site-consultation .sc-field textarea::placeholder{color:#aab9ca;opacity:1}
+html[data-theme="dark"] .site-consultation .sc-field input:focus,
+html[data-theme="dark"] .site-consultation .sc-field textarea:focus{border-color:#86bddf;outline:2px solid #86bddf88}
+html[data-theme="dark"] .site-consultation .sc-field input:-webkit-autofill,
+html[data-theme="dark"] .site-consultation .sc-field textarea:-webkit-autofill{
+  -webkit-text-fill-color:#f0f5fa;
+  -webkit-box-shadow:0 0 0 1000px #26394f inset;
+  caret-color:#f0f5fa;
+}
 @media(max-width:970px){.site-consultation .sc-panel{gap:30px;padding:36px}}
 @media(max-width:640px){.site-consultation{padding:62px 0}.site-consultation .sc-wrap{width:calc(100% - 32px)}.site-consultation .sc-panel,.site-consultation .sc-form{grid-template-columns:1fr}.site-consultation .sc-panel{padding:25px;gap:24px}.site-consultation .sc-field-wide,.site-consultation .sc-note,.site-consultation .sc-form button{grid-column:auto}}

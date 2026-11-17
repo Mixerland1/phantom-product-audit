@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#f6faff">
   <title>МЦКРС «Фантом» — официальный сайт производителя | МДИС</title>
   <link rel="stylesheet" href="assets/footer-next.css?v=20261104-4">
-  <link rel="stylesheet" href="assets/footer-layout-v2.css?v=20261115-footer-mobile-logo-v1">
+  <link rel="stylesheet" href="assets/footer-layout-v2.css?v=20261118-footer-map-v1">
   <style>
     :root {
       --ink:#20334d;--muted:#586f87;--soft:#eef5fc;--paper:#fff;
@@ -190,6 +190,15 @@
     html[data-theme="dark"] .contact-panel{background:var(--paper);border-color:var(--line)}
     html[data-theme="dark"] .contact-links a{color:#a4d0ec}
     html[data-theme="dark"] .field{color:var(--ink)}
+    html[data-theme="dark"] .contact-area .field input,
+    html[data-theme="dark"] .contact-area .field textarea{background:#26394f;border-color:#4a6075;color:#f0f5fa;caret-color:#f0f5fa;color-scheme:dark}
+    html[data-theme="dark"] .contact-area .field input::placeholder,
+    html[data-theme="dark"] .contact-area .field textarea::placeholder{color:#aab9ca;opacity:1}
+    html[data-theme="dark"] .contact-area .field input:focus,
+    html[data-theme="dark"] .contact-area .field textarea:focus{border-color:#86bddf;outline:2px solid #86bddf88}
+    html[data-theme="dark"] .contact-area .field input:-webkit-autofill,
+    html[data-theme="dark"] .contact-area .field textarea:-webkit-autofill{-webkit-text-fill-color:#f0f5fa;-webkit-box-shadow:0 0 0 1000px #26394f inset;caret-color:#f0f5fa}
+    html[data-theme="dark"] .contact-area .form-note{color:#b1c1d1}
     html[data-theme="dark"] .btn-secondary{background:var(--paper);color:var(--ink);border-color:var(--line)}
     @media(max-width:970px){
       .hero-grid{grid-template-columns:1fr;gap:28px;padding:67px 0 43px}
@@ -246,7 +255,7 @@
       }catch(e){}
     })();
   </script>
-<link rel="stylesheet" href="assets/site-consultation.css?v=20261117-unified-v1">
+<link rel="stylesheet" href="assets/site-consultation.css?v=20261118-dark-fields-v1">
 </head>
 <body>
   <div class="phantom-intro" aria-hidden="true"><div class="phantom-intro-stage"><div class="phantom-intro-logo-wrap"><img class="phantom-intro-logo" src="assets/logos/phantom-black.svg" alt=""><span class="phantom-intro-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div><p class="phantom-intro-tagline">Системы записи переговоров</p></div></div>
@@ -487,7 +496,7 @@
   </main>
 
   <footer class="footer" aria-label="Контакты компании"></footer>
-  <script src="assets/footer-next.js?v=20261117-solution-hub-nav-v3"></script>
+  <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
   <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
   <script>
     (function(){

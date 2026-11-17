@@ -54,3 +54,11 @@ html[data-theme=dark] #site-footer .footer-contact-zone .footer-details>b,html[d
     transform:none;
   }
 }
+
+/* Dark footer: retain legibility of contact details while revealing the actual map. */
+html[data-theme="dark"] #site-footer .footer-contact-zone .footer-map>img{
+  filter:brightness(1.75) contrast(1.12) saturate(.9);
+}
+html[data-theme="dark"] #site-footer .footer-contact-zone::after{
+  background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 92%,transparent) 30%,color-mix(in srgb,var(--paper) 30%,transparent) 62%,transparent 100%);
+}

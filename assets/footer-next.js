@@ -204,7 +204,13 @@
     const color=getComputedStyle(footer).backgroundColor.match(/\d+/g);
     if(!color)return;
     const [r,g,b]=color.map(Number);
-    footer.classList.toggle('footer--dark',(r*299+g*587+b*114)/1000<145);
+    const dark=(r*299+g*587+b*114)/1000<145;
+    footer.classList.toggle('footer--dark',dark);
+    const mdisLogo=footer.querySelector('.footer-logo-band .footer-logos a:first-child img');
+    if(mdisLogo){
+      const source=dark?'assets/logos/mdis-dark.svg':'assets/logos/mdis.svg';
+      if(mdisLogo.getAttribute('src')!==source)mdisLogo.setAttribute('src',source);
+    }
   };
   setTheme();
   new MutationObserver(()=>requestAnimationFrame(setTheme)).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme','class']});
