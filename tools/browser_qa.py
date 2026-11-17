@@ -805,12 +805,12 @@ def main():
                                     require(header_titles[-2:] == ["Перенесена", "Готова"] and len(header_titles) == 7,
                                             "Registry must have Перенесена and Готова without extra status columns")
                                     ready_rows = page.locator('tr.page-row[data-ready="true"]')
-                                    require(ready_rows.count() == 4,
-                                            "Only four agreed pages must be ready")
+                                    require(ready_rows.count() == 5,
+                                            "Only five agreed pages must be ready")
                                     ready_files = ready_rows.locator(".page-file").all_text_contents()
-                                    require(set(ready_files) == {"phantom-home.html", "solutions.html", "contacts.html", "electroenergetika.html"},
-                                            "Ready flags must match homepage, Solutions, Contacts and Electricity")
-                                    require(ready_rows.locator(".check.ready").count() == 4,
+                                    require(set(ready_files) == {"phantom-home.html", "solutions.html", "services.html", "contacts.html", "electroenergetika.html"},
+                                            "Ready flags must match homepage, Solutions, Services, Contacts and Electricity")
+                                    require(ready_rows.locator(".check.ready").count() == 5,
                                             "Each ready page must have a visible checkmark")
                                     require(page.locator('a.link.stage[href^="https://relay.mixerland.ru:8443/mdis-preview/"]').count() == 56,
                                             "All 56 canonical rows must link to the correct AEZA preview path")
@@ -819,8 +819,8 @@ def main():
                                             "Registry text search does not isolate Contacts")
                                     page.locator("#page-search").fill("")
                                     page.locator('button[data-filter="ready"]').click()
-                                    require(page.locator("tr.page-row:visible").count() == 4,
-                                            "Ready filter must show four pages")
+                                    require(page.locator("tr.page-row:visible").count() == 5,
+                                            "Ready filter must show five pages")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
