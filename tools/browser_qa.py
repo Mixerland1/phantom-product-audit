@@ -79,6 +79,7 @@ PAGES = [
     "phantom-pro-level-5.html",
     "phantom-pro-level-6.html",
     "phantom-ultra.html",
+    "migration-progress.html",
 ]
 VIEWPORTS = [(375, 812), (768, 900), (1024, 768), (1440, 900)]
 THEMES = ["light", "dark"]
@@ -183,6 +184,11 @@ def inspect_nav(page, filename: str, width: int):
             "Footer office address lacks direct Contacts route")
     require(page.locator('.footer-logos a[href="company.html"]').count() == 1,
             "MDIS footer logo must link to local company page")
+    dev = page.locator('.site-dev-progress[href="migration-progress.html"]')
+    require(dev.count() == 1, "Preview-only DEV progress button missing")
+    require(dev.is_visible(), "DEV progress button must be visible in shared header")
+    require(page.locator('.site-dev-mobile-link[href="migration-progress.html"]').count() == 1,
+            "DEV progress route missing from mobile menu")
     if width > 1080:
         require(page.locator('.site-nav > a[href="contacts.html"]').count() == 1,
                 "Contacts must be a visible top-level desktop menu link")
@@ -714,6 +720,22 @@ def main():
                                             "Cookie policy contents links must cover all eight sections")
                                     require(page.locator('main a[href="privacy-policy.html"]').count() >= 1,
                                             "Cookie policy must link locally to privacy policy")
+                                if filename == "migration-progress.html":
+                                    rows = page.locator("tr.page-row")
+                                    require(rows.count() == 60, "Migration registry must list 60 source HTML files")
+                                    require(page.locator('tr.page-row[data-legacy="false"]').count() == 56,
+                                            "Migration registry must list 56 canonical pages")
+                                    require(page.locator('tr.page-row[data-edited="true"]').count() == 2,
+                                            "Editorial flags must be set only on two agreed pages")
+                                    require(page.locator('a.link.stage[href^="https://relay.mixerland.ru:8443/mdis-preview/"]').count() == 56,
+                                            "All 56 canonical rows must link to the correct AEZA preview path")
+                                    page.locator("#page-search").fill("контакты")
+                                    require(page.locator("tr.page-row:visible").count() == 1,
+                                            "Registry text search does not isolate Contacts")
+                                    page.locator("#page-search").fill("")
+                                    page.locator('button[data-filter="edited"]').click()
+                                    require(page.locator("tr.page-row:visible").count() == 2,
+                                            "Edited filter must show only two pages")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
