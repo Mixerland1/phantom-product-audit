@@ -694,6 +694,21 @@ def main():
                                 inspect_nav(page, filename, width)
                                 inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
+                                if filename == "solutions.html":
+                                    hero_bg = page.locator('main > .hero').evaluate(
+                                        "(el) => getComputedStyle(el).backgroundImage")
+                                    require("solutions-hero-waves-20261117-v3.webp" in hero_bg,
+                                            f"Solutions background overridden by shared CSS: {hero_bg}")
+                                    image_ok = page.evaluate("""async () => {
+                                        const bg = getComputedStyle(document.querySelector('main > .hero')).backgroundImage;
+                                        const url = bg.match(/url\\(["']?([^"')]+)["']?\\)/)?.[1];
+                                        if (!url) return false;
+                                        const img = new Image();
+                                        img.src = url;
+                                        try { await img.decode(); return img.naturalWidth >= 1200; }
+                                        catch { return false; }
+                                    }""")
+                                    require(image_ok, "Solutions hero background asset is missing or cannot be decoded")
                                 if filename == "phantom-home.html":
                                     require(page.locator('.contact-area #contact-form').count() == 1,
                                             "Homepage must retain its original engineer consultation form")
