@@ -84,13 +84,21 @@ html[data-theme=dark] .map-frame{background:#1b3449 url('assets/map2.0b139232.pn
 @media(max-width:900px){.hero-layout,.office-layout{grid-template-columns:minmax(0,1fr)}.hero-phone{max-width:650px}.map-frame{min-height:320px}.map-frame iframe{height:320px}.dept-list{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.wrap{width:calc(100% - 32px)}.hero{padding:48px 0 54px}.section{padding:44px 0}.contact-grid,.dept-list{grid-template-columns:1fr}.contact-card,.office-panel{padding:22px}.hero-phone{width:100%;max-width:100%}.btn{width:100%}.hero-actions{gap:9px}.office-actions .btn{width:100%}.map-frame{min-height:300px}.map-frame iframe{height:300px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Фон первого экрана из оригинального файла пользователя с сохранением элементов связи справа. */
+html[data-theme="light"] main > .hero.hero--contacts:not(.hero--energy):not(.hero--aviation){
+  background:linear-gradient(90deg,rgba(250,252,255,.48) 0%,rgba(250,252,255,.19) 46%,rgba(250,252,255,.00) 100%),url("assets/backgrounds/contacts-hero-original-20261117.webp") center/cover no-repeat;
+}
+html[data-theme="dark"] main > .hero.hero--contacts{
+  background:linear-gradient(90deg,rgba(8,20,35,.90) 0%,rgba(11,25,42,.73) 52%,rgba(14,31,48,.55) 100%),url("assets/backgrounds/contacts-hero-original-20261117.webp") center/cover no-repeat;
+}
 </style>
 <link rel="stylesheet" href="assets/site-consultation.css?v=20261117-unified-v1">
 </head>
 <body>
 <header class="header"></header>
 <main id="top">
-<section class="hero">
+<section class="hero hero--contacts">
   <div class="wrap hero-layout">
     <div>
       <h1>Контакты</h1>
