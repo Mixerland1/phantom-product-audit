@@ -124,7 +124,7 @@
     {label:'Политика cookie',href:paths.cookie}
   ];
   // Internal progress control: preview hosts only, never public mdis.ru.
-  const showDevProgress=location.protocol==='file:'||/^(?:localhost|127\\.0\\.0\\.1|relay\\.mixerland\\.ru|review\\.212-113-106-157\\.sslip\\.io)$/i.test(location.hostname);
+  const showDevProgress=location.protocol==='file:'||['localhost','127.0.0.1','relay.mixerland.ru','review.212-113-106-157.sslip.io'].includes(location.hostname.toLowerCase());
   const devProgressHref=page('../публикация/предпросмотр_руководство/migration-progress.html','migration-progress.html','migration-progress.html');
   const devProgressButton=showDevProgress?'<a class="site-dev-progress" href="'+devProgressHref+'" aria-label="Прогресс переноса сайта"><span class="site-dev-tag">DEV</span><span class="site-dev-label">Прогресс переноса</span></a>':'';
   const devProgressMobile=showDevProgress?'<a class="site-dev-mobile-link" href="'+devProgressHref+'">● DEV · Прогресс переноса сайта</a>':'';
