@@ -46,6 +46,14 @@ html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#18
 .archive-related{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
 .archive-related .button{min-width:0}
 @media(max-width:700px){.archive-news-list{grid-template-columns:1fr}.archive-news{padding:17px}}
+
+/* Фон первого экрана из оригинального файла пользователя; поверх только тонкий слой для контраста текста. */
+html[data-theme="light"] main > .hero.hero--news:not(.hero--energy):not(.hero--aviation){
+  background:linear-gradient(90deg,rgba(250,252,255,.50) 0%,rgba(250,252,255,.24) 49%,rgba(250,252,255,.02) 100%),url("assets/backgrounds/news-hero-original-20261117.webp") center/cover no-repeat;
+}
+html[data-theme="dark"] main > .hero.hero--news{
+  background:linear-gradient(90deg,rgba(8,20,35,.90) 0%,rgba(11,25,42,.76) 52%,rgba(14,31,48,.60) 100%),url("assets/backgrounds/news-hero-original-20261117.webp") center/cover no-repeat;
+}
 </style>
 <script>(function(){try{var t=localStorage.getItem('mdis-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;else if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}})();</script>
 <link rel="stylesheet" href="assets/site-consultation.css?v=20261117-unified-v1">
@@ -53,7 +61,7 @@ html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#18
 <body>
 <header class="header"><div class="wrap header-in"><a class="brand" href="phantom-home.html">Фантом</a></div></header>
 <main>
-<section class="hero"><div class="wrap"><div class="hero-grid"><div><h1>Новости МДИС</h1><p class="hero-subtitle">Обновления Phantom, новые функции, совместимость и&nbsp;проекты</p><p class="lead">Новости компании МДИС: выпуски ПО&nbsp;«Фантом», результаты испытаний, внедрения, документы и&nbsp;сообщения о&nbsp;разработке новых решений.</p><div class="hero-links"><a class="button" href="#updates">Последние обновления</a><a class="button secondary" href="phantom-catalog.html">Каталог Phantom</a></div></div><div class="hero-events" aria-label="Типы новостей"><p class="events-head">Направления обновлений</p><div class="events-grid"><div class="event"><span class="event-symbol" aria-hidden="true">↗</span><strong>Релиз</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">✳</span><strong>Новая функция</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">◇</span><strong>Разработка</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">▤</span><strong>Документы</strong></div></div></div></div></div></section>
+<section class="hero hero--news"><div class="wrap"><div class="hero-grid"><div><h1>Новости МДИС</h1><p class="hero-subtitle">Обновления Phantom, новые функции, совместимость и&nbsp;проекты</p><p class="lead">Новости компании МДИС: выпуски ПО&nbsp;«Фантом», результаты испытаний, внедрения, документы и&nbsp;сообщения о&nbsp;разработке новых решений.</p><div class="hero-links"><a class="button" href="#updates">Последние обновления</a><a class="button secondary" href="phantom-catalog.html">Каталог Phantom</a></div></div><div class="hero-events" aria-label="Типы новостей"><p class="events-head">Направления обновлений</p><div class="events-grid"><div class="event"><span class="event-symbol" aria-hidden="true">↗</span><strong>Релиз</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">✳</span><strong>Новая функция</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">◇</span><strong>Разработка</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">▤</span><strong>Документы</strong></div></div></div></div></div></section>
 <div class="tab-wrap"><nav class="wrap editorial-tabs" aria-label="Новости и статьи">
   <a href="news.html" aria-current="page">Новости</a><a href="articles.html">Статьи</a>
 </nav></div>

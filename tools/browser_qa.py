@@ -753,6 +753,24 @@ def main():
                                                 f"Mobile preparation cards must form one column: {layout}")
                                     require(page.locator('#prepare .section-note').count() == 0,
                                             "Redundant preparation note unexpectedly returned")
+                                if filename in ("news.html", "contacts.html"):
+                                    expected_asset = ("news-hero-original-20261117.webp"
+                                                      if filename == "news.html"
+                                                      else "contacts-hero-original-20261117.webp")
+                                    hero_bg = page.locator("main > .hero").evaluate(
+                                        "(el) => getComputedStyle(el).backgroundImage")
+                                    require(expected_asset in hero_bg,
+                                            f"{filename}: original background overridden by shared CSS: {hero_bg}")
+                                    image_ok = page.evaluate("""async (fileName) => {
+                                        const picture = new Image();
+                                        picture.src = "assets/backgrounds/" + fileName;
+                                        try {
+                                            await picture.decode();
+                                            return picture.naturalWidth >= 1600 && picture.naturalHeight >= 880;
+                                        } catch { return false; }
+                                    }""", expected_asset)
+                                    require(image_ok,
+                                            f"{filename}: original WebP background not loaded or damaged")
                                 if filename == "phantom-home.html":
                                     require(page.locator('.contact-area #contact-form').count() == 1,
                                             "Homepage must retain its original engineer consultation form")
