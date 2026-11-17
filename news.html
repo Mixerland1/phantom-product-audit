@@ -2,8 +2,8 @@
 <html lang="ru" data-theme="light">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Новости МДИС и МЦКРС «Фантом»</title>
-<meta name="description" content="Новости МДИС: обновления МЦКРС «Фантом», новые версии ПО, интеграции, совместимость, отраслевые проекты и документы.">
+<title>Новости МДИС — обновления МЦКРС «Фантом»</title>
+<meta name="description" content="Новости МДИС о МЦКРС «Фантом»: обновления ПО, распознавание речи, интеграции, совместимость оборудования, документы, внедрения и архив публикаций.">
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="assets/hero-rhythm.css?v=20261111-solution-bg-v9">
 <link rel="stylesheet" href="assets/footer-next.css?v=20261104-4">
@@ -28,6 +28,24 @@
 html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#182437;--line:#344258;--soft:#253447;--red-soft:#2a1720;--blue:#1c405e}html[data-theme=dark] .hero{background:radial-gradient(ellipse at 80% 6%,#26405a,transparent 41%),linear-gradient(120deg,#142439,#101928)}html[data-theme=dark] .hero-subtitle{color:#c9d8e6}html[data-theme=dark] .hero-events{background:#192a3e;border-color:#344258}html[data-theme=dark] .events-head{color:#bdcbdd}html[data-theme=dark] .event{background:#21334c;border-color:#375472}html[data-theme=dark] .event-symbol{background:#314e6b;color:#eff4fa}html[data-theme=dark] .event strong{color:#eff4fa}
 @media(max-width:1050px){.hero-grid{grid-template-columns:1fr}.hero-events{max-width:680px}}@media(min-width:901px) and (max-width:1050px){main>.hero{height:auto;min-height:0;padding:54px 0!important;overflow:visible}}@media(max-width:768px){.section{padding:60px 0}}@media(max-width:900px){.news-grid{grid-template-columns:1fr}}@media(max-width:650px){.wrap{width:min(calc(100% - 32px),var(--max))}.news-grid{grid-template-columns:1fr}.hero-events{padding:16px}.events-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.event{gap:7px;min-height:79px;padding:10px}.event-symbol{width:28px;height:28px;font-size:15px}.event strong{font-size:13px}.news-title-break{display:none}.archive{display:block;padding:25px}.archive .button{margin-top:22px}.hero h1:after{width:44px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Локальные вкладки редакционного раздела и компактный архив новостей. */
+.tab-wrap{background:var(--paper);border-bottom:1px solid var(--line)}
+.editorial-tabs{display:flex;gap:23px;align-items:center;min-height:62px}
+.editorial-tabs a{font-size:14px;font-weight:750;padding:18px 3px;text-decoration:none;color:var(--muted);border-bottom:3px solid transparent}
+.editorial-tabs a[aria-current=page]{color:var(--ink);border-bottom-color:var(--red)}
+.editorial-tabs a:hover,.editorial-tabs a:focus-visible{color:var(--red)}
+.archive-news-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:25px}
+.archive-news{min-width:0;padding:19px 21px;border:1px solid var(--line);border-radius:10px;background:var(--paper);scroll-margin-top:calc(var(--site-header-height,64px) + 75px)}
+.archive-news__date{margin:0 0 10px;color:var(--muted);font-size:12px;font-weight:700}
+.archive-news h3{font-size:18px;line-height:1.35;letter-spacing:-.015em;font-weight:700;margin:0 0 13px}
+.archive-news details{border-top:1px solid var(--line);padding-top:10px}
+.archive-news summary{cursor:pointer;color:var(--ink);font-size:13px;font-weight:700;padding:3px 0;list-style:revert}
+.archive-news summary:hover,.archive-news summary:focus-visible{color:var(--red)}
+.archive-news details p{font-size:14px;line-height:1.62;color:var(--muted);margin:12px 0 0}
+.archive-related{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.archive-related .button{min-width:0}
+@media(max-width:700px){.archive-news-list{grid-template-columns:1fr}.archive-news{padding:17px}}
 </style>
 <script>(function(){try{var t=localStorage.getItem('mdis-theme');if(t==='dark'||t==='light')document.documentElement.dataset.theme=t;else if(window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.dataset.theme='dark'}catch(e){}})();</script>
 <link rel="stylesheet" href="assets/site-consultation.css?v=20261117-unified-v1">
@@ -35,25 +53,28 @@ html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#18
 <body>
 <header class="header"><div class="wrap header-in"><a class="brand" href="phantom-home.html">Фантом</a></div></header>
 <main>
-<section class="hero"><div class="wrap"><div class="hero-grid"><div><h1>Новости МДИС</h1><p class="hero-subtitle">Обновления Phantom, новые функции, совместимость и&nbsp;проекты</p><p class="lead">Развитие МЦКРС «Фантом»: новые версии программного обеспечения, функции, интеграции, совместимость и&nbsp;проекты.</p><div class="hero-links"><a class="button" href="#updates">Последние обновления</a><a class="button secondary" href="phantom-catalog.html">Каталог Phantom</a></div></div><div class="hero-events" aria-label="Типы новостей"><p class="events-head">Направления обновлений</p><div class="events-grid"><div class="event"><span class="event-symbol" aria-hidden="true">↗</span><strong>Релиз</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">✳</span><strong>Новая функция</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">◇</span><strong>Разработка</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">▤</span><strong>Документы</strong></div></div></div></div></div></section>
-<section class="section section-white" id="updates"><div class="wrap"><div class="section-head"><p class="eyebrow">Публикации компании</p><h2>Последние обновления</h2><p class="intro">Ключевые события в&nbsp;развитии МЦКРС «Фантом». Подробности каждого события можно прочитать прямо здесь, а&nbsp;дополнительные технические материалы находятся в&nbsp;разделах продукта.</p></div><div class="news-grid">
+<section class="hero"><div class="wrap"><div class="hero-grid"><div><h1>Новости МДИС</h1><p class="hero-subtitle">Обновления Phantom, новые функции, совместимость и&nbsp;проекты</p><p class="lead">Новости компании МДИС: выпуски ПО&nbsp;«Фантом», результаты испытаний, внедрения, документы и&nbsp;сообщения о&nbsp;разработке новых решений.</p><div class="hero-links"><a class="button" href="#updates">Последние обновления</a><a class="button secondary" href="phantom-catalog.html">Каталог Phantom</a></div></div><div class="hero-events" aria-label="Типы новостей"><p class="events-head">Направления обновлений</p><div class="events-grid"><div class="event"><span class="event-symbol" aria-hidden="true">↗</span><strong>Релиз</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">✳</span><strong>Новая функция</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">◇</span><strong>Разработка</strong></div><div class="event"><span class="event-symbol" aria-hidden="true">▤</span><strong>Документы</strong></div></div></div></div></div></section>
+<div class="tab-wrap"><nav class="wrap editorial-tabs" aria-label="Новости и статьи">
+  <a href="news.html" aria-current="page">Новости</a><a href="articles.html">Статьи</a>
+</nav></div>
+<section class="section section-white" id="updates"><div class="wrap"><div class="section-head"><p class="eyebrow">Публикации компании</p><h2>Последние обновления</h2><p class="intro">Здесь собраны публикации о&nbsp;новых функциях, версиях ПО, испытаниях совместимости и&nbsp;проектах МДИС. Ниже доступен архив прежних новостей.</p></div><div class="news-grid">
 <article class="news-card" id="news-asr" aria-labelledby="news-asr-title">
   <div class="news-card__meta"><span class="news-card__date">31&nbsp;июля</span><span class="news-card__type">Новая функция</span></div>
   <h3 id="news-asr-title">Переговоры теперь<br class="news-title-break">можно читать</h3>
-  <p>МДИС добавила в&nbsp;МЦКРС «Фантом» модуль ASR, который преобразует аудиозапись разговора в&nbsp;текст.</p>
+  <p>МДИС добавила в&nbsp;МЦКРС «Фантом» модуль автоматического распознавания речи ASR. Теперь записи переговоров можно прослушивать и&nbsp;читать в&nbsp;текстовом виде.</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
-    <div class="news-card__more"><p>Модуль автоматического распознавания речи позволяет не&nbsp;только прослушивать зарегистрированные переговоры, но&nbsp;и&nbsp;знакомиться с&nbsp;их&nbsp;текстовым представлением.</p><p>Текстовое представление дополняет прослушивание и&nbsp;позволяет быстрее ознакомиться с&nbsp;содержанием зарегистрированного разговора.</p></div>
+    <summary>Читать новость</summary>
+    <div class="news-card__more"><p>В&nbsp;новом модуле аудиозапись разговора преобразуется в&nbsp;текст. Пользователь может ознакомиться с&nbsp;содержанием разговора без&nbsp;обязательного прослушивания всей записи.</p></div>
   </details>
-  <div class="news-card__links"><a class="news-card__primary" href="phantom-asr.html">Как работает ASR <span aria-hidden="true">→</span></a></div>
+  <div class="news-card__links"><a class="news-card__primary" href="phantom-asr.html">О модуле ASR <span aria-hidden="true">→</span></a></div>
 </article>
 <article class="news-card" id="news-minprom" aria-labelledby="news-minprom-title">
   <div class="news-card__meta"><span class="news-card__date">22&nbsp;мая</span><span class="news-card__type">Документы</span></div>
   <h3 id="news-minprom-title">МЦКРС «Фантом» внесён<br class="news-title-break">в&nbsp;реестр Минпромторга</h3>
   <p>МЦКРС «Фантом» внесён в&nbsp;реестр российской промышленной продукции с&nbsp;номером 10838442.</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
-    <div class="news-card__more"><p>Дата внесения комплекса в&nbsp;реестр – 21&nbsp;мая 2026&nbsp;года. Опубликованный срок действия заключения – до&nbsp;20&nbsp;мая 2029&nbsp;года.</p><p>Речь идёт о&nbsp;реестре российской промышленной продукции Минпромторга, а&nbsp;не&nbsp;о&nbsp;реестре российского программного обеспечения.</p></div>
+    <summary>Читать новость</summary>
+    <div class="news-card__more"><p>Реестровый номер МЦКРС «Фантом» – 10838442. Дата внесения – 21&nbsp;мая 2026&nbsp;года. Заключение действительно до&nbsp;20&nbsp;мая 2029&nbsp;года.</p></div>
   </details>
   <div class="news-card__links"><a class="news-card__primary" href="company.html#registry">О регистрации продукции <span aria-hidden="true">→</span></a><a class="news-card__secondary" href="certificates.html">Сертификаты и&nbsp;лицензии <span aria-hidden="true">→</span></a></div>
 </article>
@@ -62,8 +83,8 @@ html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#18
   <h3 id="news-aviaton-title">МДИС разрабатывает новую<br class="news-title-break">версию СРДП «Авиатон»</h3>
   <p>Компания сообщила о&nbsp;начале работ по&nbsp;переводу специализированной системы авиационной диспетчерской записи на&nbsp;российскую платформу и&nbsp;программное обеспечение.</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
-    <div class="news-card__more"><p>СРДП «Авиатон» предназначена для&nbsp;регистрации диспетчерских переговоров в&nbsp;авиации.</p><p>Работы по&nbsp;переводу системы на&nbsp;российскую платформу и&nbsp;программное обеспечение начаты.</p></div>
+    <summary>Читать новость</summary>
+    <div class="news-card__more"><p>МДИС приступила к&nbsp;переводу СРДП «Авиатон» на&nbsp;платформу и&nbsp;программное обеспечение российского производства. Система используется в&nbsp;авиационных организациях, в&nbsp;том числе в&nbsp;филиалах «Аэронавигация Дальнего Востока» и&nbsp;«Аэронавигация Северо-Запада», Московском центре автоматизированного управления воздушным движением и&nbsp;ФГУП «Севастопольское авиационное предприятие».</p></div>
   </details>
   <div class="news-card__links"><a class="news-card__primary" href="aviaton.html">О&nbsp;СРДП «Авиатон» <span aria-hidden="true">→</span></a></div>
 </article>
@@ -72,22 +93,22 @@ html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#18
   <h3 id="news-cross-title">Phantom 5.5.0<br class="news-title-break">для&nbsp;Astra Linux</h3>
   <p>МДИС сообщила о&nbsp;выпуске ПО «Фантом» версии 5.5.0 с&nbsp;поддержкой работы компонентов Phantom Cross в&nbsp;Astra Linux 1.8.3 и&nbsp;1.7.8.</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
-    <div class="news-card__more"><p>Для&nbsp;Astra Linux 1.8.3 указано ядро 6.12.34-1-generic, для&nbsp;Astra Linux 1.7.8 – 6.1.141-1-generic. Релиз анонсирован с&nbsp;возможностью тестовой эксплуатации для&nbsp;клиентов и&nbsp;партнёров.</p><p>Версия выпуска ПО 5.5.0 и&nbsp;версия опубликованной документации 5.5.2 – разные обозначения. Совместимость конкретной конфигурации следует проверять по&nbsp;документации.</p></div>
+    <summary>Читать новость</summary>
+    <div class="news-card__more"><p>Для&nbsp;Astra Linux 1.8.3 указано ядро 6.12.34-1-generic, для&nbsp;Astra Linux 1.7.8 – 6.1.141-1-generic. Релиз анонсирован с&nbsp;возможностью тестовой эксплуатации для&nbsp;клиентов и&nbsp;партнёров.</p></div>
   </details>
   <div class="news-card__links"><a class="news-card__primary" href="phantom-cross.html#versions">О&nbsp;Phantom Cross <span aria-hidden="true">→</span></a><a class="news-card__secondary" href="support-phantom-cross.html">Документация 5.5.2 <span aria-hidden="true">→</span></a></div>
 </article>
 </div>
 <div class="related-links"><a class="button secondary" href="articles.html">Статьи МДИС →</a><a class="button secondary" href="phantom-monitoring.html">О системе мониторинга →</a><a class="button secondary" href="ip-telephony.html">О записи IP-телефонии →</a></div></div></section>
 <section class="section" id="integrations"><div class="wrap">
-<div class="section-head"><p class="eyebrow">Архив публикаций</p><h2>Проверенные интеграции IP-телефонии</h2><p class="intro">Испытания и&nbsp;внедрения, о&nbsp;которых МДИС сообщала ранее. Результаты относятся к&nbsp;описанным моделям и&nbsp;конфигурациям и&nbsp;не&nbsp;означают автоматической совместимости с&nbsp;другими версиями оборудования.</p></div>
+<div class="section-head"><p class="eyebrow">Архив публикаций</p><h2>Совместимость и&nbsp;технические обновления</h2><p class="intro">Результаты испытаний оборудования связи, интеграция SIPREC и&nbsp;развитие мониторинга МЦКРС «Фантом».</p></div>
 <div class="news-grid">
 <article class="news-card" id="news-goodwin-eltex" aria-labelledby="news-goodwin-eltex-title">
   <div class="news-card__meta"><span class="news-card__date">14&nbsp;ноября</span><span class="news-card__type">Совместимость</span></div>
-  <h3 id="news-goodwin-eltex-title">Goodwin–Eltex: испытания записи DECT-переговоров</h3>
+  <h3 id="news-goodwin-eltex-title">Подтверждена совместимость «Фантома» с&nbsp;оборудованием Goodwin</h3>
   <p>Система DECT «Гудвин-Бородино» прошла испытания с&nbsp;МЦКРС «Фантом» при&nbsp;подключении через опорную IP-АТС Eltex.</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
+    <summary>Читать новость</summary>
     <div class="news-card__more"><p>В&nbsp;испытаниях использовали контроллер, базовые станции и&nbsp;беспроводные аппараты Goodwin. Проверены вызовы внутри сети DECT и&nbsp;на&nbsp;стационарные линии опорной АТС.</p><p>Для&nbsp;проверенной конфигурации подтверждена сквозная запись переговоров. Результат не&nbsp;распространяется автоматически на&nbsp;все системы DECT или модели IP-АТС.</p></div>
   </details>
   <div class="news-card__links"><a class="news-card__primary" href="ip-telephony.html">О&nbsp;записи IP-телефонии <span aria-hidden="true">→</span></a></div>
@@ -97,23 +118,36 @@ html[data-theme=dark]{--ink:#f4f7fb;--muted:#b5c0cf;--canvas:#101928;--paper:#18
   <h3 id="news-siprec-protei-title">SIPREC: интеграция с&nbsp;IP-АТС «Протей ТЛ»</h3>
   <p>МДИС сообщила о&nbsp;внедрении поддержки протокола SIPREC для&nbsp;записи диспетчерских переговоров с&nbsp;IP-АТС «Протей ТЛ».</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
-    <div class="news-card__more"><p>SIPREC позволяет телефонной платформе передавать сессию записи в&nbsp;МЦКРС «Фантом» без&nbsp;пассивного захвата копии общего сетевого трафика.</p><p>Опубликованный результат относится к&nbsp;интеграции с&nbsp;«Протей ТЛ». Совместимость с&nbsp;другими АТС и&nbsp;версиями ПО проверяется отдельно.</p></div>
+    <summary>Читать новость</summary>
+    <div class="news-card__more"><p>В&nbsp;МЦКРС «Фантом» внедрена поддержка SIPREC для&nbsp;записи диспетчерских переговоров с&nbsp;IP-АТС «Протей ТЛ». Это сообщение относится к&nbsp;интеграции с&nbsp;указанной телефонной платформой.</p></div>
   </details>
   <div class="news-card__links"><a class="news-card__primary" href="ip-telephony.html">Как работает SIPREC <span aria-hidden="true">→</span></a></div>
+</article>
+<article class="news-card" id="news-monitoring" aria-labelledby="news-monitoring-title">
+  <div class="news-card__meta"><span class="news-card__date">6&nbsp;августа</span><span class="news-card__type">Новая функция</span></div>
+  <h3 id="news-monitoring-title">Система мониторинга МЦКРС «Фантом»</h3>
+  <p>Для&nbsp;программного комплекса «Фантом» под&nbsp;Astra Linux выпущен модуль мониторинга работоспособности регистратора.</p>
+  <details class="news-card__details"><summary>Читать новость</summary><div class="news-card__more"><p>Модуль отслеживает состояние регистратора в&nbsp;режиме реального времени более чем по&nbsp;15&nbsp;параметрам. Его можно использовать отдельно или&nbsp;включить в&nbsp;систему мониторинга заказчика.</p></div></details>
+  <div class="news-card__links"><a class="news-card__primary" href="phantom-monitoring.html">О мониторинге <span aria-hidden="true">→</span></a></div>
 </article>
 <article class="news-card" id="news-eltex-phones" aria-labelledby="news-eltex-phones-title">
   <div class="news-card__meta"><span class="news-card__date">20&nbsp;мая</span><span class="news-card__type">Испытания</span></div>
   <h3 id="news-eltex-phones-title">Проверена регистрация телефонов Eltex VP-17P и&nbsp;VP-30P</h3>
   <p>Испытания МДИС подтвердили корректную регистрацию IP-телефонов Eltex VP-17P и&nbsp;VP-30P в&nbsp;МЦКРС «Фантом».</p>
   <details class="news-card__details">
-    <summary>Подробнее о&nbsp;новости</summary>
-    <div class="news-card__more"><p>В&nbsp;публикации указаны модели VP-17P с&nbsp;2&nbsp;SIP-аккаунтами и&nbsp;VP-30P с&nbsp;6&nbsp;SIP-аккаунтами.</p><p>Сообщение касается регистрации названных моделей. Оно не&nbsp;подтверждает работу всех IP-телефонов Eltex и&nbsp;не&nbsp;описывает испытания каждой функции записи.</p></div>
+    <summary>Читать новость</summary>
+    <div class="news-card__more"><p>По&nbsp;результатам испытаний МДИС подтвердила корректную регистрацию IP-телефонов Eltex VP-17P (2&nbsp;SIP-аккаунта) и&nbsp;VP-30P (6&nbsp;SIP-аккаунтов) в&nbsp;МЦКРС «Фантом».</p></div>
   </details>
   <div class="news-card__links"><a class="news-card__primary" href="ip-telephony.html">О&nbsp;совместимости IP-систем <span aria-hidden="true">→</span></a></div>
 </article>
 </div></div></section>
-<section class="section" id="archive"><div class="wrap"><div class="archive"><div><p class="eyebrow">Другие материалы</p><h2>Продукты и&nbsp;решения МДИС</h2><p>Узнайте больше о&nbsp;программной платформе, технических возможностях и&nbsp;сценариях применения МЦКРС «Фантом».</p></div><a class="button" href="phantom-catalog.html">Каталог Phantom <span aria-hidden="true">→</span></a></div></div></section>
+<section class="section" id="archive"><div class="wrap">
+ <div class="section-head"><p class="eyebrow">Другие материалы</p><h2>Архив новостей МДИС</h2><p class="intro">Публикации МДИС прошлых лет: внедрения, выпуски ПО, испытания оборудования, документы и&nbsp;события компании.</p></div>
+ <div class="archive-news-list">
+ <!-- ARCHIVE_ITEMS -->
+ </div>
+ <nav class="archive-related" aria-label="Связанные разделы"><a class="button secondary" href="articles.html">Статьи МДИС</a><a class="button secondary" href="phantom-catalog.html">Каталог «Фантом»</a></nav>
+</div></section>
 </main>
 <footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261117-solution-hub-nav-v3"></script>
