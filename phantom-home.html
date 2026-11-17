@@ -138,13 +138,13 @@
     .products-more a,.industry-more a{color:#2a709c;text-underline-offset:3px}
     .industry-more{margin-top:10px}
     .solution-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
-    .solution{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:305px;overflow:hidden;padding:27px;border:1px solid var(--line);border-radius:14px;background:#eaf4fb;text-decoration:none;isolation:isolate;transition:transform .2s,box-shadow .2s}
+    .solution{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:230px;overflow:hidden;padding:27px;border:1px solid var(--line);border-radius:14px;background:#eaf4fb;text-decoration:none;isolation:isolate;transition:transform .2s,box-shadow .2s}
     .solution:before{position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;content:""}
     .solution:after{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(249,253,255,.6) 0%,rgba(242,249,254,.85) 42%,rgba(233,245,254,.99) 100%);content:""}
     .solution-atom:before{background:radial-gradient(circle at 76% 25%,#c9e0f5 0%,transparent 49%),linear-gradient(130deg,#e7f2fc,#f7fbfe)}
     .solution-commercial:before{background:radial-gradient(circle at 77% 25%,#d9eafb 0%,transparent 49%),linear-gradient(130deg,#edf7fc,#f8fbfd)}
     .solution-industrial:before{background:radial-gradient(circle at 78% 27%,#d2e9fd 0%,transparent 49%),linear-gradient(125deg,#e9f5ff,#f5f9fe)}
-    .solution .eyebrow{margin-bottom:auto}
+    .solution .eyebrow{margin-bottom:7px}
     .solution h3{min-height:2.6em;margin:0 0 8px;font-size:21px}
     .solution p{margin:0 0 16px;min-height:2.8em;font-size:13px;color:#5b748a}
     .solution span:last-child{color:#bd1230;font-size:13px;font-weight:750}
@@ -226,7 +226,7 @@
       .workflow-side,.task-grid,.product-grid,.solution-grid,.benefits,.contact-panel,.contact-form{grid-template-columns:1fr}
       .workflow-card{min-height:120px}.workflow-main{min-height:270px}
       .task,.benefit,.product{min-height:0}.task h3,.benefit h3,.product-copy h3,.solution h3{min-height:0}
-      .solution:last-child{grid-column:auto}.solution{min-height:260px}
+      .solution:last-child{grid-column:auto}.solution{min-height:230px}
       .contact-area{padding:62px 0}.contact-panel{padding:25px;gap:24px}
       .field-wide,.form-note,.contact-form button{grid-column:auto}
       .button-row .btn{width:100%}
