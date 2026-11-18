@@ -64,31 +64,24 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .office-map-tile{position:absolute;width:256px;height:256px;max-width:none;user-select:none;pointer-events:none}
 .office-map-marker{position:absolute;z-index:35;width:34px;height:44px;transform:translate(-50%,-100%);pointer-events:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.3))}
 .office-map-marker svg{display:block;width:100%;height:100%}
-.office-map-controls{position:absolute;z-index:45;top:12px;right:12px;display:grid;gap:5px}
-.office-map-controls button{display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid #d9e2eb;border-radius:8px;background:#fff;color:#1e344b;font:700 24px/1 Arial,sans-serif;box-shadow:0 2px 8px #20364b1a;cursor:pointer}
-.office-map-controls button:hover{background:#f0f5f9}
-.office-map-controls button:disabled{cursor:default;opacity:.45}
 .office-map-attribution{position:absolute;z-index:50;bottom:6px;right:8px;padding:3px 6px;border-radius:4px;background:rgba(255,255,255,.92);color:#34465b;font:11px/1.3 Arial,sans-serif}
 .office-map-attribution a{color:#245b86;text-decoration:underline}
 .office-map-unavailable{position:absolute;z-index:70;inset:0;display:flex;align-items:center;justify-content:center;padding:28px;background:#eef3f8;color:#1d3550;font-size:14px;text-align:center}
-.office-map-unavailable[hidden],.office-map-route[hidden],.office-map-start[hidden],.office-map-route-info[hidden],.office-map-car-origins[hidden]{display:none}
+.office-map-unavailable[hidden],.office-map-route[hidden],.office-map-start[hidden]{display:none}
 .office-map-route{position:absolute;z-index:30;inset:0;width:100%;height:100%;pointer-events:none}
 .office-map-route path{fill:none;stroke-linejoin:round;stroke-linecap:round}
-.office-map-route-under{stroke:#fff;stroke-width:9}
-.office-map-route-over{stroke:#1764b7;stroke-width:5}
+.office-map-route-under{stroke:rgba(255,255,255,.98);stroke-width:8}
+.office-map-route-over{stroke:#1764b7;stroke-width:4.5;stroke-dasharray:2 10}
 .office-local-map[data-mode="auto"] .office-map-route-over{stroke:#e30f2d}
 .office-map-start{position:absolute;z-index:34;width:13px;height:13px;transform:translate(-50%,-50%);border:3px solid #fff;border-radius:50%;background:#1764b7;box-shadow:0 2px 8px #0004;pointer-events:none}
 .office-local-map[data-mode="auto"] .office-map-start{background:#e30f2d}
-.office-map-modes,.office-map-origins{position:absolute;z-index:55;left:12px;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100% - 105px)}
-.office-map-modes{top:12px}.office-map-origins{top:58px;max-width:calc(100% - 24px)}
-.office-map-modes button,.office-map-origins button{display:inline-flex;align-items:center;gap:5px;min-height:37px;padding:6px 11px;border:1px solid #d9e2eb;border-radius:8px;background:#fff;color:#213953;font:700 12px/1.2 Inter,Arial,sans-serif;box-shadow:0 2px 8px #20364b1a;cursor:pointer}
-.office-map-modes svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.office-map-origins button{min-height:29px;padding:4px 8px;font-size:11px;font-weight:550}
+.office-map-modes{position:absolute;z-index:55;left:12px;top:12px;display:flex;gap:8px}
+.office-map-modes button{display:grid;place-items:center;width:42px;height:42px;padding:8px;border:1px solid #d9e2eb;border-radius:10px;background:#fff;color:#213953;box-shadow:0 2px 8px #20364b24;cursor:pointer}
+.office-map-modes svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .office-map-modes button[aria-pressed="true"]{background:#173d6b;color:#fff;border-color:#173d6b}
-.office-map-origins button[aria-pressed="true"]{background:#b42436;color:#fff;border-color:#b42436}
-.office-map-route-info{position:absolute;z-index:55;bottom:36px;left:12px;max-width:calc(100% - 24px);padding:8px 11px;border:1px solid #dae3ec;border-radius:8px;background:#fffef9ed;color:#243a50;font:12px/1.4 Inter,Arial,sans-serif;box-shadow:0 3px 10px #12263d24}
-.office-map-route-info a{color:#b42436;font-weight:700;text-decoration:underline}
-@media(max-width:600px){.office-map-modes button{min-height:32px;padding:4px 8px;font-size:11px}.office-map-origins{top:49px}.office-map-origins button{font-size:10px}}
+.office-map-modes button:hover:not([aria-pressed="true"]){background:#f0f5f9}
+.office-map-modes button:focus-visible{outline:3px solid #e30f2d;outline-offset:2px}
+@media(max-width:600px){.office-map-modes button{width:39px;height:39px;padding:7px}.office-map-modes svg{width:24px;height:24px}}
 .office-map-unavailable a{color:#bb1230;font-weight:700}
 .office-map-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 /* Две самостоятельные карточки: фотография входа и инструкция посетителю. */
@@ -203,7 +196,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
         </div>
       </div>
       <div class="map-frame" id="office-map">
-        <div class="office-local-map" tabindex="0" role="region" aria-label="Карта: вход в здание МДИС со стороны Звенигородского шоссе" aria-describedby="office-map-help">
+        <div class="office-local-map" data-mode="walk" tabindex="0" role="region" aria-label="Карта: вход в здание МДИС со стороны Звенигородского шоссе" aria-describedby="office-map-help">
           <div class="office-map-tiles" aria-hidden="true"></div>
           <svg class="office-map-route" aria-hidden="true" hidden><path class="office-map-route-under"></path><path class="office-map-route-over"></path></svg>
           <div class="office-map-start" aria-hidden="true" hidden></div>
@@ -211,21 +204,12 @@ html[data-theme="dark"] main > .hero.hero--contacts{
             <svg viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg"><path d="M17 1C8.2 1 1 8.2 1 17c0 12.5 16 26 16 26s16-13.5 16-26C33 8.2 25.8 1 17 1Z" fill="#e30f2d" stroke="#fff" stroke-width="2"/><circle cx="17" cy="17" r="6" fill="#fff"/></svg>
           </div>
           <div class="office-map-modes" role="group" aria-label="Как добраться">
-            <button type="button" data-mode="walk" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4" r="2"/><path d="m7 21 3-6 2-4m0 0 3 3 3 1m-6-4-3-3-3 4m6-1 1 6 4 4"/></svg>Пешком</button>
-            <button type="button" data-mode="auto" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17 4 19H2v-6l2-6h16l2 6v6h-2l-1-2H5Z"/><circle cx="7" cy="15" r="1"/><circle cx="17" cy="15" r="1"/><path d="M3 12h18"/></svg>Авто</button>
-          </div>
-          <div class="office-map-origins" role="group" aria-label="Откуда ехать" hidden>
-            <button type="button" data-drive="zven" aria-pressed="true">Звенигородское ш.</button>
-            <button type="button" data-drive="street" aria-pressed="false">Ул. 1905 года</button>
-          </div>
-          <div class="office-map-route-info" role="status" aria-live="polite" hidden></div>
-          <div class="office-map-controls">
-            <button type="button" class="office-map-zoom-in" aria-label="Увеличить масштаб">+</button>
-            <button type="button" class="office-map-zoom-out" aria-label="Уменьшить масштаб">−</button>
+            <button type="button" data-mode="walk" aria-label="Маршрут пешком от метро" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4" r="2"/><path d="m7 21 3-6 2-4m0 0 3 3 3 1m-6-4-3-3-3 4m6-1 1 6 4 4"/></svg></button>
+            <button type="button" data-mode="auto" aria-label="Маршрут на автомобиле к парковке" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 17 4 19H2v-6l2-6h16l2 6v6h-2l-1-2H5Z"/><circle cx="7" cy="15" r="1"/><circle cx="17" cy="15" r="1"/><path d="M3 12h18"/></svg></button>
           </div>
           <div class="office-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</div>
           <div class="office-map-unavailable" hidden><span>Карта временно недоступна. <a href="https://yandex.ru/maps/?ll=37.559358%2C55.763107&amp;pt=37.559358%2C55.763107&amp;z=17" target="_blank" rel="noopener noreferrer">Открыть в Яндекс Картах</a></span></div>
-          <span class="office-map-sr" id="office-map-help">Выберите Пешком или Авто для построения маршрута. Масштаб карты изменяется колесом мыши или кнопками.</span>
+          <span class="office-map-sr" id="office-map-help">Маршрут от метро отображается по умолчанию. Переключайте пеший и автомобильный маршруты двумя кнопками. Масштаб изменяется колёсиком мыши, карту можно перемещать.</span>
         </div>
       </div>
     </div>
@@ -261,7 +245,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
 <footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
 <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
-<script src="assets/office-map.js?v=20261118-visitor-routes-v3"></script>
+<script src="assets/office-map.js?v=20261118-route-icons-v4"></script>
 <script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>

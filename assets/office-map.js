@@ -6,8 +6,6 @@
 
   const tileLayer = root.querySelector('.office-map-tiles');
   const marker = root.querySelector('.office-map-marker');
-  const zoomIn = root.querySelector('.office-map-zoom-in');
-  const zoomOut = root.querySelector('.office-map-zoom-out');
   const unavailable = root.querySelector('.office-map-unavailable');
   const entrance = { lat: 55.763107, lon: 37.559358 };
   const minZoom = 15;
@@ -24,135 +22,102 @@
   let anchorY = 0;
   const tiles = new Map();
 
-  // Координаты метро и парковки — ориентиры; вход МДИС подтверждён владельцем сайта.
-  const routeEnds = {
-    walk: {from:{lat:55.764704,lon:37.561449},to:entrance},
-    zven: {from:{lat:55.76388,lon:37.55688},to:{lat:55.76337,lon:37.55947}},
-    street: {from:{lat:55.76215,lon:37.56073},to:{lat:55.76337,lon:37.55947}}
+  // Ориентировочные линии по схемам, предоставленным МДИС:
+  // пешком — от выхода метро через подземный переход к входу;
+  // авто — со Звенигородского шоссе до въезда на парковку.
+  // Это схема подхода, не навигация в реальном времени.
+  const routes = {
+    walk: [
+      { lat: 55.764704, lon: 37.561449 },
+      { lat: 55.76459, lon: 37.56133 },
+      { lat: 55.76449, lon: 37.56113 },
+      { lat: 55.76438, lon: 37.56094 },
+      { lat: 55.76428, lon: 37.56072 },
+      { lat: 55.76399, lon: 37.56041 },
+      { lat: 55.76368, lon: 37.56010 },
+      { lat: 55.76349, lon: 37.55986 },
+      { lat: 55.76336, lon: 37.55964 },
+      { lat: 55.76320, lon: 37.55949 },
+      entrance
+    ],
+    auto: [
+      { lat: 55.76391, lon: 37.55775 },
+      { lat: 55.76385, lon: 37.55804 },
+      { lat: 55.76378, lon: 37.55836 },
+      { lat: 55.76367, lon: 37.55853 },
+      { lat: 55.76356, lon: 37.55858 },
+      { lat: 55.76346, lon: 37.55861 }
+    ]
   };
-  const routeSvg=root.querySelector('.office-map-route');
-  const routeUnder=root.querySelector('.office-map-route-under');
-  const routeOver=root.querySelector('.office-map-route-over');
-  const routeStart=root.querySelector('.office-map-start');
-  const routeInfo=root.querySelector('.office-map-route-info');
-  const originsBox=root.querySelector('.office-map-origins');
-  const modes=Array.from(root.querySelectorAll('[data-mode]'));
-  const origins=Array.from(root.querySelectorAll('[data-drive]'));
-  const routeCache=new Map();
-  let routeMode='',driveFrom='zven',routePts=null,requestId=0;
 
-  function routeHref(pair,mode){
-    return 'https://yandex.ru/maps/?rtext='+pair.from.lat+'%2C'+pair.from.lon+'~'+
-      pair.to.lat+'%2C'+pair.to.lon+'&rtt='+(mode==='walk'?'pd':'auto');
-  }
-  function routeMessage(message,href){
-    routeInfo.textContent=message;
-    if(href){
-      const link=document.createElement('a');
-      link.href=href;link.target='_blank';link.rel='noopener noreferrer';
-      link.textContent=' Открыть маршрут в Яндекс Картах';
-      routeInfo.appendChild(link);
-    }
-    routeInfo.hidden=false;
-  }
-  function drawRoute(){
-    if(!routePts){routeSvg.hidden=true;routeStart.hidden=true;return;}
-    const width=root.clientWidth,height=root.clientHeight;
-    const projected=routePts.map(function(p){
-      const q=project(p,zoom);
-      return {x:q.x-center.x+width/2,y:q.y-center.y+height/2};
+  const routeSvg = root.querySelector('.office-map-route');
+  const routeUnder = root.querySelector('.office-map-route-under');
+  const routeOver = root.querySelector('.office-map-route-over');
+  const routeStart = root.querySelector('.office-map-start');
+  const modeButtons = Array.from(root.querySelectorAll('[data-mode]'));
+  let routeMode = 'walk';
+
+  function drawRoute() {
+    const points = routes[routeMode];
+    const width = root.clientWidth, height = root.clientHeight;
+    if (!width || !height || !points || points.length < 2) return;
+    const screen = points.map(function (point) {
+      const p = project(point, zoom);
+      return { x: p.x - center.x + width / 2, y: p.y - center.y + height / 2 };
     });
-    const d=projected.map(function(p,i){return (i?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2);}).join(' ');
-    routeSvg.setAttribute('viewBox','0 0 '+width+' '+height);
-    routeUnder.setAttribute('d',d);routeOver.setAttribute('d',d);
-    routeSvg.hidden=false;
-    routeStart.style.left=projected[0].x+'px';
-    routeStart.style.top=projected[0].y+'px';
-    routeStart.hidden=false;
+    const d = screen.map(function (p, index) {
+      return (index ? 'L' : 'M') + p.x.toFixed(2) + ',' + p.y.toFixed(2);
+    }).join(' ');
+    routeSvg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
+    routeUnder.setAttribute('d', d);
+    routeOver.setAttribute('d', d);
+    routeSvg.hidden = false;
+    routeStart.style.left = screen[0].x + 'px';
+    routeStart.style.top = screen[0].y + 'px';
+    routeStart.hidden = false;
   }
-  function fitRoute(points){
-    if(!root.clientWidth||!root.clientHeight)return;
+
+  function fitRoute() {
+    const width = root.clientWidth, height = root.clientHeight;
+    if (!width || !height) return;
     stopZoomAnimation();
-    const width=root.clientWidth,height=root.clientHeight;
-    let level=minZoom;
-    for(let z=maxZoom;z>=minZoom;z-=.2){
-      const p=points.map(function(a){return project(a,z);});
-      const xs=p.map(function(a){return a.x;}),ys=p.map(function(a){return a.y;});
-      if(Math.max(...xs)-Math.min(...xs)<=Math.max(40,width-94)&&
-         Math.max(...ys)-Math.min(...ys)<=Math.max(40,height-168)){level=z;break;}
-    }
-    zoom=Math.min(maxZoom,Math.max(minZoom,level));targetZoom=zoom;
-    const pts=points.map(function(a){return project(a,zoom);});
-    center={x:(Math.min(...pts.map(p=>p.x))+Math.max(...pts.map(p=>p.x)))/2,
-            y:(Math.min(...pts.map(p=>p.y))+Math.max(...pts.map(p=>p.y)))/2-20};
-  }
-  function parseGeometry(json){
-    const route=json.routes&&json.routes[0];
-    const g=route&&route.geometry;
-    if(!g||g.type!=='LineString'||!Array.isArray(g.coordinates))throw Error('No route shape');
-    const points=g.coordinates.map(function(c){return {lon:c[0],lat:c[1]};}).filter(function(p){
-      return Number.isFinite(p.lat)&&Number.isFinite(p.lon);
-    });
-    if(points.length<2)throw Error('Empty route');
-    return {points:points,distance:route.distance};
-  }
-  async function loadRoute(){
-    const current=++requestId;
-    routePts=null;drawRoute();
-    const pair=routeEnds[routeMode==='walk'?'walk':driveFrom];
-    const href=routeHref(pair,routeMode);
-    routeMessage('Построение маршрута…',null);
-    const key=routeMode==='walk'?'walk':driveFrom;
-    try{
-      let data=routeCache.get(key);
-      if(!data){
-        const query={locations:[pair.from,pair.to],
-          costing:routeMode==='walk'?'pedestrian':'auto',format:'osrm',shape_format:'geojson',
-          units:'kilometers'};
-        const abort=new AbortController();
-        const timer=setTimeout(function(){abort.abort();},10000);
-        try{
-          const response=await fetch('https://valhalla1.openstreetmap.de/route?json='+
-            encodeURIComponent(JSON.stringify(query)),{signal:abort.signal,credentials:'omit'});
-          if(!response.ok)throw Error('Routing unavailable');
-          data=parseGeometry(await response.json());
-          routeCache.set(key,data);
-        }finally{clearTimeout(timer);}
+    const points = routes[routeMode].concat([entrance]);
+    const reservedWidth = Math.max(80, width - 46);
+    const reservedHeight = Math.max(80, height - 86);
+    let level = minZoom;
+    for (let current = maxZoom; current >= minZoom; current -= 0.1) {
+      const coords = points.map(function (point) { return project(point, current); });
+      const xx = coords.map(function (point) { return point.x; });
+      const yy = coords.map(function (point) { return point.y; });
+      if (Math.max(...xx) - Math.min(...xx) <= reservedWidth &&
+          Math.max(...yy) - Math.min(...yy) <= reservedHeight) {
+        level = current;
+        break;
       }
-      if(current!==requestId)return;
-      routePts=data.points;fitRoute(routePts);draw();
-      const d=Number(data.distance);
-      const distance=Number.isFinite(d)?(d<1?Math.round(d*1000)+' м':d.toFixed(1).replace('.',',')+' км'):'';
-      const label=routeMode==='walk'?'Пешком от метро, выход № 1 (ориентир). ':
-        'Подъезд к парковке у Звенигородского шоссе (ориентир). ';
-      routeMessage(label+distance+'. Уточните доступность парковки.',href);
-    }catch(e){
-      if(current!==requestId)return;
-      routePts=null;drawRoute();
-      routeMessage('Маршрут внутри карты временно недоступен.',href);
     }
+    zoom = Math.max(minZoom, Math.min(maxZoom, level));
+    targetZoom = zoom;
+    const coords = points.map(function (point) { return project(point, zoom); });
+    center = {
+      x: (Math.min(...coords.map(function (p) { return p.x; })) +
+          Math.max(...coords.map(function (p) { return p.x; }))) / 2,
+      y: (Math.min(...coords.map(function (p) { return p.y; })) +
+          Math.max(...coords.map(function (p) { return p.y; }))) / 2
+    };
   }
-  modes.forEach(function(btn){
-    btn.addEventListener('click',function(){
-      const next=btn.dataset.mode;
-      if(next===routeMode){
-        requestId++;routeMode='';root.dataset.mode='';routePts=null;
-        routeSvg.hidden=true;routeStart.hidden=true;routeInfo.hidden=true;originsBox.hidden=true;
-        modes.forEach(function(b){b.setAttribute('aria-pressed','false');});
-        stopZoomAnimation();zoom=17;targetZoom=17;center=project(entrance,17);draw();return;
-      }
-      routeMode=next;root.dataset.mode=next;originsBox.hidden=next!=='auto';
-      modes.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.mode===next));});
-      loadRoute();
+
+  function selectRoute(next) {
+    if (next === routeMode) return;
+    routeMode = next;
+    root.dataset.mode = routeMode;
+    modeButtons.forEach(function (button) {
+      button.setAttribute('aria-pressed', String(button.dataset.mode === routeMode));
     });
-  });
-  origins.forEach(function(btn){
-    btn.addEventListener('click',function(){
-      if(routeMode!=='auto')return;
-      driveFrom=btn.dataset.drive;
-      origins.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.drive===driveFrom));});
-      loadRoute();
-    });
+    fitRoute();
+    draw();
+  }
+  modeButtons.forEach(function (button) {
+    button.addEventListener('click', function () { selectRoute(button.dataset.mode); });
   });
 
 
@@ -259,8 +224,6 @@
     const pin = project(entrance, zoom);
     marker.style.left = (pin.x - center.x + width / 2) + 'px';
     marker.style.top = (pin.y - center.y + height / 2) + 'px';
-    zoomIn.disabled = targetZoom >= maxZoom;
-    zoomOut.disabled = targetZoom <= minZoom;
     drawRoute();
   }
 
@@ -317,16 +280,7 @@
       lastFrameTime = 0;
       animationId = window.requestAnimationFrame(animateZoom);
     }
-    zoomIn.disabled = targetZoom >= maxZoom;
-    zoomOut.disabled = targetZoom <= minZoom;
   }
-
-  zoomIn.addEventListener('click', function () {
-    queueZoom(targetZoom + 1, root.clientWidth / 2, root.clientHeight / 2);
-  });
-  zoomOut.addEventListener('click', function () {
-    queueZoom(targetZoom - 1, root.clientWidth / 2, root.clientHeight / 2);
-  });
   root.addEventListener('wheel', function (event) {
     if (!event.deltaY) return;
     event.preventDefault();
@@ -336,27 +290,64 @@
     queueZoom(targetZoom + delta, event.clientX - bounds.left, event.clientY - bounds.top);
   }, { passive: false });
 
+  // На телефоне карта масштабируется двумя пальцами; на компьютере — колесом.
+  const pointers = new Map();
+  let pinch = null;
+
   root.addEventListener('pointerdown', function (event) {
     if (event.target.closest('button, a')) return;
     if (event.button !== 0 && event.pointerType === 'mouse') return;
     stopZoomAnimation();
-    dragging = { id: event.pointerId, x: event.clientX, y: event.clientY };
-    root.setPointerCapture(event.pointerId);
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    try { root.setPointerCapture(event.pointerId); } catch (error) { /* capture unsupported */ }
+    if (pointers.size === 1) {
+      dragging = { id: event.pointerId, x: event.clientX, y: event.clientY };
+      pinch = null;
+    } else if (pointers.size === 2) {
+      const pair = Array.from(pointers.values());
+      dragging = null;
+      pinch = {
+        distance: Math.max(1, Math.hypot(pair[1].x - pair[0].x, pair[1].y - pair[0].y)),
+        zoom: zoom
+      };
+    }
   });
+
   root.addEventListener('pointermove', function (event) {
-    if (!dragging || dragging.id !== event.pointerId) return;
-    center.x -= event.clientX - dragging.x;
-    center.y -= event.clientY - dragging.y;
-    dragging.x = event.clientX;
-    dragging.y = event.clientY;
-    draw();
+    const old = pointers.get(event.pointerId);
+    if (!old) return;
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (pointers.size === 2 && pinch) {
+      const pair = Array.from(pointers.values());
+      const dist = Math.max(1, Math.hypot(pair[1].x - pair[0].x, pair[1].y - pair[0].y));
+      const bounds = root.getBoundingClientRect();
+      const x = (pair[0].x + pair[1].x) / 2 - bounds.left;
+      const y = (pair[0].y + pair[1].y) / 2 - bounds.top;
+      const level = Math.max(minZoom, Math.min(maxZoom, pinch.zoom + Math.log2(dist / pinch.distance)));
+      setZoomImmediate(level, x, y);
+      targetZoom = zoom;
+    } else if (pointers.size === 1 && dragging && dragging.id === event.pointerId) {
+      center.x -= event.clientX - old.x;
+      center.y -= event.clientY - old.y;
+      dragging.x = event.clientX;
+      dragging.y = event.clientY;
+      draw();
+    }
   });
-  function stopDrag(event) {
-    if (dragging && event.pointerId === dragging.id) dragging = null;
+
+  function releasePointer(event) {
+    pointers.delete(event.pointerId);
+    pinch = null;
+    dragging = null;
+    if (pointers.size === 1) {
+      const remaining = pointers.entries().next().value;
+      dragging = { id: remaining[0], x: remaining[1].x, y: remaining[1].y };
+    }
   }
-  root.addEventListener('pointerup', stopDrag);
-  root.addEventListener('pointercancel', stopDrag);
-  root.addEventListener('lostpointercapture', function () { dragging = null; });
+  root.addEventListener('pointerup', releasePointer);
+  root.addEventListener('pointercancel', releasePointer);
+  root.addEventListener('lostpointercapture', releasePointer);
 
   root.addEventListener('keydown', function (event) {
     if (event.target.closest('button, a')) return;
@@ -375,15 +366,13 @@
       queueZoom(targetZoom - 1, root.clientWidth / 2, root.clientHeight / 2);
     } else if (event.key === 'Home') {
       event.preventDefault();
-      stopZoomAnimation();
-      zoom = 17;
-      targetZoom = zoom;
-      center = project(entrance, zoom);
+      fitRoute();
       draw();
     }
   });
 
   if (typeof ResizeObserver === 'function') new ResizeObserver(draw).observe(root);
   else window.addEventListener('resize', draw);
+  fitRoute();
   draw();
 })();
