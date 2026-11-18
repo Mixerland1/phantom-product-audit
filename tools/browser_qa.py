@@ -862,14 +862,27 @@ def main():
                                             "Ready statuses must display a green check followed by the word Готова")
                                     require(page.locator(".registry thead th.status-heading").inner_text() == "Статус",
                                             "The most important status column must be visibly highlighted")
-                                    status_header_background = page.locator(".registry thead th.status-heading").evaluate("(el) => getComputedStyle(el).backgroundColor")
-                                    standard_header_background = page.locator(".registry thead th").first.evaluate("(el) => getComputedStyle(el).backgroundColor")
-                                    require(status_header_background != standard_header_background,
-                                            "Status column header needs stronger visual prominence")
-                                    status_cell_background = ready_rows.first.locator('td[data-label="Статус"]').evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    status_header_style = page.locator(".registry thead th.status-heading").evaluate(
+                                        "(el) => ({background: getComputedStyle(el).backgroundColor, weight: parseFloat(getComputedStyle(el).fontWeight), shadow: getComputedStyle(el).boxShadow})")
+                                    standard_header_style = page.locator(".registry thead th").first.evaluate(
+                                        "(el) => ({background: getComputedStyle(el).backgroundColor, weight: parseFloat(getComputedStyle(el).fontWeight)})")
+                                    require(status_header_style["background"] == standard_header_style["background"]
+                                            and status_header_style["weight"] > standard_header_style["weight"]
+                                            and status_header_style["shadow"] != "none",
+                                            "Status heading must be prominent but share the table header background")
+                                    status_cell = ready_rows.first.locator('td[data-label="Статус"]')
+                                    status_cell_background = status_cell.evaluate("(el) => getComputedStyle(el).backgroundColor")
                                     ordinary_cell_background = ready_rows.first.locator('td[data-label="Код"]').evaluate("(el) => getComputedStyle(el).backgroundColor")
-                                    require(status_cell_background != ordinary_cell_background,
-                                            "The entire status column must be visually distinct")
+                                    require(status_cell_background == ordinary_cell_background,
+                                            "Status cells must share row backgrounds so the column is not visually detached")
+                                    ready_pill_background = ready_rows.first.locator(".ready-status").evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    work_pill_background = page.locator(".work-status").first.evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    require(ready_pill_background != status_cell_background
+                                            and work_pill_background != status_cell_background
+                                            and ready_pill_background != work_pill_background,
+                                            "Ready and in-progress labels must be distinct compact status pills")
+                                    require(status_cell.evaluate("(el) => getComputedStyle(el).borderLeftWidth") in ("0px", "0"),
+                                            "Status cells must not have an isolating vertical border")
 
                                     require(page.locator('a.link.old.row-action').count() == 56,
                                             "All 56 site pages must have an old-site action")
