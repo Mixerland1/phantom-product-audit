@@ -845,6 +845,14 @@ def main():
                                     not_ready_metric_color = page.locator(".metric--not-ready strong").evaluate("(el) => getComputedStyle(el).color")
                                     require(neutral_metric_color == not_ready_metric_color,
                                             "Totals must remain visually neutral")
+                                    require(page.locator("footer.footer").count() == 0,
+                                            "Progress registry must not render the site footer")
+                                    require(page.locator(".site-consultation").count() == 0,
+                                            "Progress registry must not display an engineer consultation form")
+                                    require(page.locator('script[src*="site-consultation.js"]').count() == 0,
+                                            "Progress registry must not load consultation injection")
+                                    require(page.locator("header.site-header").count() == 1,
+                                            "Progress registry must preserve the shared site header")
                                     header_titles = page.locator(".registry thead th").all_text_contents()
                                     require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Статус"],
                                             "Migration comparison table must have seven clear column names")
@@ -883,10 +891,15 @@ def main():
                                             "Ready and in-progress labels must be distinct compact status pills")
                                     if width > 900:
                                         status_separator = float(status_cell.evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
+                                        status_right_separator = float(status_cell.evaluate("(el) => getComputedStyle(el).borderRightWidth").replace("px", ""))
+                                        header_left = float(page.locator(".registry thead th.status-heading").evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
+                                        header_right = float(page.locator(".registry thead th.status-heading").evaluate("(el) => getComputedStyle(el).borderRightWidth").replace("px", ""))
                                         ordinary_separator = float(ready_rows.first.locator('td[data-label="Код"]').evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
                                         title_separator = float(ready_rows.first.locator('th[scope="row"]').evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
-                                        require(ordinary_separator == 1 and title_separator == 1 and status_separator == 3,
-                                                "Columns need thin 1px separators and a stronger 3px final divider")
+                                        require(ordinary_separator == 1 and title_separator == 1
+                                                and status_separator == 3 and status_right_separator == 3
+                                                and header_left == 3 and header_right == 3,
+                                                "Columns need thin 1px separators and 3px borders on both sides of Status")
                                     else:
                                         require(status_cell.evaluate("(el) => getComputedStyle(el).borderLeftWidth") in ("0px", "0"),
                                                 "Mobile cards must not have a separating vertical border")
