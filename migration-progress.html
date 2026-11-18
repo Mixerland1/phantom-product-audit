@@ -149,7 +149,8 @@ html[data-theme="dark"] .work-status{
   }
   .registry thead th.status-heading,
   .registry .page-row > td.status-cell[data-label="Статус"]{
-    border-left:3px solid #9eb4ca
+    border-left:3px solid #9eb4ca;
+    border-right:3px solid #9eb4ca
   }
   html[data-theme="dark"] .registry thead th + th,
   html[data-theme="dark"] .registry .page-row > th[scope="row"],
@@ -158,11 +159,11 @@ html[data-theme="dark"] .work-status{
   }
   html[data-theme="dark"] .registry thead th.status-heading,
   html[data-theme="dark"] .registry .page-row > td.status-cell[data-label="Статус"]{
-    border-left-color:#7089a4
+    border-left-color:#7089a4;
+    border-right-color:#7089a4
   }
 }
 </style>
-<link rel="stylesheet" href="assets/site-consultation.css?v=20261118-dark-fields-v1">
 </head>
 <body>
 <a class="skip" href="#main">К содержимому</a>
@@ -194,7 +195,6 @@ html[data-theme="dark"] .work-status{
 <p class="below"><strong>Обновлено:</strong> 18 ноября 2026 года · Ссылки «Новый сайт» ведут на тестовую версию; она обновляется отдельно от GitHub · Статусы готовности обновляются вручную</p>
 </div></section>
 </main>
-<footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
 <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
 <script>
@@ -238,6 +238,5 @@ html[data-theme="dark"] .work-status{
   for(const button of buttons)button.addEventListener('click',function(){selected=button.dataset.filter;update()});
 })();
 </script>
-<script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>
