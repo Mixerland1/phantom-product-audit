@@ -46,35 +46,25 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .contact-card .contact-link{display:inline-block;justify-self:start;max-width:100%;font-size:clamp(18px,2.1vw,25px);line-height:1.4;color:var(--ink);font-weight:750;overflow-wrap:anywhere;text-decoration:none}
 .contact-card .contact-link:hover{text-decoration:underline;text-decoration-color:var(--red)}
 .contact-card .contact-helper{display:block;margin-top:13px;font-size:13px;color:var(--muted)}
-.office-layout{display:grid;grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);gap:24px;align-items:stretch}
-.office-panel{padding:30px;border-radius:13px;border:1px solid var(--line);background:var(--paper)}
+.office-layout,.office-entrance{display:grid;grid-template-columns:minmax(0,.84fr) minmax(0,1.16fr);gap:24px;align-items:stretch}
+.office-panel,.office-entrance-details{min-width:0;min-height:320px;display:flex;flex-direction:column;justify-content:space-between;padding:30px;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
 .office-panel h3{margin:0 0 14px;font-size:22px;line-height:1.25}
 .office-panel address{font-style:normal;font-weight:650;line-height:1.7}
-.office-panel p{color:var(--muted)}
-.office-actions{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0 0}
-.office-meta{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.office-panel p{margin:14px 0 0;color:var(--muted)}
+.office-actions{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0 0}
+.office-meta{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
 .office-meta strong{display:block;font-size:14px}
-.office-meta p{margin:5px 0 0;font-size:14px}
+.office-meta p{margin:5px 0 0;font-size:14px;color:var(--muted)}
 .office-phone{white-space:nowrap}
-.map-frame{min-height:370px;position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:#e6f0f9 url('assets/map2.0b139232.png') center/cover no-repeat}
-
-
-
-
-
-
-
-.map-frame iframe{display:block;width:100%;height:370px;border:0;background:transparent}
-
-/* Понятный ориентир: фотография именно нужного входа, без обрезания указателей. */
-.office-entrance{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);margin:24px 0 0;overflow:hidden;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
-.office-entrance img{display:block;width:100%;height:370px;object-fit:contain;background:var(--soft)}
-.office-entrance figcaption{display:flex;flex-direction:column;justify-content:center;padding:30px 36px}
+.map-frame{height:320px;min-height:0;position:relative;border:1px solid var(--line);border-radius:13px;overflow:hidden;background:var(--soft)}
+.map-frame iframe{display:block;width:100%;height:100%;border:0;background:var(--soft)}
+/* Две самостоятельные карточки: фотография входа и инструкция посетителю. */
+.office-entrance{margin:24px 0 0}
+.office-entrance-media{height:320px;margin:0;overflow:hidden;border:1px solid var(--line);border-radius:13px;background:var(--paper)}
+.office-entrance-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
 .office-entrance-label{margin:0;color:var(--red);font-size:12px;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
 .office-entrance h3{margin:9px 0 13px;color:var(--ink);font-size:clamp(22px,2.3vw,28px);font-weight:750;line-height:1.25}
-.office-entrance p{margin:0;color:var(--muted);font-size:16px;line-height:1.65}
-@media(max-width:900px){.office-entrance{grid-template-columns:minmax(0,1fr)}.office-entrance img{height:320px}.office-entrance figcaption{padding:22px 26px}}
-@media(max-width:600px){.office-entrance img{height:300px}.office-entrance figcaption{padding:20px 22px}.office-entrance p{font-size:14px}}
+.office-entrance p{margin:0;color:var(--muted);font-size:16px;line-height:1.55}
 
 
 .dept-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:24px 0 0;padding:0;list-style:none}
@@ -88,12 +78,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 html[data-theme=dark]{--ink:#ecf3fb;--muted:#b9cadc;--canvas:#101a2a;--paper:#182638;--line:#34485c;--soft:#24394e;--red-soft:#351e2c}
 html[data-theme=dark] .hero{background:radial-gradient(ellipse at 90% 0%,#253e59 0,transparent 48%),linear-gradient(120deg,#101d2d,#192d41);color:var(--ink)}
 html[data-theme=dark] .hero-subtitle{color:#d0deec}
-html[data-theme=dark] .map-frame{background:#1b3449 url('assets/map2.0b139232.png') center/cover no-repeat}
+html[data-theme=dark] .map-frame,html[data-theme=dark] .map-frame iframe{background:var(--soft)}
 
 
 
-@media(max-width:900px){.hero-layout,.office-layout{grid-template-columns:minmax(0,1fr)}.hero-phone{max-width:650px}.map-frame{min-height:320px}.map-frame iframe{height:320px}.dept-list{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.wrap{width:calc(100% - 32px)}.hero{padding:48px 0 54px}.section{padding:44px 0}.contact-grid,.dept-list{grid-template-columns:1fr}.contact-card,.office-panel{padding:22px}.hero-phone{width:100%;max-width:100%}.btn{width:100%}.hero-actions{gap:9px}.office-actions .btn{width:100%}.map-frame{min-height:300px}.map-frame iframe{height:300px}}
+@media(max-width:900px){.hero-layout,.office-layout,.office-entrance{grid-template-columns:minmax(0,1fr)}.hero-phone{max-width:650px}.office-panel,.office-entrance-details{min-height:300px}.map-frame,.office-entrance-media{height:300px}.dept-list{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.wrap{width:calc(100% - 32px)}.hero{padding:48px 0 54px}.section{padding:44px 0}.contact-grid,.dept-list{grid-template-columns:1fr}.contact-card,.office-panel,.office-entrance-details{padding:22px}.office-panel,.office-entrance-details{min-height:280px}.map-frame,.office-entrance-media{height:280px}.office-entrance p{font-size:14px}.hero-phone{width:100%;max-width:100%}.btn{width:100%}.hero-actions{gap:9px}.office-actions .btn{width:100%}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 /* Фон первого экрана из оригинального файла пользователя с сохранением элементов связи справа. */
@@ -174,29 +164,33 @@ html[data-theme="dark"] main > .hero.hero--contacts{
       <div class="office-panel">
         <h3>ООО «МДИС»</h3>
         <address>123022, Россия, г. Москва,<br>ул. 1905 года, д. 7, стр. 1</address>
-        <p>Ближайшая станция метро – «Улица 1905 года».</p>
+        <p>Метро «Улица 1905 года», выход №&nbsp;1 к&nbsp;Звенигородскому шоссе.</p>
         <div class="office-actions">
           <a class="btn" href="https://yandex.com/maps/org/mdis/1055025379/" target="_blank" rel="noopener noreferrer">Маршрут в&nbsp;Яндекс Картах</a>
+        </div>
+      </div>
+      <div class="map-frame" id="office-map">
+        <iframe title="Яндекс Карты: вход в здание МДИС со стороны Звенигородского шоссе"
+          src="https://yandex.ru/map-widget/v1/?ll=37.559358%2C55.763107&amp;z=17&amp;pt=37.559358%2C55.763107"
+          loading="eager" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="office-entrance">
+      <figure class="office-entrance-media">
+        <img src="assets/office-entrance-mgt-20261118.webp" alt="Вход в&nbsp;здание Московской Газетной Типографии: фасад, двери и&nbsp;указатели входа" width="1200" height="900" loading="lazy" decoding="async">
+      </figure>
+      <div class="office-entrance-details">
+        <div>
+          <span class="office-entrance-label">Ориентир для&nbsp;посетителей</span>
+          <h3>Как нас найти</h3>
+          <p>Вход со&nbsp;стороны Звенигородского шоссе, подъезд Московской Газетной Типографии, рядом с&nbsp;автопарковкой.</p>
         </div>
         <div class="office-meta">
           <strong>Планируете визит?</strong>
           <p>Перед приездом уточните порядок прохода в&nbsp;офис<br>по&nbsp;телефону <span class="office-phone">+7&nbsp;(495)&nbsp;783-33-79</span>.</p>
         </div>
       </div>
-      <div class="map-frame" id="office-map">
-        <iframe title="Карта: вход в здание МДИС со стороны Звенигородского шоссе"
-          src="https://www.openstreetmap.org/export/embed.html?bbox=37.556608%2C55.761407%2C37.562108%2C55.764807&amp;layer=mapnik&amp;marker=55.763107%2C37.559358"
-          loading="eager" referrerpolicy="no-referrer" allowfullscreen></iframe>
-      </div>
     </div>
-    <figure class="office-entrance">
-      <img src="assets/office-entrance-mgt-20261118.webp" alt="Вход в&nbsp;здание Московской Газетной Типографии: фасад, двери и&nbsp;указатели входа" width="1200" height="900" loading="lazy" decoding="async">
-      <figcaption>
-        <span class="office-entrance-label">Ориентир для&nbsp;посетителей</span>
-        <h3>Как нас найти</h3>
-        <p>Вход со&nbsp;стороны Звенигородского шоссе, подъезд Московской Газетной Типографии, рядом с&nbsp;автопарковкой.</p>
-      </figcaption>
-    </figure>
   </div>
 </section>
 <section class="section" id="departments">
