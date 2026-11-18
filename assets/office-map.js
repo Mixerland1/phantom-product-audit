@@ -24,6 +24,138 @@
   let anchorY = 0;
   const tiles = new Map();
 
+  // Координаты метро и парковки — ориентиры; вход МДИС подтверждён владельцем сайта.
+  const routeEnds = {
+    walk: {from:{lat:55.764704,lon:37.561449},to:entrance},
+    zven: {from:{lat:55.76388,lon:37.55688},to:{lat:55.76337,lon:37.55947}},
+    street: {from:{lat:55.76215,lon:37.56073},to:{lat:55.76337,lon:37.55947}}
+  };
+  const routeSvg=root.querySelector('.office-map-route');
+  const routeUnder=root.querySelector('.office-map-route-under');
+  const routeOver=root.querySelector('.office-map-route-over');
+  const routeStart=root.querySelector('.office-map-start');
+  const routeInfo=root.querySelector('.office-map-route-info');
+  const originsBox=root.querySelector('.office-map-origins');
+  const modes=Array.from(root.querySelectorAll('[data-mode]'));
+  const origins=Array.from(root.querySelectorAll('[data-drive]'));
+  const routeCache=new Map();
+  let routeMode='',driveFrom='zven',routePts=null,requestId=0;
+
+  function routeHref(pair,mode){
+    return 'https://yandex.ru/maps/?rtext='+pair.from.lat+'%2C'+pair.from.lon+'~'+
+      pair.to.lat+'%2C'+pair.to.lon+'&rtt='+(mode==='walk'?'pd':'auto');
+  }
+  function routeMessage(message,href){
+    routeInfo.textContent=message;
+    if(href){
+      const link=document.createElement('a');
+      link.href=href;link.target='_blank';link.rel='noopener noreferrer';
+      link.textContent=' Открыть маршрут в Яндекс Картах';
+      routeInfo.appendChild(link);
+    }
+    routeInfo.hidden=false;
+  }
+  function drawRoute(){
+    if(!routePts){routeSvg.hidden=true;routeStart.hidden=true;return;}
+    const width=root.clientWidth,height=root.clientHeight;
+    const projected=routePts.map(function(p){
+      const q=project(p,zoom);
+      return {x:q.x-center.x+width/2,y:q.y-center.y+height/2};
+    });
+    const d=projected.map(function(p,i){return (i?'L':'M')+p.x.toFixed(2)+','+p.y.toFixed(2);}).join(' ');
+    routeSvg.setAttribute('viewBox','0 0 '+width+' '+height);
+    routeUnder.setAttribute('d',d);routeOver.setAttribute('d',d);
+    routeSvg.hidden=false;
+    routeStart.style.left=projected[0].x+'px';
+    routeStart.style.top=projected[0].y+'px';
+    routeStart.hidden=false;
+  }
+  function fitRoute(points){
+    if(!root.clientWidth||!root.clientHeight)return;
+    stopZoomAnimation();
+    const width=root.clientWidth,height=root.clientHeight;
+    let level=minZoom;
+    for(let z=maxZoom;z>=minZoom;z-=.2){
+      const p=points.map(function(a){return project(a,z);});
+      const xs=p.map(function(a){return a.x;}),ys=p.map(function(a){return a.y;});
+      if(Math.max(...xs)-Math.min(...xs)<=Math.max(40,width-94)&&
+         Math.max(...ys)-Math.min(...ys)<=Math.max(40,height-168)){level=z;break;}
+    }
+    zoom=Math.min(maxZoom,Math.max(minZoom,level));targetZoom=zoom;
+    const pts=points.map(function(a){return project(a,zoom);});
+    center={x:(Math.min(...pts.map(p=>p.x))+Math.max(...pts.map(p=>p.x)))/2,
+            y:(Math.min(...pts.map(p=>p.y))+Math.max(...pts.map(p=>p.y)))/2-20};
+  }
+  function parseGeometry(json){
+    const route=json.routes&&json.routes[0];
+    const g=route&&route.geometry;
+    if(!g||g.type!=='LineString'||!Array.isArray(g.coordinates))throw Error('No route shape');
+    const points=g.coordinates.map(function(c){return {lon:c[0],lat:c[1]};}).filter(function(p){
+      return Number.isFinite(p.lat)&&Number.isFinite(p.lon);
+    });
+    if(points.length<2)throw Error('Empty route');
+    return {points:points,distance:route.distance};
+  }
+  async function loadRoute(){
+    const current=++requestId;
+    routePts=null;drawRoute();
+    const pair=routeEnds[routeMode==='walk'?'walk':driveFrom];
+    const href=routeHref(pair,routeMode);
+    routeMessage('Построение маршрута…',null);
+    const key=routeMode==='walk'?'walk':driveFrom;
+    try{
+      let data=routeCache.get(key);
+      if(!data){
+        const query={locations:[pair.from,pair.to],
+          costing:routeMode==='walk'?'pedestrian':'auto',format:'osrm',shape_format:'geojson',
+          units:'kilometers'};
+        const abort=new AbortController();
+        const timer=setTimeout(function(){abort.abort();},10000);
+        try{
+          const response=await fetch('https://valhalla1.openstreetmap.de/route?json='+
+            encodeURIComponent(JSON.stringify(query)),{signal:abort.signal,credentials:'omit'});
+          if(!response.ok)throw Error('Routing unavailable');
+          data=parseGeometry(await response.json());
+          routeCache.set(key,data);
+        }finally{clearTimeout(timer);}
+      }
+      if(current!==requestId)return;
+      routePts=data.points;fitRoute(routePts);draw();
+      const d=Number(data.distance);
+      const distance=Number.isFinite(d)?(d<1?Math.round(d*1000)+' м':d.toFixed(1).replace('.',',')+' км'):'';
+      const label=routeMode==='walk'?'Пешком от метро, выход № 1 (ориентир). ':
+        'Подъезд к парковке у Звенигородского шоссе (ориентир). ';
+      routeMessage(label+distance+'. Уточните доступность парковки.',href);
+    }catch(e){
+      if(current!==requestId)return;
+      routePts=null;drawRoute();
+      routeMessage('Маршрут внутри карты временно недоступен.',href);
+    }
+  }
+  modes.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      const next=btn.dataset.mode;
+      if(next===routeMode){
+        requestId++;routeMode='';root.dataset.mode='';routePts=null;
+        routeSvg.hidden=true;routeStart.hidden=true;routeInfo.hidden=true;originsBox.hidden=true;
+        modes.forEach(function(b){b.setAttribute('aria-pressed','false');});
+        stopZoomAnimation();zoom=17;targetZoom=17;center=project(entrance,17);draw();return;
+      }
+      routeMode=next;root.dataset.mode=next;originsBox.hidden=next!=='auto';
+      modes.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.mode===next));});
+      loadRoute();
+    });
+  });
+  origins.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(routeMode!=='auto')return;
+      driveFrom=btn.dataset.drive;
+      origins.forEach(function(b){b.setAttribute('aria-pressed',String(b.dataset.drive===driveFrom));});
+      loadRoute();
+    });
+  });
+
+
   function project(point, level) {
     const size = tileSize * Math.pow(2, level);
     const sin = Math.sin(point.lat * Math.PI / 180);
@@ -129,6 +261,7 @@
     marker.style.top = (pin.y - center.y + height / 2) + 'px';
     zoomIn.disabled = targetZoom >= maxZoom;
     zoomOut.disabled = targetZoom <= minZoom;
+    drawRoute();
   }
 
   function setZoomImmediate(level, x, y) {
