@@ -821,7 +821,7 @@ def main():
                                             "Category headings must span seven table columns")
                                     header_titles = page.locator(".registry thead th").all_text_contents()
                                     require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Готова"],
-                                            "Registry column names must remain simple and unambiguous")
+                                            "Migration comparison table must have seven clear column names")
                                     ready_rows = page.locator('tr.page-row[data-ready="true"]')
                                     require(ready_rows.count() == 5,
                                             "Only five agreed pages must be ready")
@@ -830,23 +830,56 @@ def main():
                                             "Ready flags must match homepage, Solutions, Services, Contacts and Electricity")
                                     require(ready_rows.locator(".check.ready").count() == 5,
                                             "Each ready page must have a visible checkmark")
-                                    require(page.locator('tr.page-row[data-legacy="false"] a.link.stage').first.inner_text().startswith("Новый сайт"),
-                                            "Preview links must say Новый сайт")
-                                    require(page.locator('tr.page-row a.link.github').first.inner_text().startswith("Код"),
-                                            "Repository links in registry must say Код")
+                                    require(page.locator('a.link.old.row-action').count() == 60,
+                                            "Each registry row must have an old-site action")
+                                    require(page.locator('a.link.stage.row-action').count() == 56,
+                                            "Every canonical row must have a new-site action")
+                                    require(page.locator('a.link.github.row-action').count() == 60,
+                                            "Every registry row must have a code action")
+                                    require(page.locator('a.link.old').first.inner_text().startswith("Открыть"),
+                                            "Old-site links must use an action label")
+                                    require(page.locator('a.link.stage').first.inner_text().startswith("Открыть"),
+                                            "New-site links must use an action label")
+                                    require(page.locator('a.link.github').first.inner_text().startswith("Посмотреть"),
+                                            "Code links must use an action label")
+                                    require("старую версию" in page.locator('a.link.old').first.get_attribute("aria-label"),
+                                            "Old-site action must explain its destination accessibly")
+                                    require("новую версию" in page.locator('a.link.stage').first.get_attribute("aria-label"),
+                                            "New-site action must explain its destination accessibly")
+                                    require(page.locator('a.link.stage[href^="https://relay.mixerland.ru:8443/mdis-preview/"]').count() == 56,
+                                            "All 56 canonical rows must keep their AEZA URLs")
+                                    require(page.get_by_role("heading", name="Как сравнить страницы").count() == 1,
+                                            "Registry must explain how to compare the pages")
+                                    require(page.locator(".guide-steps li").count() == 3,
+                                            "Comparison guide must have three clear steps")
+                                    require(page.locator('a.hero-jump[href="#registry"]').count() == 1,
+                                            "Hero must provide a direct link to the table")
                                     ready_color = ready_rows.locator(".check.ready").first.evaluate("(el) => getComputedStyle(el).color")
                                     transferred_color = page.locator(".check:not(.ready)").first.evaluate("(el) => getComputedStyle(el).color")
                                     require(ready_color == transferred_color,
                                             "Ready checks must use the same green color as transferred checks")
-                                    require(page.locator('a.link.stage[href^="https://relay.mixerland.ru:8443/mdis-preview/"]').count() == 56,
-                                            "All 56 canonical rows must link to the correct AEZA preview path")
+                                    if width <= 900:
+                                        mobile_display = rows.first.evaluate("(el) => getComputedStyle(el).display")
+                                        require(mobile_display == "grid",
+                                                "Registry rows must become readable cards on small screens")
+                                        require(page.locator('.registry').evaluate("(el) => el.getBoundingClientRect().width") <= width,
+                                                "Mobile registry must fit inside the viewport")
                                     page.locator("#page-search").fill("контакты")
                                     require(page.locator("tr.page-row:visible").count() == 1,
                                             "Registry text search does not isolate Contacts")
+                                    page.locator("#page-search").fill("02")
+                                    require(page.locator('tr.page-row').filter(has=page.locator('.page-number', has_text="02")).first.is_visible(),
+                                            "Registry text search must support row numbers")
                                     page.locator("#page-search").fill("")
                                     page.locator('button[data-filter="ready"]').click()
                                     require(page.locator("tr.page-row:visible").count() == 5,
                                             "Ready filter must show five pages")
+                                    page.locator('button[data-filter="pending"]').click()
+                                    require(page.locator("tr.page-row:visible").count() == 51,
+                                            "In-progress filter must exclude ready pages and archived rows")
+                                    page.locator('button[data-filter="archive"]').click()
+                                    require(page.locator("tr.page-row:visible").count() == 4,
+                                            "Archive filter must show four historical duplicates")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
