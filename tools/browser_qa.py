@@ -828,6 +828,18 @@ def main():
                                             "Migration dashboard must show all four current summary metrics")
                                     require(page.locator(".metric--not-ready").get_attribute("title") == "3 страницы в работе и 48 без статуса готовности",
                                             "Not-ready total must explain that it includes active pages")
+                                    ready_metric_color = page.locator(".metric--ready strong").evaluate("(el) => getComputedStyle(el).color")
+                                    ready_check_color = page.locator(".check.ready").first.evaluate("(el) => getComputedStyle(el).color")
+                                    require(ready_metric_color == ready_check_color,
+                                            "Ready counter must match the green completion checkmarks")
+                                    work_metric_color = page.locator(".metric--in-work strong").evaluate("(el) => getComputedStyle(el).color")
+                                    work_label_color = page.locator(".work-status").first.evaluate("(el) => getComputedStyle(el).color")
+                                    require(work_metric_color == work_label_color,
+                                            "In-progress counter must match the yellow work status")
+                                    neutral_metric_color = page.locator(".metrics .metric").first.locator("strong").evaluate("(el) => getComputedStyle(el).color")
+                                    not_ready_metric_color = page.locator(".metric--not-ready strong").evaluate("(el) => getComputedStyle(el).color")
+                                    require(neutral_metric_color == not_ready_metric_color,
+                                            "Totals must remain visually neutral")
                                     header_titles = page.locator(".registry thead th").all_text_contents()
                                     require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Статус"],
                                             "Migration comparison table must have seven clear column names")
