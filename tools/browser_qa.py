@@ -819,6 +819,15 @@ def main():
                                             "Section headings should not display ordinal numbers")
                                     require(page.locator(".group-row th[colspan='7']").count() == 8,
                                             "Category headings must span seven table columns")
+                                    metric_values = page.locator(".metrics .metric").all_text_contents()
+                                    require(len(metric_values) == 4
+                                            and "56" in metric_values[0] and "Страниц сайта" in metric_values[0]
+                                            and "5" in metric_values[1] and "Готовы" in metric_values[1]
+                                            and "3" in metric_values[2] and "В работе" in metric_values[2]
+                                            and "51" in metric_values[3] and "Не готовы" in metric_values[3],
+                                            "Migration dashboard must show all four current summary metrics")
+                                    require(page.locator(".metric--not-ready").get_attribute("title") == "3 страницы в работе и 48 без статуса готовности",
+                                            "Not-ready total must explain that it includes active pages")
                                     header_titles = page.locator(".registry thead th").all_text_contents()
                                     require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Статус"],
                                             "Migration comparison table must have seven clear column names")
