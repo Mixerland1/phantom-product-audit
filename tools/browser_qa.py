@@ -858,8 +858,8 @@ def main():
                                             "Each ready page must have a visible checkmark")
                                     require(ready_rows.locator(".ready-status").count() == 5,
                                             "Each finished page needs a textual ready status")
-                                    require(all(text.strip() == "✓Готова" for text in ready_rows.locator(".ready-status").all_text_contents()),
-                                            "Ready statuses must display a green check followed by the word Готова")
+                                    require(all(text.strip() == "✓Готово" for text in ready_rows.locator(".ready-status").all_text_contents()),
+                                            "Ready statuses must display a green check followed by the word Готово")
                                     require(page.locator(".registry thead th.status-heading").inner_text() == "Статус",
                                             "The most important status column must be visibly highlighted")
                                     status_header_style = page.locator(".registry thead th.status-heading").evaluate(
@@ -881,8 +881,15 @@ def main():
                                             and work_pill_background != status_cell_background
                                             and ready_pill_background != work_pill_background,
                                             "Ready and in-progress labels must be distinct compact status pills")
-                                    require(status_cell.evaluate("(el) => getComputedStyle(el).borderLeftWidth") in ("0px", "0"),
-                                            "Status cells must not have an isolating vertical border")
+                                    if width > 900:
+                                        status_separator = float(status_cell.evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
+                                        ordinary_separator = float(ready_rows.first.locator('td[data-label="Код"]').evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
+                                        title_separator = float(ready_rows.first.locator('th[scope="row"]').evaluate("(el) => getComputedStyle(el).borderLeftWidth").replace("px", ""))
+                                        require(ordinary_separator == 1 and title_separator == 1 and status_separator == 3,
+                                                "Columns need thin 1px separators and a stronger 3px final divider")
+                                    else:
+                                        require(status_cell.evaluate("(el) => getComputedStyle(el).borderLeftWidth") in ("0px", "0"),
+                                                "Mobile cards must not have a separating vertical border")
 
                                     require(page.locator('a.link.old.row-action').count() == 56,
                                             "All 56 site pages must have an old-site action")
