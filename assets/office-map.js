@@ -71,7 +71,8 @@
     routeSvg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
     routeUnder.setAttribute('d', d);
     routeOver.setAttribute('d', d);
-    routeSvg.hidden = false;
+    // SVG does not reliably reflect the HTML hidden property: remove the attribute.
+    routeSvg.removeAttribute('hidden');
     routeStart.style.left = screen[0].x + 'px';
     routeStart.style.top = screen[0].y + 'px';
     routeStart.hidden = false;
@@ -113,8 +114,8 @@
     modeButtons.forEach(function (button) {
       button.setAttribute('aria-pressed', String(button.dataset.mode === routeMode));
     });
-    fitRoute();
-    draw();
+    // Keep the same map centre and zoom; only the displayed route changes.
+    drawRoute();
   }
   modeButtons.forEach(function (button) {
     button.addEventListener('click', function () { selectRoute(button.dataset.mode); });

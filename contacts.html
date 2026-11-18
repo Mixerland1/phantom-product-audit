@@ -70,8 +70,8 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .office-map-unavailable[hidden],.office-map-route[hidden],.office-map-start[hidden]{display:none}
 .office-map-route{position:absolute;z-index:30;inset:0;width:100%;height:100%;pointer-events:none}
 .office-map-route path{fill:none;stroke-linejoin:round;stroke-linecap:round}
-.office-map-route-under{stroke:rgba(255,255,255,.98);stroke-width:8}
-.office-map-route-over{stroke:#1764b7;stroke-width:4.5;stroke-dasharray:2 10}
+.office-map-route-under{stroke:rgba(255,255,255,.98);stroke-width:9.5}
+.office-map-route-over{stroke:#1764b7;stroke-width:5.5;stroke-dasharray:10 7}
 .office-local-map[data-mode="auto"] .office-map-route-over{stroke:#e30f2d}
 .office-map-start{position:absolute;z-index:34;width:13px;height:13px;transform:translate(-50%,-50%);border:3px solid #fff;border-radius:50%;background:#1764b7;box-shadow:0 2px 8px #0004;pointer-events:none}
 .office-local-map[data-mode="auto"] .office-map-start{background:#e30f2d}
@@ -198,7 +198,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
       <div class="map-frame" id="office-map">
         <div class="office-local-map" data-mode="walk" tabindex="0" role="region" aria-label="Карта: вход в здание МДИС со стороны Звенигородского шоссе" aria-describedby="office-map-help">
           <div class="office-map-tiles" aria-hidden="true"></div>
-          <svg class="office-map-route" aria-hidden="true" hidden><path class="office-map-route-under"></path><path class="office-map-route-over"></path></svg>
+          <svg class="office-map-route" aria-hidden="true"><path class="office-map-route-under"></path><path class="office-map-route-over"></path></svg>
           <div class="office-map-start" aria-hidden="true" hidden></div>
           <div class="office-map-marker" aria-hidden="true">
             <svg viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg"><path d="M17 1C8.2 1 1 8.2 1 17c0 12.5 16 26 16 26s16-13.5 16-26C33 8.2 25.8 1 17 1Z" fill="#e30f2d" stroke="#fff" stroke-width="2"/><circle cx="17" cy="17" r="6" fill="#fff"/></svg>
@@ -245,7 +245,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
 <footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
 <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
-<script src="assets/office-map.js?v=20261118-route-icons-v4"></script>
+<script src="assets/office-map.js?v=20261118-visible-routes-v5"></script>
 <script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>
