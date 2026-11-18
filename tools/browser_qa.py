@@ -820,7 +820,7 @@ def main():
                                     require(page.locator(".group-row th[colspan='7']").count() == 8,
                                             "Category headings must span seven table columns")
                                     header_titles = page.locator(".registry thead th").all_text_contents()
-                                    require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Готова"],
+                                    require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Статус"],
                                             "Migration comparison table must have seven clear column names")
                                     ready_rows = page.locator('tr.page-row[data-ready="true"]')
                                     require(ready_rows.count() == 5,
@@ -875,8 +875,23 @@ def main():
                                     require(page.locator("tr.page-row:visible").count() == 5,
                                             "Ready filter must show five pages")
                                     page.locator('button[data-filter="pending"]').click()
-                                    require(page.locator("tr.page-row:visible").count() == 51,
-                                            "In-progress filter must exclude ready pages and archived rows")
+                                    require(page.locator("tr.page-row:visible").count() == 3,
+                                            "In-progress filter must include only pages 04, 05 and 06")
+                                    work_rows = page.locator('tr.page-row[data-progress="true"]')
+                                    require(work_rows.count() == 3,
+                                            "Exactly three explicitly active pages expected")
+                                    work_files = work_rows.locator('.page-file').all_text_contents()
+                                    require(set(work_files) == {"news.html", "support.html", "company.html"},
+                                            "Work markers must be on pages 04, 05, and 06")
+                                    require(work_rows.locator('.work-status .work-dot').count() == 3,
+                                            "All in-progress pages need a yellow dot")
+                                    require(work_rows.locator('.work-status').first.inner_text().strip() == "В работе",
+                                            "In-progress badge must be self-explanatory")
+                                    require(page.locator(".legend-work").count() == 1,
+                                            "Yellow status must be explained in the legend")
+                                    page.locator('button[data-filter="queued"]').click()
+                                    require(page.locator("tr.page-row:visible").count() == 48,
+                                            "Unassigned filter should show remaining 48 pages")
                                     page.locator('button[data-filter="archive"]').click()
                                     require(page.locator("tr.page-row:visible").count() == 4,
                                             "Archive filter must show four historical duplicates")
