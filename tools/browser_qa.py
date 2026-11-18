@@ -692,7 +692,8 @@ def main():
                                 require(not broken, f"Broken local images: {broken}")
                                 assert_theme(page, theme)
                                 inspect_nav(page, filename, width)
-                                inspect_mobile_footer_logos(page, width)
+                                if filename != "migration-progress.html":
+                                    inspect_mobile_footer_logos(page, width)
                                 inspect_active_underline_hover(page, filename, width)
                                 if filename == "solutions.html":
                                     hub_nav = page.locator('nav.solutions-switcher[aria-label="Переход между решениями"]')
@@ -774,9 +775,9 @@ def main():
                                 if filename == "phantom-home.html":
                                     require(page.locator('.contact-area #contact-form').count() == 1,
                                             "Homepage must retain its original engineer consultation form")
-                                else:
+                                elif filename != "migration-progress.html":
                                     require(page.locator('main > section.site-consultation').count() == 1,
-                                            "Every page must end with one shared engineer consultation section")
+                                            "Every public-facing page must end with one shared engineer consultation section")
                                     require(page.locator('main > section.site-consultation').is_visible(),
                                             "Shared engineer consultation is hidden")
                                     require(page.locator('#site-consultation-form').count() == 1,
