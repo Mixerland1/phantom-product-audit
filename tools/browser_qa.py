@@ -820,8 +820,8 @@ def main():
                                     require(page.locator(".group-row th[colspan='7']").count() == 8,
                                             "Category headings must span seven table columns")
                                     header_titles = page.locator(".registry thead th").all_text_contents()
-                                    require(header_titles[-2:] == ["Перенесена", "Готова"] and len(header_titles) == 7,
-                                            "Registry must have Перенесена and Готова without extra status columns")
+                                    require(header_titles == ["№", "Страница", "Старый сайт", "Новый сайт", "Код", "Перенесена", "Готова"],
+                                            "Registry column names must remain simple and unambiguous")
                                     ready_rows = page.locator('tr.page-row[data-ready="true"]')
                                     require(ready_rows.count() == 5,
                                             "Only five agreed pages must be ready")
@@ -830,6 +830,14 @@ def main():
                                             "Ready flags must match homepage, Solutions, Services, Contacts and Electricity")
                                     require(ready_rows.locator(".check.ready").count() == 5,
                                             "Each ready page must have a visible checkmark")
+                                    require(page.locator('tr.page-row[data-legacy="false"] a.link.stage').first.inner_text().startswith("Новый сайт"),
+                                            "Preview links must say Новый сайт")
+                                    require(page.locator('tr.page-row a.link.github').first.inner_text().startswith("Код"),
+                                            "Repository links in registry must say Код")
+                                    ready_color = ready_rows.locator(".check.ready").first.evaluate("(el) => getComputedStyle(el).color")
+                                    transferred_color = page.locator(".check:not(.ready)").first.evaluate("(el) => getComputedStyle(el).color")
+                                    require(ready_color == transferred_color,
+                                            "Ready checks must use the same green color as transferred checks")
                                     require(page.locator('a.link.stage[href^="https://relay.mixerland.ru:8443/mdis-preview/"]').count() == 56,
                                             "All 56 canonical rows must link to the correct AEZA preview path")
                                     page.locator("#page-search").fill("контакты")
