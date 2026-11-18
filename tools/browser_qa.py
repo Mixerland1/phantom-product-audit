@@ -809,16 +809,21 @@ def main():
                                             "Cookie policy must link locally to privacy policy")
                                 if filename == "migration-progress.html":
                                     rows = page.locator("tr.page-row")
-                                    require(rows.count() == 60, "Migration registry must list 60 source HTML files")
-                                    require(page.locator('tr.page-row[data-legacy="false"]').count() == 56,
-                                            "Migration registry must list 56 canonical pages")
+                                    require(rows.count() == 56, "Migration registry must list exactly 56 actual site pages")
                                     page_numbers = page.locator("tr.page-row .page-number").all_text_contents()
-                                    require(page_numbers == [f"{i:02d}" for i in range(1, 61)],
+                                    require(page_numbers == [f"{i:02d}" for i in range(1, 57)],
                                             "Registry page numbers must run consecutively from 01 to 60")
                                     require(page.locator(".group-index").count() == 0,
                                             "Section headings should not display ordinal numbers")
-                                    require(page.locator(".group-row th[colspan='7']").count() == 8,
-                                            "Category headings must span seven table columns")
+                                    require(page.locator(".group-row th[colspan='7']").count() == 7,
+                                            "Seven actual site categories must span seven table columns")
+                                    require(page.locator('tbody[data-section="Архивные HTML-дубли"]').count() == 0,
+                                            "Historical duplicate category must be completely absent")
+                                    require(page.locator('[data-legacy]').count() == 0,
+                                            "Historical duplicate attributes must not appear in the progress table")
+                                    filter_counts = page.locator('.filter-count').all_text_contents()
+                                    require(filter_counts == ["56", "5", "3", "48"],
+                                            "Filters must count only the 56 relevant pages")
                                     metric_values = page.locator(".metrics .metric").all_text_contents()
                                     require(len(metric_values) == 4
                                             and "56" in metric_values[0] and "Страниц сайта" in metric_values[0]
@@ -851,12 +856,12 @@ def main():
                                             "Ready flags must match homepage, Solutions, Services, Contacts and Electricity")
                                     require(ready_rows.locator(".check.ready").count() == 5,
                                             "Each ready page must have a visible checkmark")
-                                    require(page.locator('a.link.old.row-action').count() == 60,
-                                            "Each registry row must have an old-site action")
+                                    require(page.locator('a.link.old.row-action').count() == 56,
+                                            "All 56 site pages must have an old-site action")
                                     require(page.locator('a.link.stage.row-action').count() == 56,
                                             "Every canonical row must have a new-site action")
-                                    require(page.locator('a.link.github.row-action').count() == 60,
-                                            "Every registry row must have a code action")
+                                    require(page.locator('a.link.github.row-action').count() == 56,
+                                            "All 56 site pages must have a code action")
                                     require(page.locator('a.link.old').first.inner_text().startswith("Открыть"),
                                             "Old-site links must use an action label")
                                     require(page.locator('a.link.stage').first.inner_text().startswith("Открыть"),
@@ -913,9 +918,11 @@ def main():
                                     page.locator('button[data-filter="queued"]').click()
                                     require(page.locator("tr.page-row:visible").count() == 48,
                                             "Unassigned filter should show remaining 48 pages")
-                                    page.locator('button[data-filter="archive"]').click()
-                                    require(page.locator("tr.page-row:visible").count() == 4,
-                                            "Archive filter must show four historical duplicates")
+                                    require(page.locator('button[data-filter="archive"]').count() == 0,
+                                            "Archive filter must not be present")
+                                    page.locator('button[data-filter="all"]').click()
+                                    require(page.locator("tr.page-row:visible").count() == 56,
+                                            "All filter must show only the 56 relevant pages")
                                 if filename == "company.html":
                                     inspect_theme_persistence(page, base, theme)
                                 RESULTS.append({"page": filename, "width": width, "theme": theme, "ok": True})
