@@ -812,7 +812,7 @@ def main():
                                     require(rows.count() == 56, "Migration registry must list exactly 56 actual site pages")
                                     page_numbers = page.locator("tr.page-row .page-number").all_text_contents()
                                     require(page_numbers == [f"{i:02d}" for i in range(1, 57)],
-                                            "Registry page numbers must run consecutively from 01 to 60")
+                                            "Registry page numbers must run consecutively from 01 to 56")
                                     require(page.locator(".group-index").count() == 0,
                                             "Section headings should not display ordinal numbers")
                                     require(page.locator(".group-row th[colspan='7']").count() == 7,
@@ -856,6 +856,21 @@ def main():
                                             "Ready flags must match homepage, Solutions, Services, Contacts and Electricity")
                                     require(ready_rows.locator(".check.ready").count() == 5,
                                             "Each ready page must have a visible checkmark")
+                                    require(ready_rows.locator(".ready-status").count() == 5,
+                                            "Each finished page needs a textual ready status")
+                                    require(all(text.strip() == "✓Готова" for text in ready_rows.locator(".ready-status").all_text_contents()),
+                                            "Ready statuses must display a green check followed by the word Готова")
+                                    require(page.locator(".registry thead th.status-heading").inner_text() == "Статус",
+                                            "The most important status column must be visibly highlighted")
+                                    status_header_background = page.locator(".registry thead th.status-heading").evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    standard_header_background = page.locator(".registry thead th").first.evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    require(status_header_background != standard_header_background,
+                                            "Status column header needs stronger visual prominence")
+                                    status_cell_background = ready_rows.first.locator('td[data-label="Статус"]').evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    ordinary_cell_background = ready_rows.first.locator('td[data-label="Код"]').evaluate("(el) => getComputedStyle(el).backgroundColor")
+                                    require(status_cell_background != ordinary_cell_background,
+                                            "The entire status column must be visually distinct")
+
                                     require(page.locator('a.link.old.row-action').count() == 56,
                                             "All 56 site pages must have an old-site action")
                                     require(page.locator('a.link.stage.row-action').count() == 56,
