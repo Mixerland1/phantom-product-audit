@@ -64,6 +64,10 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .office-map-tile{position:absolute;width:256px;height:256px;max-width:none;user-select:none;pointer-events:none}
 .office-map-marker{position:absolute;z-index:35;width:34px;height:44px;transform:translate(-50%,-100%);pointer-events:none;filter:drop-shadow(0 3px 3px rgba(0,0,0,.3))}
 .office-map-marker svg{display:block;width:100%;height:100%}
+.office-map-waypoint{position:absolute;z-index:36;box-sizing:border-box;width:28px;height:28px;transform:translate(-50%,-50%);display:grid;place-items:center;border:1px solid #b6c7d6;border-radius:8px;background:rgba(255,255,255,.98);box-shadow:0 2px 6px rgba(14,30,45,.34);pointer-events:none}
+.office-map-waypoint svg{display:block;width:22px;height:22px;fill:none;stroke:#18517d;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.9}
+.office-map-parking{width:28px;height:28px;border:2px solid #fff;border-radius:7px;background:#175fa0;box-shadow:0 2px 6px rgba(14,30,45,.42);color:#fff;font:800 19px/1 Arial,sans-serif}
+.office-local-map[data-mode="auto"] .office-map-stairs,.office-local-map[data-mode="walk"] .office-map-parking{display:none}
 .office-map-attribution{position:absolute;z-index:50;bottom:6px;right:8px;padding:3px 6px;border-radius:4px;background:rgba(255,255,255,.92);color:#34465b;font:11px/1.3 Arial,sans-serif}
 .office-map-attribution a{color:#245b86;text-decoration:underline}
 .office-map-unavailable{position:absolute;z-index:70;inset:0;display:flex;align-items:center;justify-content:center;padding:28px;background:#eef3f8;color:#1d3550;font-size:14px;text-align:center}
@@ -202,6 +206,13 @@ html[data-theme="dark"] main > .hero.hero--contacts{
           <div class="office-map-tiles" aria-hidden="true"></div>
           <svg class="office-map-route" aria-hidden="true"><path class="office-map-route-under"></path><path class="office-map-route-over"></path><path class="office-map-route-tunnel-under"></path><path class="office-map-route-tunnel"></path></svg>
           <div class="office-map-start" aria-hidden="true" hidden></div>
+          <div class="office-map-waypoint office-map-stairs office-map-stairs-down" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 21h5v-5h5v-5h5V6h3"/><path d="M5 3v8m-3-3 3 3 3-3"/></svg>
+          </div>
+          <div class="office-map-waypoint office-map-stairs office-map-stairs-up" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 21h5v-5h5v-5h5V6h3"/><path d="M5 11V3M2 6l3-3 3 3"/></svg>
+          </div>
+          <div class="office-map-waypoint office-map-parking" aria-hidden="true">P</div>
           <div class="office-map-marker" aria-hidden="true">
             <svg viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg"><path d="M17 1C8.2 1 1 8.2 1 17c0 12.5 16 26 16 26s16-13.5 16-26C33 8.2 25.8 1 17 1Z" fill="#e30f2d" stroke="#fff" stroke-width="2"/><circle cx="17" cy="17" r="6" fill="#fff"/></svg>
           </div>
@@ -211,7 +222,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
           </div>
           <div class="office-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</div>
           <div class="office-map-unavailable" hidden><span>Карта временно недоступна. <a href="https://yandex.ru/maps/?ll=37.559358%2C55.763107&amp;pt=37.559358%2C55.763107&amp;z=17" target="_blank" rel="noopener noreferrer">Открыть в Яндекс Картах</a></span></div>
-          <span class="office-map-sr" id="office-map-help">Маршрут от метро отображается по умолчанию. Переключайте пеший и автомобильный маршруты двумя кнопками. Масштаб изменяется колёсиком мыши, карту можно перемещать.</span>
+          <span class="office-map-sr" id="office-map-help">Маршрут от метро отображается по умолчанию. Две лестницы обозначают спуск и выход из подземного перехода; значок P — парковку для автомобиля. Переключайте маршруты двумя кнопками. Масштаб изменяется колёсиком мыши, карту можно перемещать.</span>
         </div>
       </div>
     </div>
@@ -247,7 +258,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
 <footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
 <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
-<script src="assets/office-map.js?v=20261119-mirrored-tunnel-v12"></script>
+<script src="assets/office-map.js?v=20261119-stairs-parking-v13"></script>
 <script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>

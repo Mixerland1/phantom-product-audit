@@ -66,6 +66,9 @@
   const tunnelUnder = root.querySelector('.office-map-route-tunnel-under');
   const tunnelOver = root.querySelector('.office-map-route-tunnel');
   const routeStart = root.querySelector('.office-map-start');
+  const stairDown = root.querySelector('.office-map-stairs-down');
+  const stairUp = root.querySelector('.office-map-stairs-up');
+  const parking = root.querySelector('.office-map-parking');
   const modeButtons = Array.from(root.querySelectorAll('[data-mode]'));
   let routeMode = 'walk';
 
@@ -98,6 +101,27 @@
     routeStart.style.left = screen[0].x + 'px';
     routeStart.style.top = screen[0].y + 'px';
     routeStart.hidden = false;
+    // Маленькие указатели ставим возле концов подземного участка,
+    // а не поверх пешеходной линии. Координаты привязаны к маршруту.
+    function locate(point) {
+      const p = project(point, zoom);
+      return { x: p.x - center.x + width / 2, y: p.y - center.y + height / 2 };
+    }
+    if (routeMode === 'walk') {
+      const down = locate(routes.walk[5]); // вход в подземный переход
+      const up = locate(routes.walk[8]); // выход из подземного перехода
+      stairDown.style.left = (down.x + 23) + 'px';
+      stairDown.style.top = (down.y + 24) + 'px';
+      stairUp.style.left = (up.x + 23) + 'px';
+      stairUp.style.top = (up.y + 24) + 'px';
+    } else {
+      const lastCar = routes.auto[routes.auto.length - 1];
+      const midpoint = { lat: (lastCar.lat + entrance.lat) / 2, lon: (lastCar.lon + entrance.lon) / 2 };
+      const spot = locate(midpoint), entranceSpot = locate(entrance);
+      parking.style.left = spot.x + 'px';
+      // Не перекрываем ни конец автомобильной линии, ни красную метку офиса.
+      parking.style.top = Math.max(spot.y + 22, entranceSpot.y + 19) + 'px';
+    }
   }
 
   function fitRoute() {
