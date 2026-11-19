@@ -72,16 +72,18 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .office-map-route path{fill:none;stroke-linejoin:round;stroke-linecap:round}
 .office-map-route-under{stroke:rgba(255,255,255,.98);stroke-width:9.5}
 .office-map-route-over{stroke:#1764b7;stroke-width:5.5;stroke-dasharray:10 7}
+.office-map-route-tunnel-under{stroke:rgba(255,255,255,.7);stroke-width:6}
+.office-map-route-tunnel{stroke:rgba(23,100,183,.58);stroke-width:3;stroke-dasharray:5 8}
 .office-local-map[data-mode="auto"] .office-map-route-over{stroke:#e30f2d}
 .office-map-start{position:absolute;z-index:34;width:13px;height:13px;transform:translate(-50%,-50%);border:3px solid #fff;border-radius:50%;background:#1764b7;box-shadow:0 2px 8px #0004;pointer-events:none}
 .office-local-map[data-mode="auto"] .office-map-start{background:#e30f2d}
 .office-map-modes{position:absolute;z-index:55;left:12px;top:12px;display:flex;gap:8px}
-.office-map-modes button{display:grid;place-items:center;width:42px;height:42px;padding:8px;border:1px solid #d9e2eb;border-radius:10px;background:#fff;color:#213953;box-shadow:0 2px 8px #20364b24;cursor:pointer}
-.office-map-modes img{display:block;width:26px;height:26px;object-fit:contain;flex:none}
-.office-map-modes button[aria-pressed="true"]{background:#173d6b;color:#fff;border-color:#173d6b}
-.office-map-modes button:hover:not([aria-pressed="true"]){background:#f0f5f9}
+.office-map-modes button{display:grid;place-items:center;width:48px;height:48px;padding:0;border:0;border-radius:0;background:transparent;color:inherit;box-shadow:none;cursor:pointer}
+.office-map-modes img{display:block;width:48px;height:48px;object-fit:contain;flex:none;transition:transform .15s ease,filter .15s ease}
+.office-map-modes button[aria-pressed="true"] img{filter:drop-shadow(0 2px 3px rgba(20,40,60,.4))}
+.office-map-modes button:hover img{transform:scale(1.06)}
 .office-map-modes button:focus-visible{outline:3px solid #e30f2d;outline-offset:2px}
-@media(max-width:600px){.office-map-modes button{width:39px;height:39px;padding:7px}.office-map-modes img{width:24px;height:24px}}
+@media(max-width:600px){.office-map-modes button{width:44px;height:44px}.office-map-modes img{width:44px;height:44px}}
 .office-map-unavailable a{color:#bb1230;font-weight:700}
 .office-map-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 /* Две самостоятельные карточки: фотография входа и инструкция посетителю. */
@@ -198,14 +200,14 @@ html[data-theme="dark"] main > .hero.hero--contacts{
       <div class="map-frame" id="office-map">
         <div class="office-local-map" data-mode="walk" tabindex="0" role="region" aria-label="Карта: вход в здание МДИС со стороны Звенигородского шоссе" aria-describedby="office-map-help">
           <div class="office-map-tiles" aria-hidden="true"></div>
-          <svg class="office-map-route" aria-hidden="true"><path class="office-map-route-under"></path><path class="office-map-route-over"></path></svg>
+          <svg class="office-map-route" aria-hidden="true"><path class="office-map-route-under"></path><path class="office-map-route-over"></path><path class="office-map-route-tunnel-under"></path><path class="office-map-route-tunnel"></path></svg>
           <div class="office-map-start" aria-hidden="true" hidden></div>
           <div class="office-map-marker" aria-hidden="true">
             <svg viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg"><path d="M17 1C8.2 1 1 8.2 1 17c0 12.5 16 26 16 26s16-13.5 16-26C33 8.2 25.8 1 17 1Z" fill="#e30f2d" stroke="#fff" stroke-width="2"/><circle cx="17" cy="17" r="6" fill="#fff"/></svg>
           </div>
           <div class="office-map-modes" role="group" aria-label="Как добраться">
-            <button type="button" data-mode="walk" aria-label="Маршрут пешком от метро" aria-pressed="true"><img src="assets/icons/office-pedestrian.svg" alt="" aria-hidden="true" width="26" height="26"></button>
-            <button type="button" data-mode="auto" aria-label="Маршрут на автомобиле к парковке" aria-pressed="false"><img src="assets/icons/office-car.svg" alt="" aria-hidden="true" width="26" height="26"></button>
+            <button type="button" data-mode="walk" aria-label="Маршрут пешком от метро" aria-pressed="true"><img src="assets/icons/office-pedestrian.svg" alt="" aria-hidden="true" width="48" height="48"></button>
+            <button type="button" data-mode="auto" aria-label="Маршрут на автомобиле к парковке" aria-pressed="false"><img src="assets/icons/office-car.svg" alt="" aria-hidden="true" width="48" height="48"></button>
           </div>
           <div class="office-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</div>
           <div class="office-map-unavailable" hidden><span>Карта временно недоступна. <a href="https://yandex.ru/maps/?ll=37.559358%2C55.763107&amp;pt=37.559358%2C55.763107&amp;z=17" target="_blank" rel="noopener noreferrer">Открыть в Яндекс Картах</a></span></div>
@@ -245,7 +247,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
 <footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
 <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
-<script src="assets/office-map.js?v=20261119-lane-icons-v7"></script>
+<script src="assets/office-map.js?v=20261119-tunnel-diamond-v8"></script>
 <script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>

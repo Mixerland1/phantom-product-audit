@@ -61,6 +61,8 @@
   const routeSvg = root.querySelector('.office-map-route');
   const routeUnder = root.querySelector('.office-map-route-under');
   const routeOver = root.querySelector('.office-map-route-over');
+  const tunnelUnder = root.querySelector('.office-map-route-tunnel-under');
+  const tunnelOver = root.querySelector('.office-map-route-tunnel');
   const routeStart = root.querySelector('.office-map-start');
   const modeButtons = Array.from(root.querySelectorAll('[data-mode]'));
   let routeMode = 'walk';
@@ -73,12 +75,22 @@
       const p = project(point, zoom);
       return { x: p.x - center.x + width / 2, y: p.y - center.y + height / 2 };
     });
-    const d = screen.map(function (p, index) {
-      return (index ? 'L' : 'M') + p.x.toFixed(2) + ',' + p.y.toFixed(2);
-    }).join(' ');
+    function pathOf(points) {
+      return points.map(function (p, index) {
+        return (index ? 'L' : 'M') + p.x.toFixed(2) + ',' + p.y.toFixed(2);
+      }).join(' ');
+    }
+    // Участок между точками 5 и 8 проходит под Звенигородским шоссе:
+    // рисуем его отдельно, полупрозрачным и более тонким пунктиром.
+    const surface = routeMode === 'walk'
+      ? pathOf(screen.slice(0, 6)) + ' ' + pathOf(screen.slice(8))
+      : pathOf(screen);
+    const tunnel = routeMode === 'walk' ? pathOf(screen.slice(5, 9)) : '';
     routeSvg.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-    routeUnder.setAttribute('d', d);
-    routeOver.setAttribute('d', d);
+    routeUnder.setAttribute('d', surface);
+    routeOver.setAttribute('d', surface);
+    tunnelUnder.setAttribute('d', tunnel);
+    tunnelOver.setAttribute('d', tunnel);
     // SVG does not reliably reflect the HTML hidden property: remove the attribute.
     routeSvg.removeAttribute('hidden');
     routeStart.style.left = screen[0].x + 'px';
