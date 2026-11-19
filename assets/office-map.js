@@ -101,26 +101,34 @@
     routeStart.style.left = screen[0].x + 'px';
     routeStart.style.top = screen[0].y + 'px';
     routeStart.hidden = false;
-    // Маленькие указатели ставим возле концов подземного участка,
-    // а не поверх пешеходной линии. Координаты привязаны к маршруту.
-    function locate(point) {
-      const p = project(point, zoom);
-      return { x: p.x - center.x + width / 2, y: p.y - center.y + height / 2 };
+    // Вход и выход отмечаем внутри поворотов, по биссектрисе угла:
+    // значки не лежат на линии и остаются внутри углов при масштабировании.
+    function placeInsideCorner(element, index) {
+      const at = screen[index];
+      const before = screen[index - 1], after = screen[index + 1];
+      const ax = before.x - at.x, ay = before.y - at.y;
+      const bx = after.x - at.x, by = after.y - at.y;
+      const an = Math.hypot(ax, ay) || 1, bn = Math.hypot(bx, by) || 1;
+      const dx = ax / an + bx / bn, dy = ay / an + by / bn;
+      const dn = Math.hypot(dx, dy) || 1;
+      const clearance = 32; // 28 px знак + зазор от обеих сторон маршрута
+      element.style.left = (at.x + dx / dn * clearance) + 'px';
+      element.style.top = (at.y + dy / dn * clearance) + 'px';
     }
     if (routeMode === 'walk') {
-      const down = locate(routes.walk[5]); // вход в подземный переход
-      const up = locate(routes.walk[8]); // выход из подземного перехода
-      stairDown.style.left = (down.x + 23) + 'px';
-      stairDown.style.top = (down.y + 24) + 'px';
-      stairUp.style.left = (up.x + 23) + 'px';
-      stairUp.style.top = (up.y + 24) + 'px';
+      placeInsideCorner(stairDown, 5); // вход в подземный переход
+      placeInsideCorner(stairUp, 8); // выход из подземного перехода
     } else {
+      // P — точно посередине воображаемой линии от конца авто-маршрута
+      // до входа МДИС, без дополнительного смещения вниз на здание.
       const lastCar = routes.auto[routes.auto.length - 1];
-      const midpoint = { lat: (lastCar.lat + entrance.lat) / 2, lon: (lastCar.lon + entrance.lon) / 2 };
-      const spot = locate(midpoint), entranceSpot = locate(entrance);
-      parking.style.left = spot.x + 'px';
-      // Не перекрываем ни конец автомобильной линии, ни красную метку офиса.
-      parking.style.top = Math.max(spot.y + 22, entranceSpot.y + 19) + 'px';
+      const midpoint = {
+        lat: (lastCar.lat + entrance.lat) / 2,
+        lon: (lastCar.lon + entrance.lon) / 2
+      };
+      const p = project(midpoint, zoom);
+      parking.style.left = (p.x - center.x + width / 2) + 'px';
+      parking.style.top = (p.y - center.y + height / 2) + 'px';
     }
   }
 
