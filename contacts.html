@@ -78,12 +78,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--red);outline-offset
 .office-map-start{position:absolute;z-index:34;width:13px;height:13px;transform:translate(-50%,-50%);border:3px solid #fff;border-radius:50%;background:#1764b7;box-shadow:0 2px 8px #0004;pointer-events:none}
 .office-local-map[data-mode="auto"] .office-map-start{background:#e30f2d}
 .office-map-modes{position:absolute;z-index:55;left:12px;top:12px;display:flex;gap:8px}
-.office-map-modes button{display:grid;place-items:center;width:58px;height:58px;padding:0;border:0;border-radius:0;background:transparent;color:inherit;box-shadow:none;cursor:pointer}
-.office-map-modes img{display:block;width:58px;height:58px;object-fit:contain;flex:none;filter:drop-shadow(0 3px 4px rgba(14,28,46,.52));transition:transform .15s ease,filter .15s ease}
+.office-map-modes button{display:grid;place-items:center;width:70px;height:70px;padding:0;border:0;border-radius:0;background:transparent;color:inherit;box-shadow:none;cursor:pointer}
+.office-map-modes img{display:block;width:70px;height:70px;object-fit:contain;flex:none;filter:drop-shadow(0 3px 4px rgba(14,28,46,.52));transition:transform .15s ease,filter .15s ease}
 .office-map-modes button[aria-pressed="true"] img{filter:drop-shadow(0 4px 5px rgba(12,24,40,.62))}
 .office-map-modes button:hover img{transform:scale(1.06)}
 .office-map-modes button:focus-visible{outline:3px solid #e30f2d;outline-offset:2px}
-@media(max-width:600px){.office-map-modes button{width:53px;height:53px}.office-map-modes img{width:53px;height:53px}}
+@media(max-width:600px){.office-map-modes button{width:64px;height:64px}.office-map-modes img{width:64px;height:64px}}
 .office-map-unavailable a{color:#bb1230;font-weight:700}
 .office-map-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
 /* Две самостоятельные карточки: фотография входа и инструкция посетителю. */
@@ -206,8 +206,8 @@ html[data-theme="dark"] main > .hero.hero--contacts{
             <svg viewBox="0 0 34 44" xmlns="http://www.w3.org/2000/svg"><path d="M17 1C8.2 1 1 8.2 1 17c0 12.5 16 26 16 26s16-13.5 16-26C33 8.2 25.8 1 17 1Z" fill="#e30f2d" stroke="#fff" stroke-width="2"/><circle cx="17" cy="17" r="6" fill="#fff"/></svg>
           </div>
           <div class="office-map-modes" role="group" aria-label="Как добраться">
-            <button type="button" data-mode="walk" aria-label="Маршрут пешком от метро" aria-pressed="true"><img src="assets/icons/office-pedestrian.svg" alt="" aria-hidden="true" width="58" height="58"></button>
-            <button type="button" data-mode="auto" aria-label="Маршрут на автомобиле к парковке" aria-pressed="false"><img src="assets/icons/office-car.svg" alt="" aria-hidden="true" width="58" height="58"></button>
+            <button type="button" data-mode="walk" aria-label="Маршрут пешком от метро" aria-pressed="true"><img src="assets/icons/office-pedestrian.svg" alt="" aria-hidden="true" width="70" height="70"></button>
+            <button type="button" data-mode="auto" aria-label="Маршрут на автомобиле к парковке" aria-pressed="false"><img src="assets/icons/office-car.svg" alt="" aria-hidden="true" width="70" height="70"></button>
           </div>
           <div class="office-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</div>
           <div class="office-map-unavailable" hidden><span>Карта временно недоступна. <a href="https://yandex.ru/maps/?ll=37.559358%2C55.763107&amp;pt=37.559358%2C55.763107&amp;z=17" target="_blank" rel="noopener noreferrer">Открыть в Яндекс Картах</a></span></div>
@@ -247,7 +247,7 @@ html[data-theme="dark"] main > .hero.hero--contacts{
 <footer class="footer"></footer>
 <script src="assets/footer-next.js?v=20261118-mdis-dark-v1"></script>
 <script src="assets/site-header.js?v=20261117-products-nav-v2"></script>
-<script src="assets/office-map.js?v=20261119-car-lane-icons-20pct-v10"></script>
+<script src="assets/office-map.js?v=20261119-corner-car-icons-v11"></script>
 <script src="assets/site-consultation.js?v=20261117-unified-v1"></script>
 </body>
 </html>
