@@ -66,4 +66,4 @@ html[data-theme="dark"] #site-footer .footer-contact-zone::after{
 @media(prefers-reduced-motion:reduce){#site-footer .footer-pin i{animation:none}}
 
 /* Fine adjustment of office marker on original local map. */
-#site-footer .footer-contact-zone .footer-pin{top:calc(55% - 50px)!important;right:calc(39% - 60px)!important;left:auto!important;transform:none!important}
+#site-footer .footer-contact-zone .footer-pin{top:calc(55% - 40px)!important;right:calc(39% - 55px)!important;left:auto!important;transform:none!important}
