@@ -66,7 +66,8 @@
     .hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);align-items:center;gap:55px;padding:88px 0 60px}
     .hero-copy{position:relative;z-index:1}
     .hero h1{max-width:610px;margin-bottom:0;color:#1d3653}
-    .hero-lead{max-width:555px;color:#4e6983;font-size:18px;line-height:1.72;font-weight:400}
+    .hero-subtitle{max-width:555px;margin:0 0 16px;color:#35536f;font-size:clamp(21px,2.35vw,30px);font-weight:600;line-height:1.25;letter-spacing:-.025em}
+    .hero-lead{max-width:555px;margin:0 0 12px;color:#4e6983;font-size:17px;line-height:1.58;font-weight:400}
     .hero-visual{position:relative;display:flex;align-items:center;justify-content:center;min-height:450px;border:1px solid rgba(191,218,239,.86);border-radius:16px;background:
       radial-gradient(ellipse at 54% 40%,rgba(255,255,255,.86) 0,rgba(245,250,255,.82) 48%,rgba(230,242,252,.78) 100%);
       box-shadow:0 22px 58px rgba(38,51,71,.10);isolation:isolate}
@@ -137,13 +138,12 @@
     .products-more,.industry-more{margin:22px 0 0;color:var(--muted);font-size:13px;line-height:1.62}
     .products-more a,.industry-more a{color:#2a709c;text-underline-offset:3px}
     .industry-more{margin-top:10px}
-    .solution-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+    .solution-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
     .solution{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:230px;overflow:hidden;padding:27px;border:1px solid var(--line);border-radius:14px;background:#eaf4fb;text-decoration:none;isolation:isolate;transition:transform .2s,box-shadow .2s}
     .solution:before{position:absolute;inset:0;z-index:-2;background-size:cover;background-position:center;content:""}
     .solution:after{position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(249,253,255,.6) 0%,rgba(242,249,254,.85) 42%,rgba(233,245,254,.99) 100%);content:""}
     .solution-atom:before{background:radial-gradient(circle at 76% 25%,#c9e0f5 0%,transparent 49%),linear-gradient(130deg,#e7f2fc,#f7fbfe)}
-    .solution-commercial:before{background:radial-gradient(circle at 77% 25%,#d9eafb 0%,transparent 49%),linear-gradient(130deg,#edf7fc,#f8fbfd)}
-    .solution-industrial:before{background:radial-gradient(circle at 78% 27%,#d2e9fd 0%,transparent 49%),linear-gradient(125deg,#e9f5ff,#f5f9fe)}
+    .solution-energy:before{background:radial-gradient(circle at 78% 27%,#d2e9fd 0%,transparent 49%),linear-gradient(125deg,#e9f5ff,#f5f9fe)}
     .solution .eyebrow{margin-bottom:7px}
     .solution h3{min-height:2.6em;margin:0 0 8px;font-size:21px}
     .solution p{margin:0 0 16px;min-height:2.8em;font-size:13px;color:#5b748a}
@@ -174,7 +174,7 @@
     html[data-theme="dark"]{--ink:#edf4fc;--muted:#b1c1d1;--canvas:#0c1727;--paper:#15253a;--soft:#1c314b;--line:#334860;--flow-line:#526d86}
     html[data-theme="dark"] .preview-note{background:#341d29;color:#e8b8c1;border-color:#63313a}
     html[data-theme="dark"] .hero{background:linear-gradient(90deg,rgba(7,17,31,.96) 0%,rgba(10,24,40,.88) 38%,rgba(13,29,47,.60) 58%,rgba(16,35,55,.34) 78%,rgba(16,35,55,.22) 100%),url("assets/backgrounds/phantom-home-background-v2.svg") center center/cover no-repeat}
-    html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero-lead{color:var(--ink)}
+    html[data-theme="dark"] .hero h1,html[data-theme="dark"] .hero-subtitle,html[data-theme="dark"] .hero-lead{color:var(--ink)}
     html[data-theme="dark"] .hero-visual{background:linear-gradient(145deg,rgba(36,65,93,.84),rgba(21,41,64,.80));border-color:rgba(98,125,151,.56);box-shadow:0 24px 64px rgba(0,0,0,.28)}
     html[data-theme="dark"] .workflow-main{background:linear-gradient(145deg,#24415d,#152940);border-color:var(--line)}
     html[data-theme="dark"] .hero-visual-label,html[data-theme="dark"] .hardware-caption,html[data-theme="dark"] .hardware-caption strong{color:var(--ink)}
@@ -211,7 +211,6 @@
       .workflow-side::before,.workflow-side::after,.workflow-card::before,.workflow-card::after,.workflow-main::before,.workflow-main::after{display:none}
       .task-grid,.product-grid,.benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
       .solution-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .solution:last-child{grid-column:1/-1}
       .proof{grid-template-columns:1fr;gap:20px}
       .contact-panel{gap:30px;padding:36px}
     }
@@ -226,7 +225,7 @@
       .workflow-side,.task-grid,.product-grid,.solution-grid,.benefits,.contact-panel,.contact-form{grid-template-columns:1fr}
       .workflow-card{min-height:120px}.workflow-main{min-height:270px}
       .task,.benefit,.product{min-height:0}.task h3,.benefit h3,.product-copy h3,.solution h3{min-height:0}
-      .solution:last-child{grid-column:auto}.solution{min-height:230px}
+      .solution{min-height:230px}
       .contact-area{padding:62px 0}.contact-panel{padding:25px;gap:24px}
       .field-wide,.form-note,.contact-form button{grid-column:auto}
       .button-row .btn{width:100%}
@@ -279,40 +278,42 @@
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <p class="eyebrow">МДИС · с&nbsp;1995&nbsp;года</p>
-          <h1 id="hero-heading">МЦКРС «Фантом» – системы записи переговоров</h1>
+          <h1 id="hero-heading">МЦКРС «Фантом»</h1>
           <span class="accent-rule" aria-hidden="true"></span>
-          <p class="hero-lead">МДИС разрабатывает и&nbsp;производит многоканальный цифровой комплекс регистрации сигналов (МЦКРС) «Фантом» для&nbsp;записи телефонных и&nbsp;диспетчерских переговоров. В&nbsp;зависимости от&nbsp;конфигурации система подключается к&nbsp;аналоговым и&nbsp;цифровым линиям, потокам E1 и&nbsp;IP-телефонии, сохраняет записи в&nbsp;архиве и&nbsp;предоставляет доступ к&nbsp;их поиску и&nbsp;воспроизведению.</p>
+          <p class="hero-subtitle">Система записи телефонных и&nbsp;диспетчерских переговоров</p>
+          <p class="hero-lead">МДИС разрабатывает и&nbsp;производит многоканальный цифровой комплекс регистрации сигналов (МЦКРС) «Фантом». В&nbsp;зависимости от&nbsp;конфигурации система одновременно записывает переговоры по&nbsp;аналоговым и&nbsp;цифровым линиям, потокам E1 и&nbsp;IP-телефонии.</p>
+          <p class="hero-lead">Записи хранятся локально или&nbsp;передаются с&nbsp;нескольких станций на&nbsp;централизованный сервер хранения. Доступ к&nbsp;архиву разграничивается по&nbsp;правам пользователей в&nbsp;иерархии системы.</p>
           <div class="button-row"><a class="btn btn-primary" href="phantom-catalog.html">Системы записи «Фантом»</a><a class="btn btn-secondary" href="#contact">Подобрать конфигурацию</a></div>
         </div>
         <div class="hero-visual">
-          <div class="hero-visual-label"><span class="status-dot"></span>Phantom Pro · уровень&nbsp;6</div>
-          <img class="hero-hardware" src="assets/products/phantom-pro-level-6-closed-20261117.webp" width="1672" height="941" alt="Сервер МЦКРС «Фантом» Phantom Pro уровня 6 в корпусе 4U" fetchpriority="high" decoding="async">
-          <div class="hardware-caption"><strong>Серверное исполнение 4U</strong><span>До&nbsp;11&nbsp;интерфейсных плат</span></div>
+          <div class="hero-visual-label"><span class="status-dot"></span>Сервер «Phantom» уровня&nbsp;5</div>
+          <img class="hero-hardware" src="assets/products/phantom-pro-level-5-cutout.png" alt="Сервер Phantom Pro уровня 5" fetchpriority="high" decoding="async">
+          <div class="hardware-caption"><strong>Индустриальный сервер 4U/2U</strong><span>Платы Phantom Dispatcher</span></div>
         </div>
       </div>
       <div class="wrap">
         <div class="hero-stats" aria-label="Ключевые возможности">
-          <div class="hero-stat"><b>Регистрация<br>переговоров</b><span>Телефонная и&nbsp;диспетчерская связь</span></div>
-          <div class="hero-stat"><b>Поиск<br>и&nbsp;воспроизведение</b><span>Доступ к&nbsp;записям в&nbsp;архиве</span></div>
-          <div class="hero-stat"><b>Конфигурация<br>под&nbsp;объект</b><span>Подбор оборудования и&nbsp;схемы подключения</span></div>
+          <div class="hero-stat"><b>Многоканальная<br>запись</b><span>Одновременная регистрация переговоров по&nbsp;разным типам линий</span></div>
+          <div class="hero-stat"><b>Поиск<br>и&nbsp;воспроизведение</b><span>Прослушивание сохранённых переговоров из&nbsp;архива</span></div>
+          <div class="hero-stat"><b>Сквозной<br>канал</b><span>Прослушивание текущих переговоров параллельно записи</span></div>
         </div>
       </div>
     </section>
 
-    <nav class="solutions-switcher phantom-home-switcher" aria-label="Переход к решениям Phantom">
+    <nav class="solutions-switcher phantom-home-switcher" aria-label="Переход к отраслевым решениям Phantom">
       <div class="wrap">
         <div class="solutions-switcher-layout">
-          <a class="solutions-switcher-neighbor solutions-switcher-neighbor--previous" href="industrial.html">Промышленные предприятия</a>
+          <a class="solutions-switcher-neighbor solutions-switcher-neighbor--previous" href="atom-energy.html">Атомная энергетика</a>
           <div class="solutions-switcher-toolbar">
-            <a class="solutions-switcher-control" href="industrial.html" aria-label="Решение: промышленные предприятия" title="Промышленные предприятия">
+            <a class="solutions-switcher-control" href="atom-energy.html" aria-label="Решение: атомная энергетика" title="Атомная энергетика">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
             </a>
             <a class="solutions-switcher-label" href="solutions.html">Все решения</a>
-            <a class="solutions-switcher-control" href="atom-energy.html" aria-label="Решение: атомная энергетика" title="Атомная энергетика">
+            <a class="solutions-switcher-control" href="electroenergetika.html" aria-label="Решение: электроэнергетика" title="Электроэнергетика">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
           </div>
-          <a class="solutions-switcher-neighbor solutions-switcher-neighbor--next" href="atom-energy.html">Атомная энергетика</a>
+          <a class="solutions-switcher-neighbor solutions-switcher-neighbor--next" href="electroenergetika.html">Электроэнергетика</a>
         </div>
       </div>
     </nav>
@@ -340,18 +341,18 @@
             <img src="assets/products/phantom-pro-level-6-open-20261117.webp" width="1280" height="720" loading="lazy" decoding="async" alt="Сервер Phantom Pro уровня 6 с открытой крышкой">
             <h3>Станции записи «Фантом»</h3><p>Приём и&nbsp;запись сигналов, формирование архива</p>
           </div>
-          <div class="workflow-side" aria-label="Работа с записями">
+          <div class="workflow-side" aria-label="Работа с переговорами">
             <div class="workflow-card">
               <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-archive"/></svg></span>
-              <h3>Архив и&nbsp;поиск</h3><p>Хранение записей и&nbsp;поиск нужных разговоров</p>
+              <h3>Архив и&nbsp;воспроизведение</h3><p>Локальное или&nbsp;централизованное хранение, поиск и&nbsp;прослушивание записей</p>
             </div>
             <div class="workflow-card">
               <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-monitor"/></svg></span>
-              <h3>Прослушивание и&nbsp;контроль</h3><p>Прослушивание записей и&nbsp;контроль активности доступных каналов в&nbsp;реальном времени</p>
+              <h3>Сквозной канал</h3><p>Прослушивание текущих переговоров в&nbsp;реальном времени, без&nbsp;ожидания окончания записи</p>
             </div>
           </div>
         </div>
-        <p class="workflow-note">Доступные интерфейсы, резервирование и&nbsp;архитектура зависят от&nbsp;выбранной конфигурации</p>
+        <p class="workflow-note">Доступные интерфейсы, режимы прослушивания, резервирование и&nbsp;архитектура зависят от&nbsp;выбранной конфигурации</p>
       </div>
     </section>
 
@@ -369,7 +370,7 @@
           </a>
           <a class="task" href="dispatcher-recording.html">
             <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-radio"/></svg></span>
-            <h3>Диспетчерская<br>связь</h3><p>Регистрация оперативных переговоров в&nbsp;энергетике, промышленности и&nbsp;на&nbsp;транспорте</p><span class="task-arrow" aria-hidden="true">↗</span>
+            <h3>Диспетчерская<br>связь</h3><p>Запись оперативных переговоров и&nbsp;селекторных совещаний</p><span class="task-arrow" aria-hidden="true">↗</span>
           </a>
           <a class="task" href="ip-telephony.html">
             <span class="workflow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-network"/></svg></span>
@@ -434,23 +435,19 @@
         <div class="section-header">
           <p class="eyebrow">Отраслевые сценарии</p>
           <h2 id="industries-heading">Где применяется «Фантом»</h2>
-          <p>«Фантом» применяется на&nbsp;объектах атомной энергетики, коммерческих и&nbsp;промышленных предприятиях. Состав системы зависит от&nbsp;требований к&nbsp;записи, резервированию и&nbsp;доступу к&nbsp;архиву.</p>
+          <p>Ключевые направления – атомная энергетика и&nbsp;электроэнергетика. Система также применяется в&nbsp;других отраслях с&nbsp;учётом требований к&nbsp;записи, резервированию и&nbsp;доступу к&nbsp;архиву.</p>
         </div>
         <div class="solution-grid">
           <a class="solution solution-atom" href="atom-energy.html">
             <span class="eyebrow">Оперативные службы</span><h3>Атомная энергетика</h3>
             <p>Запись оперативных переговоров и&nbsp;архив для&nbsp;анализа событий</p><span>Подробнее об&nbsp;отрасли ↗</span>
           </a>
-          <a class="solution solution-commercial" href="commercial.html">
-            <span class="eyebrow">Работа с&nbsp;клиентами</span><h3>Коммерческие предприятия</h3>
-            <p>Запись телефонных переговоров с&nbsp;клиентами и&nbsp;архив разговоров</p><span>Подробнее об&nbsp;отрасли ↗</span>
-          </a>
-          <a class="solution solution-industrial" href="industrial.html">
-            <span class="eyebrow">Промышленность</span><h3>Промышленные предприятия</h3>
-            <p>Централизованная запись диспетчерских переговоров и&nbsp;селекторных совещаний</p><span>Подробнее об&nbsp;отрасли ↗</span>
+          <a class="solution solution-energy" href="electroenergetika.html">
+            <span class="eyebrow">Генерация и&nbsp;электросети</span><h3>Электроэнергетика</h3>
+            <p>Запись и&nbsp;дублирование диспетчерских переговоров. Опыт внедрения на&nbsp;объектах филиалов ПАО «Россети».</p><span>Подробнее об&nbsp;отрасли ↗</span>
           </a>
         </div>
-        <p class="industry-more">Другие отрасли: <a href="electroenergetika.html">электроэнергетика</a>, <a href="aviation-transport.html">авиация и&nbsp;транспорт</a>, <a href="auto-dealers.html">автосалоны</a>, <a href="government.html">госструктуры</a>, <a href="financial.html">финансовые организации</a>.</p>
+        <p class="industry-more">Другие отрасли: <a href="commercial.html">коммерческие предприятия</a>, <a href="industrial.html">промышленные предприятия</a>, <a href="aviation-transport.html">авиация и&nbsp;транспорт</a>, <a href="auto-dealers.html">автосалоны</a>, <a href="government.html">госструктуры</a>, <a href="financial.html">финансовые организации</a>.</p>
       </div>
     </section>
 
