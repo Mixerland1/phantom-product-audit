@@ -150,6 +150,11 @@
     .solution span:last-child{color:#bd1230;font-size:13px;font-weight:750}
     .proof{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
     .proof p{color:var(--muted)}
+    .proof-registry{display:grid;gap:10px;margin:22px 0 0;max-width:340px}
+    .proof-registry-item{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:10px;background:var(--paper)}
+    .proof-registry-item svg{width:26px;height:26px;flex:none;color:var(--red)}
+    .proof-registry-item dt{font-size:12px;font-weight:500;color:var(--muted);line-height:1.4}
+    .proof-registry-item dd{margin:3px 0 0;color:var(--ink);font-size:16px;font-weight:700;line-height:1.35}
     .proof-actions{display:grid;gap:12px}
     .proof-link{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:19px 23px;border:1px solid var(--line);border-radius:10px;background:var(--paper);text-decoration:none;font-weight:660;font-size:14px}
     .proof-link span{color:var(--red);font-size:20px}
@@ -454,10 +459,20 @@
     <section class="section section-soft" id="trust" aria-labelledby="trust-heading">
       <div class="wrap proof">
         <div>
-          <p class="eyebrow">Документы и&nbsp;компетенции</p>
-          <h2 id="trust-heading">Документы и&nbsp;опыт внедрения</h2>
+          <p class="eyebrow">Подтверждение соответствия</p>
+          <h2 id="trust-heading">Аттестация и&nbsp;сертификация</h2>
           <span class="accent-rule" aria-hidden="true"></span>
-          <p>Многоканальный цифровой комплекс регистрации сигналов (МЦКРС) «Фантом» внесён в&nbsp;Реестр российской промышленной продукции Минпромторга: номер&nbsp;10838442, дата внесения – 21&nbsp;мая 2026&nbsp;года, срок действия заключения – до&nbsp;20&nbsp;мая 2029&nbsp;года.</p>
+          <p>Многоканальный цифровой комплекс регистрации сигналов «Фантом» включён в&nbsp;реестр российской промышленной продукции Минпромторга России.</p>
+          <dl class="proof-registry">
+            <div class="proof-registry-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+              <div><dt>Номер реестровой записи</dt><dd>10838442</dd></div>
+            </div>
+            <div class="proof-registry-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18M9 15l2 2 4-4"/></svg>
+              <div><dt>Срок действия до</dt><dd>20&nbsp;мая 2029&nbsp;года</dd></div>
+            </div>
+          </dl>
         </div>
         <div class="proof-actions">
           <a class="proof-link" href="attestation-fsk-ees.html">Испытания и&nbsp;аттестация для&nbsp;электросетевого комплекса <span aria-hidden="true">↗</span></a>
