@@ -8,6 +8,7 @@
 - Источник истины для разработки — ветка `main` репозитория `Mixerland1/phantom-product-audit`. Локальные макеты: `F:\MVP\phantom website\макеты`; пакет тестового стенда: `F:\MVP\phantom website\публикация\предпросмотр_руководство`.
 - **Коммит в GitHub не публикует файлы на AEZA**. Действующий путь доставки: GitHub `main` → локальный Windows-проект → тестовый AEZA через ярлык «Обновить Phantom» (`tools/phantom_sync.py`) по [docs/PHANTOM_SYNC_WORKFLOW.md](docs/PHANTOM_SYNC_WORKFLOW.md), с резервным копированием, HTTP и SHA-256. Старые сценарии `aeza-preview.ps1`, `PublishSite` и `PublishHeader` — исторические и не должны запускаться как штатный процесс.
 - Полные локальные регламенты: `HANDOFF.md`, `STATUS.md`, `документация\24_Система_шаблонов_и_интерфейсных_правил_Фантом.md`, `документация\22_SEO_стандарт_новых_страниц_Фантом.md`. Они могут не входить в GitHub-зеркало.
+- Актуальный handoff по интерактивной карте страницы `contacts.html` (маршруты, значки лестниц/парковки, инварианты и открытый QA): [docs/PHANTOM_CONTACTS_MAP_HANDOFF_20261124.md](docs/PHANTOM_CONTACTS_MAP_HANDOFF_20261124.md).
 
 ## Русская типографика — правило висячих предлогов
 
