@@ -1,6 +1,6 @@
 /* Финальная компоновка подвала: карта, три равных контактных блока. */
 .footer-map{background:none!important;opacity:1!important;filter:none!important}
-.footer-map>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;filter:sepia(45%) saturate(200%) brightness(1.55) contrast(1.08)}
+.footer-map>img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;opacity:1;filter:sepia(45%) saturate(200%) brightness(2.0) contrast(1.08)}
 .footer--dark .footer-map>img{opacity:1;filter:brightness(1)}
 .footer-pin{top:55%!important;right:39%!important;left:auto!important}
 .footer-next{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:36px!important}
@@ -34,7 +34,7 @@
 #site-footer .footer-logo-band .footer-logos:after{position:absolute;bottom:0;left:0;width:100vw;height:1px;content:"";background:var(--line)}
 #site-footer .footer-contact-zone{position:relative;min-height:244px;overflow:hidden;padding:40px 0 46px;background:var(--paper)}
 #site-footer .footer-contact-zone .footer-map{z-index:0}
-#site-footer .footer-contact-zone:after{position:absolute;z-index:1;inset:0;content:"";pointer-events:none;background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 96%,transparent) 38%,color-mix(in srgb,var(--paper) 58%,transparent) 66%,transparent 100%)}
+#site-footer .footer-contact-zone:after{position:absolute;z-index:1;inset:0;content:"";pointer-events:none;background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 94%,transparent) 34%,color-mix(in srgb,var(--paper) 42%,transparent) 60%,transparent 100%)}
 #site-footer .footer-contact-zone .footer-next{position:relative;z-index:2;display:flex!important;flex-direction:column;align-items:flex-start;gap:17px}
 #site-footer .footer-contact-zone .footer-details,#site-footer .footer-contact-zone .footer-channel{display:flex!important;flex-direction:column;align-items:flex-start!important;gap:2px;color:#6b7280!important;text-align:left!important;font:15px/1.6 Inter,Arial,sans-serif}
 #site-footer .footer-contact-zone .footer-details>b,#site-footer .footer-contact-zone .footer-channel>b{margin:0!important;color:#374151!important;font:800 15px/1.6 Inter,Arial,sans-serif;line-height:1.6}
@@ -63,20 +63,4 @@ html[data-theme="dark"] #site-footer .footer-contact-zone::after{
   background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 92%,transparent) 30%,color-mix(in srgb,var(--paper) 30%,transparent) 62%,transparent 100%);
 }
 
-/* Georeferenced footer map. The old raster is only an unmarked fallback. */
-#site-footer .footer-contact-zone .footer-geo{position:absolute;top:0;right:0;bottom:0;width:min(78%,1050px);overflow:hidden;visibility:hidden}
-#site-footer .footer-contact-zone .footer-geo-tiles{position:absolute;inset:0;overflow:hidden;filter:grayscale(1) sepia(.32) hue-rotate(165deg) saturate(1.25) brightness(.99) contrast(1.12)}
-#site-footer .footer-contact-zone .footer-geo-tiles img{position:absolute;display:block;width:256px;height:256px;max-width:none;pointer-events:none}
-#site-footer .footer-contact-zone .footer-map-ready .footer-geo{visibility:visible}
-#site-footer .footer-contact-zone .footer-map-ready>img{visibility:hidden}
-#site-footer .footer-contact-zone .footer-geo .footer-pin{left:var(--footer-pin-x)!important;top:var(--footer-pin-y)!important;right:auto!important;transform:translate(-50%,-50%);z-index:1}
-#site-footer .footer-contact-zone .footer-map-credit{position:absolute;right:8px;bottom:5px;z-index:3;padding:2px 5px;border-radius:3px;background:var(--paper);color:var(--muted);font:10px/1.3 Arial,sans-serif}
-#site-footer .footer-contact-zone .footer-map-credit[hidden]{display:none}
-#site-footer .footer-contact-zone .footer-map-credit a{color:inherit;text-decoration:underline}
-html:not([data-theme="dark"]) #site-footer .footer-contact-zone::after{background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 95%,transparent) 30%,color-mix(in srgb,var(--paper) 45%,transparent) 58%,transparent 86%)}
-html[data-theme="dark"] #site-footer .footer-contact-zone .footer-geo-tiles{filter:grayscale(1) invert(1) sepia(.24) hue-rotate(165deg) saturate(1.4) brightness(.94) contrast(.92)}
-@media(max-width:760px){
-  #site-footer .footer-contact-zone .footer-geo{width:100%}
-  html:not([data-theme="dark"]) #site-footer .footer-contact-zone::after{background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 90%,transparent) 40%,color-mix(in srgb,var(--paper) 30%,transparent) 78%,transparent 100%)}
-}
 @media(prefers-reduced-motion:reduce){#site-footer .footer-pin i{animation:none}}

@@ -192,75 +192,13 @@
       <a class="footer-pultex" href="https://pultex.pro/" target="_blank" rel="noopener" aria-label="PultEx"><img class="footer-pultex-color" src="assets/logos/pultex.svg" alt="PultEx"><img class="footer-pultex-white" src="assets/logos/pultex-white.svg" alt=""></a>
     </div></div></div>
     <div class="footer-contact-zone">
-      <div class="footer-map" aria-hidden="true"><img src="assets/map2.0b139232.png" alt="" loading="lazy"><div class="footer-geo"><div class="footer-geo-tiles"></div><div class="footer-pin"><i></i><i></i><i></i><b></b></div></div></div><div class="footer-map-credit" hidden>© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors</div>
+      <div class="footer-map" aria-hidden="true"><img src="assets/map2.0b139232.png" alt=""><div class="footer-pin"><i></i><i></i><i></i><b></b></div></div>
       <div class="wrap footer-in footer-next">
       <div class="footer-details"><b>ООО «МДИС»</b><address>123022, Россия, г. Москва, ул. 1905 года, д. 7, стр. 1</address><a class="footer-directions-link" href="contacts.html">Контакты и&nbsp;схема проезда</a><a class="footer-general-phone" href="tel:+74957833379">+7 (495) 783-33-79</a></div>
       <div class="footer-channel"><b>Отдел продаж</b><a href="mailto:sales@mdis.ru">sales@mdis.ru</a></div>
       <div class="footer-channel footer-support"><b>Техническая поддержка</b><a href="mailto:support@mdis.ru">support@mdis.ru</a><span class="footer-legal"><a href="privacy-policy.html">Конфиденциальность</a><a href="cookie-policy.html">Cookie</a></span></div>
       </div>
     </div>`;
-
-
-  // Same entrance as assets/office-map.js; pin and tiles share a Web Mercator projection.
-  const footerGeo=footer.querySelector('.footer-geo');
-  const footerTiles=footer.querySelector('.footer-geo-tiles');
-  const footerCredit=footer.querySelector('.footer-map-credit');
-  const footerMap=footer.querySelector('.footer-map');
-  const footerEntrance={lat:55.763107,lon:37.559358};
-  const footerZoom=17, footerTileSize=256;
-  const footerWorld=footerTileSize*Math.pow(2,footerZoom);
-  const footerLatSin=Math.sin(footerEntrance.lat*Math.PI/180);
-  const footerPoint={
-    x:(footerEntrance.lon+180)/360*footerWorld,
-    y:(.5-Math.log((1+footerLatSin)/(1-footerLatSin))/(4*Math.PI))*footerWorld
-  };
-  const footerTileCache=new Map();
-  let footerMapStarted=false;
-  const updateFooterMapReady=()=>{
-    const ready=footerTileCache.size>0&&Array.from(footerTileCache.values()).every(img=>img.complete&&img.naturalWidth>0);
-    footerMap.classList.toggle('footer-map-ready',ready);
-    footerCredit.hidden=!ready;
-  };
-  const drawFooterMap=()=>{
-    if(!footerMapStarted)return;
-    const width=footerGeo.clientWidth,height=footerGeo.clientHeight;
-    if(!width||!height)return;
-    const pinX=width*.62,pinY=height*.55;
-    footerGeo.style.setProperty('--footer-pin-x',pinX+'px');
-    footerGeo.style.setProperty('--footer-pin-y',pinY+'px');
-    const left=footerPoint.x-pinX,top=footerPoint.y-pinY;
-    const minX=Math.floor(left/footerTileSize),maxX=Math.floor((left+width-1)/footerTileSize);
-    const minY=Math.floor(top/footerTileSize),maxY=Math.floor((top+height-1)/footerTileSize);
-    const visible=new Set();
-    for(let y=minY;y<=maxY;y++)for(let x=minX;x<=maxX;x++){
-      const key=x+'/'+y;
-      visible.add(key);
-      let img=footerTileCache.get(key);
-      if(!img){
-        img=document.createElement('img');
-        img.alt='';
-        img.draggable=false;
-        img.decoding='async';
-        img.referrerPolicy='strict-origin-when-cross-origin';
-        img.addEventListener('load',updateFooterMapReady);
-        img.addEventListener('error',updateFooterMapReady);
-        footerTileCache.set(key,img);
-        footerTiles.appendChild(img);
-        img.src='https://tile.openstreetmap.org/'+footerZoom+'/'+x+'/'+y+'.png';
-      }
-      img.style.left=(x*footerTileSize-left)+'px';
-      img.style.top=(y*footerTileSize-top)+'px';
-    }
-    footerTileCache.forEach((img,key)=>{if(!visible.has(key)){img.remove();footerTileCache.delete(key);}});
-    updateFooterMapReady();
-  };
-  const startFooterMap=()=>{if(footerMapStarted)return;footerMapStarted=true;drawFooterMap();};
-  if('IntersectionObserver' in window){
-    const observer=new IntersectionObserver(entries=>{if(entries.some(entry=>entry.isIntersecting)){observer.disconnect();startFooterMap();}},{rootMargin:'160px'});
-    observer.observe(footerMap);
-  }else startFooterMap();
-  if('ResizeObserver' in window)new ResizeObserver(drawFooterMap).observe(footerGeo);
-  else window.addEventListener('resize',drawFooterMap);
 
   const setTheme=()=>{
     const color=getComputedStyle(footer).backgroundColor.match(/\d+/g);
