@@ -65,7 +65,7 @@ html[data-theme="dark"] #site-footer .footer-contact-zone::after{
 
 /* Georeferenced footer map. The old raster is only an unmarked fallback. */
 #site-footer .footer-contact-zone .footer-geo{position:absolute;top:0;right:0;bottom:0;width:min(78%,1050px);overflow:hidden;visibility:hidden}
-#site-footer .footer-contact-zone .footer-geo-tiles{position:absolute;inset:0;overflow:hidden;filter:saturate(.68) contrast(1.05)}
+#site-footer .footer-contact-zone .footer-geo-tiles{position:absolute;inset:0;overflow:hidden;filter:grayscale(1) sepia(.32) hue-rotate(165deg) saturate(1.25) brightness(.99) contrast(1.12)}
 #site-footer .footer-contact-zone .footer-geo-tiles img{position:absolute;display:block;width:256px;height:256px;max-width:none;pointer-events:none}
 #site-footer .footer-contact-zone .footer-map-ready .footer-geo{visibility:visible}
 #site-footer .footer-contact-zone .footer-map-ready>img{visibility:hidden}
@@ -74,7 +74,7 @@ html[data-theme="dark"] #site-footer .footer-contact-zone::after{
 #site-footer .footer-contact-zone .footer-map-credit[hidden]{display:none}
 #site-footer .footer-contact-zone .footer-map-credit a{color:inherit;text-decoration:underline}
 html:not([data-theme="dark"]) #site-footer .footer-contact-zone::after{background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 95%,transparent) 30%,color-mix(in srgb,var(--paper) 45%,transparent) 58%,transparent 86%)}
-html[data-theme="dark"] #site-footer .footer-contact-zone .footer-geo-tiles{filter:invert(1) hue-rotate(180deg) saturate(.55) brightness(.82) contrast(.92)}
+html[data-theme="dark"] #site-footer .footer-contact-zone .footer-geo-tiles{filter:grayscale(1) invert(1) sepia(.24) hue-rotate(165deg) saturate(1.4) brightness(.94) contrast(.92)}
 @media(max-width:760px){
   #site-footer .footer-contact-zone .footer-geo{width:100%}
   html:not([data-theme="dark"]) #site-footer .footer-contact-zone::after{background:linear-gradient(90deg,var(--paper) 0%,color-mix(in srgb,var(--paper) 90%,transparent) 40%,color-mix(in srgb,var(--paper) 30%,transparent) 78%,transparent 100%)}
