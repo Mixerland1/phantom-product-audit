@@ -64,11 +64,11 @@
     /* Reversible moving-panel layer, independent of the existing signal overlay. */
     .hero-panel-motion{position:absolute;inset:0;display:none;overflow:hidden;pointer-events:none;background:linear-gradient(112deg,#f8faff 4%,#edf3fb 48%,#c9e0f3 100%)}
     .hero-panel-motion canvas{display:block;width:100%;height:100%}
-    .hero-panel-motion::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(247,251,255,.99) 0%,rgba(247,251,255,.94) 34%,rgba(247,251,255,.85) 56%,rgba(247,251,255,.77) 76%,rgba(247,251,255,.69) 100%)}
+    .hero-panel-motion::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(247,251,255,.792) 0%,rgba(247,251,255,.809) 34%,rgba(247,251,255,.765) 56%,rgba(247,251,255,.693) 76%,rgba(247,251,255,.621) 100%)}
     .hero[data-motion-ready][data-panel-ready] .hero-panel-motion{display:block}
     html[data-theme="dark"] .hero-panel-motion{background:linear-gradient(112deg,#f8faff 4%,#edf3fb 48%,#c9e0f3 100%)}
-    html[data-theme="dark"] .hero-panel-motion::after{background:linear-gradient(90deg,rgba(7,17,31,.98) 0%,rgba(10,24,40,.91) 38%,rgba(13,29,47,.79) 58%,rgba(16,35,55,.63) 78%,rgba(16,35,55,.56) 100%)}
-    @media(max-width:760px){.hero-panel-motion::after{background:linear-gradient(90deg,rgba(247,251,255,.94),rgba(247,251,255,.74))}html[data-theme="dark"] .hero-panel-motion::after{background:linear-gradient(90deg,rgba(7,17,31,.93),rgba(16,35,55,.75))}}
+    html[data-theme="dark"] .hero-panel-motion::after{background:linear-gradient(90deg,rgba(7,17,31,.784) 0%,rgba(10,24,40,.788) 38%,rgba(13,29,47,.711) 58%,rgba(16,35,55,.567) 78%,rgba(16,35,55,.504) 100%)}
+    @media(max-width:760px){.hero-panel-motion::after{background:linear-gradient(90deg,rgba(247,251,255,.752),rgba(247,251,255,.666))}html[data-theme="dark"] .hero-panel-motion::after{background:linear-gradient(90deg,rgba(7,17,31,.744),rgba(16,35,55,.675))}}
     .phantom-intro{display:none}
     html.phantom-intro-pending{--phantom-intro-bg:#f7f9fc}
     html.phantom-intro-pending body{overflow:hidden;background:var(--phantom-intro-bg)}
