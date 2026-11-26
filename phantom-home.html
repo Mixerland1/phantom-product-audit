@@ -673,7 +673,7 @@
         const a=samples[Math.max(0,i-1)],b=samples[i],c=samples[i+1],d=samples[Math.min(samples.length-1,i+2)];
         // Continuous velocity across knots rather than discrete keyframe steps.
         const v=b.map((n,k)=>.5*((2*n)+(-a[k]+c[k])*t+(2*a[k]-5*n+4*c[k]-d[k])*t*t+(-a[k]+3*n-3*c[k]+d[k])*t*t*t));
-        return {x:v[0],y:v[1],h:Math.max(1,v[2]),w:Math.max(1,v[3]),alpha:smooth(p/.085)*smooth((1-p)/.10)};
+        return {x:v[0]-120,y:v[1],h:Math.max(1,v[2]),w:Math.max(1,v[3]),alpha:smooth(p/.085)*smooth((1-p)/.10)};
       }
       function rounded(x,y,w,h,r){
         r=Math.min(r,w/2,h/2);
